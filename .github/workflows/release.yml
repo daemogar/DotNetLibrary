@@ -1,0 +1,30 @@
+name: Release to NuGet
+
+on:
+  release:
+    types: [published]
+
+env:
+  PROJECT: 'DotNetLibrary'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Create NuGet Package
+      run: dotnet pack -c Release --include-symbols /p:Version=${{ github.event.release.tag_name }} /p:PackageReleaseNotes="See https://github.com/daemogar/DotNetLibrary/releases/tag/${{ github.event.release.tag_name }}"
+      working-directory: ./${{ env.PROJECT }}
+    - name: Archive Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ env.PROJECT }}
+        path: ./${{ env.PROJECT }}/bin/Release/${{ env.PROJECT }}.${{ github.event.release.tag_name }}.[nupkg|snupkg]
+    - name: Publish NuGet Package
+      run: dotnet nuget push **/*.nupkg -k ${{ secrets.NUGETPACKAGEAPIKEY }} -s https://api.nuget.org/v3/index.json
