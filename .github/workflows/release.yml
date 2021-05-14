@@ -25,6 +25,11 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: ${{ env.PROJECT }}
-        path: ./${{ env.PROJECT }}/bin/Release/${{ env.PROJECT }}.${{ github.event.release.tag_name }}.[nupkg|snupkg]
+        path: ./${{ env.PROJECT }}/bin/Release/${{ env.PROJECT }}.${{ github.event.release.tag_name }}.nupkg
+    - name: Archive Artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: ${{ env.PROJECT }}
+        path: ./${{ env.PROJECT }}/bin/Release/${{ env.PROJECT }}.${{ github.event.release.tag_name }}.snupkg
     - name: Publish NuGet Package
       run: dotnet nuget push **/*.nupkg -k ${{ secrets.NUGETPACKAGEAPIKEY }} -s https://api.nuget.org/v3/index.json
