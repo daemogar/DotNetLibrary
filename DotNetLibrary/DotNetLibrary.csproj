@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<PackageId>DotNetLibrary</PackageId>
+		<Authors>Dæmogar</Authors>
+		<Description>Library with reusable generic code.</Description>
+		<PackageTags>.NET dotnet core library reusable generic</PackageTags>
+		<PackageProjectUrl>https://github.com/daemogar/DotNetLibrary</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/daemogar/DotNetLibrary</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<Copyright>2021</Copyright>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <DefineConstants>DEBUG;TRACE</DefineConstants>
+	  <DocumentationFile>C:\dev\projects\DotNetLibrary\DotNetLibrary\DotNetLibrary.xml</DocumentationFile>
+	</PropertyGroup>
+	<ItemGroup>
+	  <None Include="..\LICENSE">
+	    <Pack>True</Pack>
+	    <PackagePath></PackagePath>
+	  </None>
+	</ItemGroup>
+</Project>
