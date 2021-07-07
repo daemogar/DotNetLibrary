@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>net5.0;net6.0</TargetFrameworks>
+		<OutputType>Library</OutputType>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<PackageId>DotNetLibrary.Client</PackageId>
+		<Authors>Dæmogar</Authors>
+		<Description>Library with reusable generic code for client side.</Description>
+		<PackageTags>.NET dotnet core library reusable generic client wasm</PackageTags>
+		<PackageProjectUrl>https://github.com/daemogar/DotNetLibrary</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/daemogar/DotNetLibrary</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<Copyright>2021</Copyright>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<AssemblyName>DotNetLibrary.Client</AssemblyName>
+		<RootNamespace>DotNetLibrary</RootNamespace>
+	</PropertyGroup>
+	<ItemGroup>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net5.0|AnyCPU'">
+	  <DocumentationFile>C:\Users\irwinj\Source\Repos\daemogar\DotNetLibrary\DotNetLibrary.Client\DotNetLibrary.Client.xml</DocumentationFile>
+	</PropertyGroup>
+	<ItemGroup>
+	  <None Include="..\LICENSE" Link="LICENSE">
+	    <PackagePath></PackagePath>
+	    <Pack>True</Pack>
+	  </None>
+	</ItemGroup>
+  <ItemGroup>
+	</ItemGroup>
+</Project>
