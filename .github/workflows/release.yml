@@ -37,9 +37,7 @@ jobs:
       with:
         name: ${{ env.PROJECT }}
         path: ./${{ env.PROJECT }}.Core/bin/Release/${{ env.PROJECT }}.${{ github.event.release.tag_name }}.snupkg
-    - name: Publish NuGet Package
-      run: dotnet nuget push **/*.nupkg -k ${{ secrets.NUGETPACKAGEAPIKEY }} -s https://api.nuget.org/v3/index.json
-
+    
     - name: Create NuGet Package
       run: dotnet pack -c Release --include-symbols /p:Version=${{ github.event.release.tag_name }} /p:PackageReleaseNotes="See https://github.com/daemogar/DotNetLibrary/releases/tag/${{ github.event.release.tag_name }}"
       working-directory: ./${{ env.PROJECT }}.Client
@@ -53,5 +51,6 @@ jobs:
       with:
         name: ${{ env.PROJECT }}.Client
         path: ./${{ env.PROJECT }}.Client/bin/Release/${{ env.PROJECT }}.Client.${{ github.event.release.tag_name }}.snupkg
+
     - name: Publish NuGet Package
       run: dotnet nuget push **/*.nupkg -k ${{ secrets.NUGETPACKAGEAPIKEY }} -s https://api.nuget.org/v3/index.json
