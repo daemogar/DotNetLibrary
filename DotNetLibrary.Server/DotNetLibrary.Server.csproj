@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>net5.0;net6.0</TargetFrameworks>
+		<OutputType>Library</OutputType>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<PackageId>DotNetLibrary.Server</PackageId>
+		<Authors>Dæmogar</Authors>
+		<Description>Library with reusable generic code for server side.</Description>
+		<PackageTags>.NET dotnet core library reusable generic server serverside</PackageTags>
+		<PackageProjectUrl>https://github.com/daemogar/DotNetLibrary</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/daemogar/DotNetLibrary</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<Copyright>2021</Copyright>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<AssemblyName>DotNetLibrary.Server</AssemblyName>
+		<RootNamespace>DotNetLibrary</RootNamespace>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net5.0|AnyCPU'">
+		<DocumentationFile>C:\Users\irwinj\Source\Repos\daemogar\DotNetLibrary\DotNetLibrary.Server\DotNetLibrary.Server.xml</DocumentationFile>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Include="..\LICENSE" Link="LICENSE">
+			<PackagePath></PackagePath>
+			<Pack>True</Pack>
+		</None>
+	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DotNetLibrary.Core\DotNetLibrary.Core.csproj" />
+  </ItemGroup>
+</Project>
