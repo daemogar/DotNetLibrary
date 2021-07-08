@@ -4,8 +4,6 @@ using DotNetLibrary.Configuration.Identifier;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-using Serilog;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,27 +23,34 @@ namespace Microsoft.AspNetCore.Authorization
 					 ?? selector(p);
 		}
 
+		public static void AddAuthorizationCore(
+			this IServiceCollection services,
+			Action<AuthorizationOptions> authorizationOptionsCallback)
+			=> services.AddAuthorizationCore<BasicProgramOptions, BasicIdentifierFormatter>(
+				authorizationOptionsCallback);
+
 		public static void AddAuthorizationCore<TProgramOptions>(
 			this IServiceCollection services,
-			ILogger logger,
-			TProgramOptions options,
-			IConfiguration configuration,
 			Action<AuthorizationOptions> authorizationOptionsCallback)
-			where TProgramOptions : IProgramOptions
+			where TProgramOptions : IProgramOptions, new()
 			=> services.AddAuthorizationCore<TProgramOptions, BasicIdentifierFormatter>(
-				logger, options, configuration, authorizationOptionsCallback);
+				authorizationOptionsCallback);
 
 		public static void AddAuthorizationCore<TProgramOptions, TIdentifierFormatter>(
 			this IServiceCollection services,
-			ILogger logger,
-			TProgramOptions options,
-			IConfiguration configuration,
 			Action<AuthorizationOptions> authorizationOptionsCallback)
-			where TProgramOptions : IProgramOptions
+			where TProgramOptions : IProgramOptions, new()
 			where TIdentifierFormatter : class, IIdentifierFormatter, new()
 		{
-			var applicationName = configuration.GetValue<string>("ApplicationName");
-			IssuerManager issuer = new(options.IssuerName ?? applicationName);
+			var provider = services.BuildServiceProvider();
+			IssuerManager issuer = new(provider
+				.GetService<TProgramOptions>()?.IssuerName
+				?? provider
+					.GetRequiredService<IConfiguration>()
+					.GetValue<string>("ApplicationName"
+				?? throw new NullReferenceException(
+					$"IssuerName was not set in the options nor " +
+					$"was an ApplicationName set in the settings.")));
 
 			services.AddSingleton(issuer);
 
