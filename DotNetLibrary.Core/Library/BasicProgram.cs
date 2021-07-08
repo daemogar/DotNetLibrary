@@ -18,7 +18,7 @@ namespace DotNetLibrary
 	/// Program.main class methods. The application's program class should
 	/// inherit this class and override any methods appropriately.
 	/// </summary>
-	public abstract class BaseProgram<T> where T : class, IProgramOptions
+	public abstract class BasicProgram<T> where T : class, IProgramOptions
 	{
 		protected abstract void ConfigureProgramOptions(T options);
 
@@ -37,7 +37,7 @@ namespace DotNetLibrary
 			BasicProgramOptions options,
 			params Assembly[] additionalAssemblies)
 		{
-			var assemblies = new[] { GetType().Assembly, typeof(BaseProgram<>).Assembly };
+			var assemblies = new[] { GetType().Assembly, typeof(BasicProgram<>).Assembly };
 
 			options.AddHandlers(assemblies);
 			options.AddHandlers(additionalAssemblies);
