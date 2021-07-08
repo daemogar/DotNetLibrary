@@ -1,8 +1,6 @@
 ﻿using DotNetLibrary;
 using DotNetLibrary.Configuration.Identifier;
 
-using MediatR;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -37,7 +35,7 @@ namespace Microsoft.AspNetCore.Authorization
 			=> services.AddAuthorizationCore<TProgramOptions, BasicIdentifierFormatter>(
 				logger, options, configuration, authorizationOptionsCallback);
 
-		private static void AddAuthorizationCore<TProgramOptions, TIdentifierFormatter>(
+		public static void AddAuthorizationCore<TProgramOptions, TIdentifierFormatter>(
 			this IServiceCollection services,
 			ILogger logger,
 			TProgramOptions options,
