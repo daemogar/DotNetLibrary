@@ -19,6 +19,9 @@ namespace MediatR
 				IProgramOptions options)
 				=> services.AddMediatR(options.HandlerAssemblies, p =>
 				{
+					if (!options.UseMediatR)
+						return;
+
 					logger.Verbose("Loading MediatR {Assemblies}", options.HandlerAssemblies
 #if DEBUG
 					.Select(p => p.FullName).ToJsonString(true)
