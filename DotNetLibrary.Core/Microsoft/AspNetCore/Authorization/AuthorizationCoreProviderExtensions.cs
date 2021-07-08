@@ -23,6 +23,22 @@ namespace Microsoft.AspNetCore.Authorization
 					 ?? selector(p);
 		}
 
+		public static IProgramOptions AddProgramOptions<TProgramOptions>(
+			this IServiceCollection services)
+			where TProgramOptions : IProgramOptions, new()
+		{
+			var provider = services.BuildServiceProvider();
+			var options = provider.GetService<IProgramOptions>();
+
+			if (options == null)
+			{
+				options = new TProgramOptions();
+				services.AddSingleton(options);
+			}
+
+			return options;
+		}
+
 		public static void AddAuthorizationCore(
 			this IServiceCollection services,
 			Action<AuthorizationOptions> authorizationOptionsCallback)
@@ -42,10 +58,10 @@ namespace Microsoft.AspNetCore.Authorization
 			where TProgramOptions : IProgramOptions, new()
 			where TIdentifierFormatter : class, IIdentifierFormatter, new()
 		{
-			var provider = services.BuildServiceProvider();
-			IssuerManager issuer = new(provider
-				.GetService<TProgramOptions>()?.IssuerName
-				?? provider
+			var options = services.AddProgramOptions<TProgramOptions>();
+
+			IssuerManager issuer = new(options.IssuerName
+				?? services.BuildServiceProvider()
 					.GetRequiredService<IConfiguration>()
 					.GetValue<string>("ApplicationName"
 				?? throw new NullReferenceException(
