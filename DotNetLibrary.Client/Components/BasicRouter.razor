@@ -1,0 +1,77 @@
+﻿@namespace DotNetLibrary.Components
+
+@using DotNetLibrary.Routing
+@using System.Reflection
+@using System.Runtime.InteropServices
+
+@inject IEnvironmentModel Environment
+
+<Router AppAssembly="@LayoutType.Assembly"
+        PreferExactMatches="@true"
+        AdditionalAssemblies="@AdditionalAssemblies">
+  <Found Context="routeData">
+    @if (Environment.IsAuthenticationEnabled)
+        {
+    <AuthorizeRouteView RouteData="routeData"
+                        DefaultLayout="@LayoutType">
+      <NotAuthorized>
+        @if (NotAuthorized == null)
+          {
+        <p>Sorry, you are not authorized to use this application.</p>
+        }
+          else
+          {
+        @NotAuthorized
+        }
+      </NotAuthorized>
+      <Authorizing>
+        @if (Authorizing == null)
+          {
+        <p>Checking permissions!</p>
+        @Authorizing
+        }
+      </Authorizing>
+    </AuthorizeRouteView>
+    }
+        else
+        {
+    <RouteView RouteData="routeData"
+               DefaultLayout="@LayoutType"></RouteView>
+    }
+  </Found>
+  <NotFound>
+    <LayoutView Layout="@LayoutType">
+      @if (NotFound == null)
+          {
+      <p>Sorry, there's nothing at this address.</p>
+      }
+          else
+          {
+      @NotFound
+      }
+    </LayoutView>
+  </NotFound>
+</Router>
+
+@code {
+  [Parameter] public Type LayoutType { get; set; } = null!;
+
+  [Parameter] public RenderFragment NotAuthorized { get; set; } = null!;
+
+  [Parameter] public RenderFragment Authorizing { get; set; } = null!;
+
+  [Parameter] public RenderFragment NotFound { get; set; } = null!;
+
+  private bool IsLoading { get; set; }
+
+  private Assembly[] AdditionalAssemblies { get; set; } = { };
+
+  protected override void OnInitialized()
+  {
+    IsLoading = RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER"));
+    AdditionalAssemblies = RoutingExtensions
+      .GetAssemblies()
+      .Where(p => p.FullName?.Equals(LayoutType.Assembly.FullName) == false)
+      .ToArray();
+  }
+}
