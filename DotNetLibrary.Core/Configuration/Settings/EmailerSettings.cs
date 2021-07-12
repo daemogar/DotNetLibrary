@@ -4,7 +4,7 @@
 	{
 		internal EmailerSettings(AppSettingsElement settings)
 		{
-			OverrideEmailAddress = settings.Get("Emailer:OverrideEmailAddress", "developer@southern.edu");
+			OverrideEmailAddress = settings.Get("Emailer:OverrideEmailAddress", false);
 			DeveloperEmailAddress = settings.Get("Emailer:DeveloperEmailAddress", OverrideEmailAddress);
 			SendMessageEmailAddress = settings.Get("Emailer:SendMessageEmailAddress", OverrideEmailAddress);
 		}
