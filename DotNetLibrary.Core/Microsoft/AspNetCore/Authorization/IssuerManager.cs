@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 
 namespace Microsoft.AspNetCore.Authorization
@@ -25,6 +26,8 @@ namespace Microsoft.AspNetCore.Authorization
 			=> new(type, value, null, issuer ?? IssuerName);
 
 		public ClaimsPrincipal CreateClaimsPrincipal(params Claim[] claims)
+			=> CreateClaimsPrincipal((IEnumerable<Claim>)claims);
+		public ClaimsPrincipal CreateClaimsPrincipal(IEnumerable<Claim> claims)
 			=> new(claims
 				.GroupBy(p => p.Issuer ?? "", p => p)
 				.Select(p => new ClaimsIdentity(p,
