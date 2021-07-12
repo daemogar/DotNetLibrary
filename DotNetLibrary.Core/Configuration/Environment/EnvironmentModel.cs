@@ -4,6 +4,7 @@ namespace DotNetLibrary.Configuration.Environment
 {
 	public class EnvironmentModel : IEnvironmentModel
 	{
+		public Type? AuthStateType { get; private set; }
 		public bool IsAuthenticationEnabled { get; private set; } = true;
 
 		public const string NotSetupMessage = "Not Setup";
@@ -16,7 +17,20 @@ namespace DotNetLibrary.Configuration.Environment
 
 		public string Rendered { get => _rendered; set => SetRendered(value); }
 
-		public void DisableAuthentication() => IsAuthenticationEnabled = false;
+		public void EnableAuthentication()
+		{
+			IsAuthenticationEnabled = true;
+		}
+		public void EnableAuthentication<TAuthState>()
+		{
+			IsAuthenticationEnabled = false;
+			AuthStateType = typeof(TAuthState);
+		}
+		public void DisableAuthentication()
+		{
+			IsAuthenticationEnabled = false;
+			AuthStateType = null;
+		}
 
 		public void SetType(string type)
 			=> SetType(Enum.TryParse<EnvironmentType>(type, true, out var typed) ? typed :

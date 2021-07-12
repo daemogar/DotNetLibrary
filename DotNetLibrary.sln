@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetLibrary.Client", "Dot
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetLibrary.Core", "DotNetLibrary.Core\DotNetLibrary.Core.csproj", "{FC3074F8-520C-411B-A3C0-661C68C37FBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetLibrary.Server", "DotNetLibrary.Server\DotNetLibrary.Server.csproj", "{5E954C57-0061-4BA3-981D-C0C7497B6EA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetLibrary.Server", "DotNetLibrary.Server\DotNetLibrary.Server.csproj", "{5E954C57-0061-4BA3-981D-C0C7497B6EA4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,7 +1,10 @@
-﻿namespace DotNetLibrary.Configuration.Environment
+﻿using System;
+
+namespace DotNetLibrary.Configuration.Environment
 {
 	public interface IEnvironmentModel
 	{
+		Type? AuthStateType { get; }
 		bool IsAuthenticationEnabled { get; }
 		EnvironmentType Type { get; }
 		string Rendered { get; }
