@@ -1,46 +1,8 @@
 ﻿@namespace DotNetLibrary.Components
 
-@using DotNetLibrary.Configuration.Environment
-
 @typeparam TLayoutType
-
-@inject IEnvironmentModel Environment
+@typeparam TProviderType
+@typeparam TUserType
+@typeparam TRoleType
 
 @Content
-
-@code {
-  private RenderFragment Content { get; set; } = null!;
-
-  protected override void OnInitialized()
-  {
-    Content = Environment.IsAuthenticationEnabled
-      ? WrapRouter()
-      : Router();
-  }
-
-  private RenderFragment WrapRouter() => p =>
-  {
-    var seq = 0;
-    p.OpenComponent(seq++, typeof(CascadingAuthenticationState));
-
-    if (Environment.AuthStateType != null)
-      p.OpenComponent(seq++, Environment.AuthStateType);
-
-    BuildRouter(seq++, p);
-
-    if (Environment.AuthStateType != null)
-      p.CloseComponent();
-
-    p.CloseComponent();
-  };
-
-  private RenderFragment Router() => p => BuildRouter(0, p);
-
-  private void BuildRouter(int sequence, RenderTreeBuilder builder)
-  {
-    builder.OpenComponent<BasicRouter>(sequence);
-    builder.AddAttribute(
-      sequence + 1, nameof(BasicRouter.LayoutType), typeof(TLayoutType));
-    builder.CloseComponent();
-  }
-}

@@ -4,7 +4,7 @@ using DotNetLibrary.Exceptions;
 namespace Microsoft.AspNetCore.Components.Authorization
 {
 	public abstract class BasicAuthenticationState<TUserType, TRoleType>
-		: AuthenticationState
+		: AuthenticationState, IBasicAuthenticationState
 		where TUserType : class, IBasicUser<TRoleType>, new()
 		where TRoleType : class, IBasicRole
 	{

@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Components;
+
+using System;
 
 namespace DotNetLibrary.Configuration.Environment
 {
 	public class EnvironmentModel : IEnvironmentModel
 	{
-		public Type? AuthStateType { get; private set; }
+		public Type? AuthComponentType { get; private set; }
 		public bool IsAuthenticationEnabled { get; private set; } = true;
 
 		public const string NotSetupMessage = "Not Setup";
@@ -24,12 +26,12 @@ namespace DotNetLibrary.Configuration.Environment
 		public void EnableAuthentication<TAuthState>()
 		{
 			IsAuthenticationEnabled = false;
-			AuthStateType = typeof(TAuthState);
+			AuthComponentType = typeof(CascadingValue<TAuthState>);
 		}
 		public void DisableAuthentication()
 		{
 			IsAuthenticationEnabled = false;
-			AuthStateType = null;
+			AuthComponentType = null;
 		}
 
 		public void SetType(string type)

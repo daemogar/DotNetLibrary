@@ -19,6 +19,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddSingleton<UserFactory>();
 
 			services.AddScoped<TProviderType>();
+			services.AddScoped<IBasicAuthenticationStateProvider>(p
+				=> p.GetRequiredService<TProviderType>());
 			services.AddScoped<AuthenticationStateProvider>(p
 				=> p.GetRequiredService<TProviderType>());
 		}

@@ -8,5 +8,4 @@ namespace Microsoft.AspNetCore.Components.Authorization
 		Task<BasicAuthenticationState<TUserType, TRoleType>> newStateAsync)
 		where TUserType : class, IBasicUser<TRoleType>, new()
 		where TRoleType : class, IBasicRole;
-
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Microsoft.AspNetCore.Components.Authorization
 {
 	public abstract class BasicAuthenticationStateProvider<TUserType, TRoleType>
-		: AuthenticationStateProvider
+		: AuthenticationStateProvider, IBasicAuthenticationStateProvider
 		where TUserType : class, IBasicUser<TRoleType>, new()
 		where TRoleType : class, IBasicRole
 	{
@@ -42,6 +42,13 @@ namespace Microsoft.AspNetCore.Components.Authorization
 			NotifyAuthenticationStateChanged(Task.FromResult((AuthenticationState)state));
 			return state;
 		}
+		async Task<IBasicAuthenticationState> IBasicAuthenticationStateProvider.GetAuthenticationStateAsync(CancellationToken cancellationToken)
+			=> await GetAuthenticationStateAsync(cancellationToken);
+
+		//async Task<IBasicAuthenticationState> IBasicAuthenticationStateProvider.GetAuthenticationStateAsync(CancellationToken cancellationToken)
+		//{
+		//	return await GetAuthenticationStateAsync(cancellationToken);
+		//}
 
 		/// <summary>
 		/// <inheritdoc cref="GetAuthenticationStateAsync()"/>
@@ -63,5 +70,8 @@ namespace Microsoft.AspNetCore.Components.Authorization
 		/// <returns></returns>
 		public sealed override async Task<AuthenticationState> GetAuthenticationStateAsync()
 			=> await GetAuthenticationStateAsync(default);
+
+		async Task<IBasicAuthenticationState> IBasicAuthenticationStateProvider.GetStateAsync(CancellationToken cancellationToken)
+		=> await GetAuthenticationStateAsync(default);
 	}
 }

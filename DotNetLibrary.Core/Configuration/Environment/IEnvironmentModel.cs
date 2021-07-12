@@ -4,7 +4,7 @@ namespace DotNetLibrary.Configuration.Environment
 {
 	public interface IEnvironmentModel
 	{
-		Type? AuthStateType { get; }
+		Type? AuthComponentType { get; }
 		bool IsAuthenticationEnabled { get; }
 		EnvironmentType Type { get; }
 		string Rendered { get; }
