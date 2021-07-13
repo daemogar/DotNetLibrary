@@ -4,7 +4,7 @@ namespace Microsoft.Extensions.DependencyInjection
 {
 	public static class AppSettingsExtensions
 	{
-		public static void AddSettings(this IServiceCollection services, BaseAppSettings settings)
+		public static void AddSettings(this IServiceCollection services, BasicAppSettings settings)
 		{			
 			services.AddSingleton<IAppSettings>(settings);
 			services.AddSingleton(p => p.GetRequiredService<IAppSettings>().Environment);

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace DotNetLibrary.Configuration.Settings
 {
-	public abstract class BaseAppSettings : IAppSettings
+	public abstract class BasicAppSettings : IAppSettings
 	{
 		internal AppSettingsElement Base { get; }
 
@@ -14,7 +14,7 @@ namespace DotNetLibrary.Configuration.Settings
 
 		public IAppSettings.IEmailer Email { get; }
 
-		public BaseAppSettings(IConfiguration configuration, bool isServerSideBlazor)
+		public BasicAppSettings(IConfiguration configuration, bool isServerSideBlazor)
 		{
 			Configuration = configuration;
 			Base = new AppSettingsElement(Configuration);
