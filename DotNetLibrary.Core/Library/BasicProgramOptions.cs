@@ -8,15 +8,17 @@ using DotNetLibrary.Routing;
 
 namespace DotNetLibrary
 {
-	public class BasicProgramOptions : IProgramOptions
+	public abstract class BasicProgramOptions : IProgramOptions
 	{
-		public virtual string? IssuerName { get; }
-	
-		public IEnumerable<Assembly> HandlerAssemblies { get; } = new List<Assembly>();
-		
-		public bool UseMediatR { get; set; } = true;
+		public virtual string? IssuerName { get; init; }
 
-		public string? BaseAddress { get; set; }
+		public virtual bool AuthenticationEnabled { get; init; } = true;
+
+		public IEnumerable<Assembly> HandlerAssemblies { get; } = new List<Assembly>();
+
+		public bool UseMediatR { get; init; } = true;
+		
+		public string? BaseAddress { get; init; }
 
 		public BasicProgramOptions()
 		{
