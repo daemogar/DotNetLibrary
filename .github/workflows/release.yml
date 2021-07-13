@@ -66,5 +66,35 @@ jobs:
         name: ${{ env.PROJECT }}.Server
         path: ./${{ env.PROJECT }}.Server/bin/Release/${{ env.PROJECT }}.Server.${{ github.event.release.tag_name }}.snupkg
 
+    - name: Unlist NuGet Packages
+      uses: darenm/unlist-nuget@v1
+      with:
+        # The nuget package name
+        NUGET_PACKAGE: ${{ env.PROJECT }}.Core
+        # Regex to match the package versions to be deleted/unlisted
+        VERSION_REGEX: .*-alpha.*
+        # API key for the NuGet feed - must have unlist right
+        NUGET_KEY: ${{ secrets.NUGETPACKAGEAPIKEY }}
+      
+    - name: Unlist NuGet Packages
+      uses: darenm/unlist-nuget@v1
+      with:
+        # The nuget package name
+        NUGET_PACKAGE: ${{ env.PROJECT }}.Client
+        # Regex to match the package versions to be deleted/unlisted
+        VERSION_REGEX: .*-alpha.*
+        # API key for the NuGet feed - must have unlist right
+        NUGET_KEY: ${{ secrets.NUGETPACKAGEAPIKEY }}
+      
+    - name: Unlist NuGet Packages
+      uses: darenm/unlist-nuget@v1
+      with:
+        # The nuget package name
+        NUGET_PACKAGE: ${{ env.PROJECT }}.Server
+        # Regex to match the package versions to be deleted/unlisted
+        VERSION_REGEX: .*-alpha.*
+        # API key for the NuGet feed - must have unlist right
+        NUGET_KEY: ${{ secrets.NUGETPACKAGEAPIKEY }}
+        
     - name: Publish NuGet Package
       run: dotnet nuget push **/*.nupkg -k ${{ secrets.NUGETPACKAGEAPIKEY }} -s https://api.nuget.org/v3/index.json
