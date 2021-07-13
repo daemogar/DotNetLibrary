@@ -8,7 +8,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			where TAppSettings : BasicAppSettings
 		{			
 			services.AddSingleton<IAppSettings>(settings);
-			services.AddSingleton(p => p.GetRequiredService<IAppSettings>().Environment);
+			services.AddSingleton(p => p.GetRequiredService<TAppSettings>());
+			services.AddSingleton(p => p.GetRequiredService<TAppSettings>().Environment);
 		}
 	}
 }
