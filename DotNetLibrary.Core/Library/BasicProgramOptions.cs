@@ -8,7 +8,7 @@ using DotNetLibrary.Routing;
 
 namespace DotNetLibrary
 {
-	public abstract class BasicProgramOptions : IProgramOptions
+	public class BasicProgramOptions : IProgramOptions
 	{
 		public virtual string? IssuerName { get; init; }
 
