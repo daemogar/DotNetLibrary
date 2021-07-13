@@ -1,7 +1,5 @@
 ﻿using DotNetLibrary.Authorization;
 
-using Serilog;
-
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,13 +20,6 @@ namespace Microsoft.AspNetCore.Components.Authorization
 			BasicAuthenticationStateChangedHandler<TUserType, TRoleType> handler)
 			=> async stateTask => handler(Task
 				.FromResult((BasicAuthenticationState<TUserType, TRoleType>)await stateTask));
-
-		protected ILogger Logger { get; }
-
-		public BasicAuthenticationStateProvider(ILogger logger)
-		{
-			Logger = logger;
-		}
 
 		/// <summary>
 		/// <inheritdoc cref="GetAuthenticationStateAsync()"/>
