@@ -32,6 +32,7 @@ jobs:
       env:
         RELEASE_PATH: ./${{ matrix.project-name }}/bin/Release/${{ env.PROJECT }}.${{ github.event.release.tag_name }}
         RELEASE_NOTE: https://github.com/daemogar/DotNetLibrary/releases/tag/${{ github.event.release.tag_name }}
+      run: echo "Setting Release Path and Note"
         
     - name: Create NuGet Package
       run: |
