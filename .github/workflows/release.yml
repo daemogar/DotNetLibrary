@@ -50,7 +50,7 @@ jobs:
     - name: Set Release Path
       uses: allenevans/set-env@v2.0.0
       with:
-        RELEASE_PATH: ./${{ env.RELEASE_NAME }}/bin/Release/${{ env.PACKAGE_NAME }}
+        RELEASE_PATH: ./${{ env.PROJECT }}.${{ matrix.project-name }}/bin/Release/${{ env.PACKAGE_NAME }}
     
     - name: Archive Artifacts (NUPKG)
       uses: actions/upload-artifact@v1
