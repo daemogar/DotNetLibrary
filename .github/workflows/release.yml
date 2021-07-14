@@ -17,6 +17,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
+    - name: Set Release Name
+      run: echo "::set-env name=RELEASE_NAME::${{ env.PROJECT }}.${{ matrix.project-name }}"
+    
+    - name: Set Release Path
+      run: echo "::set-env name=RELEASE_PATH::./${{ env.RELEASE_NAME }}/bin/Release/${{ env.PROJECT }}.${{ env.VERSION }}"
+      
     - name: Setup .NET (5.0.x)
       uses: actions/setup-dotnet@v1
       with:
@@ -30,20 +36,22 @@ jobs:
         
     - name: NuGet Package (${{ env.RELEASE_NAME }})
       env:
-        RELEASE_NAME: ${{ env.PROJECT }}.${{ matrix.project-name }}
-        RELEASE_PATH: ./${{ env.RELEASE_NAME }}/bin/Release/${{ env.PROJECT }}.${{ env.VERSION }}
-        RELEASE_NOTE: https://github.com/daemogar/DotNetLibrary/releases/tag/${{ github.event.release.tag_name }}
+        RELEASE_NOTE: https://github.com/daemogar/${{ env.PROJECT }}/releases/tag/${{ env.VERSION }}
       run: dotnet pack -c Release --include-symbols /p:Version=${{ env.VERSION }} /p:PackageReleaseNotes="See ${{ env.RELEASE_NOTE }}"
-      working-directory: ./${{ env.RELEASE_NAME }}
+      working-directory: ./${{ env.PROJECT }}.${{ matrix.project-name }}
    
     - name: Archive Artifacts (NUPKG)
       uses: actions/upload-artifact@v1
+      env:
+        RELEASE_PATH: ./${{ env.PROJECT }}.${{ matrix.project-name }}/bin/Release/${{ env.PROJECT }}.${{ env.VERSION }}
       with:
         name: ${{ env.PROJECT }}
         path: ${{ env.RELEASE_PATH }}.nupkg
    
     - name: Archive Artifacts (SNUPKG)
       uses: actions/upload-artifact@v1
+      env:
+        RELEASE_PATH: ./${{ env.PROJECT }}.${{ matrix.project-name }}/bin/Release/${{ env.PROJECT }}.${{ env.VERSION }}
       with:
         name: ${{ env.PROJECT }}
         path: ${{ env.RELEASE_PATH }}.snupkg
