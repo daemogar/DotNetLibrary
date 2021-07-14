@@ -4,7 +4,7 @@ on: push
 
 env:
   PROJECT: 'DotNetLibrary'
-  VERSION: ${{ github.event.release.tag_name || 'test' }}
+  VERSION: ${{ github.event.release.tag_name || '0.0.0' }}
 
 jobs:    
   build:
@@ -16,8 +16,6 @@ jobs:
         
     steps:
     - uses: actions/checkout@v2
-      env:
-        RELEASE_NAME: ${{ env.PROJECT }}.${{ matrix.project-name }}
     
     - name: Setup .NET (5.0.x)
       uses: actions/setup-dotnet@v1
@@ -32,6 +30,7 @@ jobs:
         
     - name: NuGet Package (${{ env.RELEASE_NAME }})
       env:
+        RELEASE_NAME: ${{ env.PROJECT }}.${{ matrix.project-name }}
         RELEASE_PATH: ./${{ env.RELEASE_NAME }}/bin/Release/${{ env.PROJECT }}.${{ env.VERSION }}
         RELEASE_NOTE: https://github.com/daemogar/DotNetLibrary/releases/tag/${{ github.event.release.tag_name }}
       run: dotnet pack -c Release --include-symbols /p:Version=${{ env.VERSION }} /p:PackageReleaseNotes="See ${{ env.RELEASE_NOTE }}"
