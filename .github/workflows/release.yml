@@ -20,7 +20,7 @@ jobs:
     - name: Set Release Name
       uses: allenevans/set-env@v2.0.0
       with:
-        RELEASE_NAME: ${{ env.PROJECT }}.${{ matrix.project-name 
+        RELEASE_NAME: ${{ env.PROJECT }}.${{ matrix.project-name }}
         
     - name: Set Package Name
       uses: allenevans/set-env@v2.0.0
