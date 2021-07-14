@@ -67,7 +67,7 @@ jobs:
       
     - name: Previous Version
       id: previous-version
-      uses: previous-git-tag-action@v1.0.3
+      uses: actions/previous-git-tag-action@v1.0.3
       
     - name: Unlist NuGet Package
       run: dotnet nuget delete ${{ env.RELEASE_NAME }} ${{ steps.previous-version.outputs.previous-tag }} -k ${{ secrets.NUGETPACKAGEAPIKEY }} -s https://api.nuget.org/v3/index.json --non-interactive
