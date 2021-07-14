@@ -4,6 +4,7 @@ on: push
 
 env:
   PROJECT: 'DotNetLibrary'
+  VERSION: ${{ github.event.release.tag_name || 'test' }}
 
 jobs:    
   build:
@@ -34,12 +35,9 @@ jobs:
       
     - name: NuGet Package (${{ env.RELEASE_NAME }})
       env:
-        RELEASE_PATH: ./${{ env.RELEASE_NAME }}/bin/Release/${{ env.PROJECT }}.${{ github.event.release.tag_name }}
+        RELEASE_PATH: ./${{ env.RELEASE_NAME }}/bin/Release/${{ env.PROJECT }}.${{ env.VERSION }}
         RELEASE_NOTE: https://github.com/daemogar/DotNetLibrary/releases/tag/${{ github.event.release.tag_name }}
-      run: |
-        dotnet pack -c Release --include-symbols |
-          /p:Version=${{ github.event.release.tag_name }} |
-          /p:PackageReleaseNotes="See ${{ env.RELEASE_NOTE }}"
+      run: dotnet pack -c Release --include-symbols /p:Version=${{ env.VERSION }} /p:PackageReleaseNotes="See ${{ env.RELEASE_NOTE }}"
       working-directory: ./${{ env.RELEASE_NAME }}
    
     - name: Archive Artifacts (NUPKG)
