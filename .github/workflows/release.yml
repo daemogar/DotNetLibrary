@@ -12,9 +12,9 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
+        project-name: [ Core, Client, Server ]
         dotnet-version: [ '5.0.x' ]
         include-prerelease: [ false ]
-        project-name: [ '${{ env.PROJECT }}.Core', '${{ env.PROJECT }}.Client', '${{ env.PROJECT }}.Server' ]
         
         include:
           - dotnet-version: 6.0.x
@@ -27,27 +27,26 @@ jobs:
     
     - name: Setup .NET (${{ matrix.dotnet-version }})
       uses: actions/setup-dotnet@v1
-    
-    - name: Building ${{ matrix.project-name }}
       env:
-        RELEASE_PATH: ./${{ matrix.project-name }}/bin/Release/${{ env.PROJECT }}.${{ github.event.release.tag_name }}
+        RELEASE_NAME: ${{ env.PROJECT }}.${{ matrix.project-name }}
+      
+    - name: NuGet Package (${{ env.RELEASE_NAME }})
+      env:
+        RELEASE_PATH: ./${{ env.RELEASE_NAME }}/bin/Release/${{ env.PROJECT }}.${{ github.event.release.tag_name }}
         RELEASE_NOTE: https://github.com/daemogar/DotNetLibrary/releases/tag/${{ github.event.release.tag_name }}
-      run: echo "Setting Release Path and Note"
-        
-    - name: Create NuGet Package
       run: |
         dotnet pack -c Release --include-symbols |
           /p:Version=${{ github.event.release.tag_name }} |
           /p:PackageReleaseNotes="See ${{ env.RELEASE_NOTE }}"
-      working-directory: ./${{ matrix.project-name }}
+      working-directory: ./${{ env.RELEASE_NAME }}
    
-    - name: Archive Artifacts
+    - name: Archive Artifacts (NUPKG)
       uses: actions/upload-artifact@v1
       with:
         name: ${{ env.PROJECT }}
         path: ${{ env.RELEASE_PATH }}.nupkg
    
-    - name: Archive Artifacts
+    - name: Archive Artifacts (SNUPKG)
       uses: actions/upload-artifact@v1
       with:
         name: ${{ env.PROJECT }}
