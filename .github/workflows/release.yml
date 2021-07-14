@@ -7,7 +7,7 @@ env:
   VERSION: ${{ github.event.release.tag_name || '0.0.0' }}
 
 jobs:    
-  build:
+  pack:
     runs-on: ubuntu-latest
     
     strategy:
@@ -21,7 +21,11 @@ jobs:
       uses: allenevans/set-env@v2.0.0
       with:
         RELEASE_NAME: ${{ env.PROJECT }}.${{ matrix.project-name }}
-      
+        
+    - name: Set Previous Version
+      id: previous-version
+      run: echo "::set-output name=previous-version::$( git tag -l '*alpha*' --sort=\"version:refname\" | tail -n1 )"
+
     - name: Set Release Path
       uses: allenevans/set-env@v2.0.0
       with:
@@ -56,3 +60,6 @@ jobs:
         name: ${{ env.PROJECT }}
         path: ${{ env.RELEASE_PATH }}.snupkg
     
+    - name: 
+    
+    - name: Unlist 
