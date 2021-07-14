@@ -12,14 +12,16 @@ jobs:
     strategy:
       max-parallel: 1
       matrix:
+        dotnet-version: [ 5.0.x, 6.0.x ]
+        include-prerelease: [ false, true ]
         project-name: [ Core, Client, Server ]
-        dotnet-version: [ '5.0.x' ]
-        include-prerelease: [ false ]
         
-        include:
+        exclude:
           - dotnet-version: 6.0.x
+            include-prerelease: false
+          - dotnet-version: 5.0.x
             include-prerelease: true
-    
+            
     continue-on-error: ${{ matrix.include-prerelease }}
     
     steps:
