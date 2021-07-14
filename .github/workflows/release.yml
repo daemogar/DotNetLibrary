@@ -69,31 +69,22 @@ jobs:
     - name: Unlist NuGet Packages
       uses: darenm/unlist-nuget@v1
       with:
-        # The nuget package name
         NUGET_PACKAGE: ${{ env.PROJECT }}.Core
-        # Regex to match the package versions to be deleted/unlisted
-        VERSION_REGEX: .*-alpha.*
-        # API key for the NuGet feed - must have unlist right
+        VERSION_REGEX: ^.+-alpha.+
         NUGET_KEY: ${{ secrets.NUGETPACKAGEAPIKEY }}
       
     - name: Unlist NuGet Packages
       uses: darenm/unlist-nuget@v1
       with:
-        # The nuget package name
         NUGET_PACKAGE: ${{ env.PROJECT }}.Client
-        # Regex to match the package versions to be deleted/unlisted
-        VERSION_REGEX: .*-alpha.*
-        # API key for the NuGet feed - must have unlist right
+        VERSION_REGEX: ^.+-alpha.+
         NUGET_KEY: ${{ secrets.NUGETPACKAGEAPIKEY }}
       
     - name: Unlist NuGet Packages
       uses: darenm/unlist-nuget@v1
       with:
-        # The nuget package name
         NUGET_PACKAGE: ${{ env.PROJECT }}.Server
-        # Regex to match the package versions to be deleted/unlisted
-        VERSION_REGEX: .*-alpha.*
-        # API key for the NuGet feed - must have unlist right
+        VERSION_REGEX: ^.+-alpha.+
         NUGET_KEY: ${{ secrets.NUGETPACKAGEAPIKEY }}
         
     - name: Publish NuGet Package
