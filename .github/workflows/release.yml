@@ -13,9 +13,7 @@ jobs:
     strategy:
       matrix:
         project-name: [ Core, Client, Server ]
-            
-    continue-on-error: ${{ matrix.include-prerelease }}
-    
+        
     steps:
     - uses: actions/checkout@v2
       env:
