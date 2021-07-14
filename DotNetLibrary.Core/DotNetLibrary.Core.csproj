@@ -4,7 +4,7 @@
 		<OutputType>Library</OutputType>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
-		<PackageId>DotNetLibrary.Core</PackageId>
+		<PackageId>DotNetLibrary</PackageId>
 		<Authors>Dæmogar</Authors>
 		<Description>Library with reusable generic code.</Description>
 		<PackageTags>.NET dotnet core library reusable generic</PackageTags>
