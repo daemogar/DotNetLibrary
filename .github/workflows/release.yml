@@ -9,11 +9,11 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
+    
     steps:
     - uses: actions/checkout@v2
+    
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
@@ -66,6 +66,10 @@ jobs:
         name: ${{ env.PROJECT }}.Server
         path: ./${{ env.PROJECT }}.Server/bin/Release/${{ env.PROJECT }}.Server.${{ github.event.release.tag_name }}.snupkg
 
+  unlist:
+    runs-on: windows-latest
+    
+    steps:
     - name: Unlist NuGet Packages
       uses: darenm/unlist-nuget@v1
       with:
@@ -87,5 +91,9 @@ jobs:
         VERSION_REGEX: ^.+-alpha.+
         NUGET_KEY: ${{ secrets.NUGETPACKAGEAPIKEY }}
         
+  publish:
+    runs-on: ubuntu-latest
+    
+    steps:
     - name: Publish NuGet Package
       run: dotnet nuget push **/*.nupkg -k ${{ secrets.NUGETPACKAGEAPIKEY }} -s https://api.nuget.org/v3/index.json
