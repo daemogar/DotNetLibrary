@@ -61,9 +61,12 @@ jobs:
         name: ${{ env.PROJECT }}
         path: ${{ env.RELEASE_PATH }}.snupkg
     
+    - name: Previous Version
+      run: echo $( git tag -l '*alpha*' --sort='version:refname' | tail -n1 )
+
     - name: Set Previous Version
       id: previous-version
       run: echo "::set-output name=semver::$( git tag -l '*alpha*' --sort='version:refname' | tail -n1 )"
 
     - name: Unlist NuGet Package (${{ steps.previous-version.outputs.semver }})
-      run: dotnet nuget delete ${{ env.PACKAGE_NAME }} ${{ steps.previous-version.outputs.semver }} -k ${{ secrets.NUGETPACKAGEAPIKEY }} -s https://api.nuget.org/v3/index.json --non-interactive
+      run: dotnet nuget delete ${{ env.RELEASE_NAME }} ${{ steps.previous-version.outputs.semver }} -k ${{ secrets.NUGETPACKAGEAPIKEY }} -s https://api.nuget.org/v3/index.json --non-interactive
