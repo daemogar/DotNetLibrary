@@ -1,6 +1,8 @@
 name: Release to NuGet
 
-on: push
+on:
+  release:
+    types: [published]
 
 env:
   PROJECT: 'DotNetLibrary'
