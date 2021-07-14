@@ -22,15 +22,6 @@ jobs:
       with:
         RELEASE_NAME: ${{ env.PROJECT }}.${{ matrix.project-name }}
         
-    - name: Set Package Name
-      uses: allenevans/set-env@v2.0.0
-      with:
-        PACKAGE_NAME: ${{ env.RELEASE_NAME }}.${{ env.VERSION }}
-        
-    - name: Set Previous Version
-      id: previous-version
-      run: echo ::set-output name=semver::$( git tag -l '*alpha*' --sort='version:refname' | tail -n1 )
-
     - name: Setup .NET (5.0.x)
       uses: actions/setup-dotnet@v1
       with:
@@ -48,6 +39,16 @@ jobs:
       run: dotnet pack -c Release --include-symbols /p:Version=${{ env.VERSION }} /p:PackageReleaseNotes="See ${{ env.RELEASE_NOTE }}"
       working-directory: ./${{ env.PROJECT }}.${{ matrix.project-name }}
    
+    - name: Set Package Name
+      uses: allenevans/set-env@v2.0.0
+      with:
+        PACKAGE_NAME: ${{ env.RELEASE_NAME }}.${{ env.VERSION }}
+        
+    - name: Set Release Path
+      uses: allenevans/set-env@v2.0.0
+      with:
+        RELEASE_PATH: ./${{ env.RELEASE_NAME }}/bin/Release/${{ env.PACKAGE_NAME }}
+    
     - name: Archive Artifacts (NUPKG)
       uses: actions/upload-artifact@v1
       with:
@@ -60,10 +61,9 @@ jobs:
         name: ${{ env.PROJECT }}
         path: ${{ env.RELEASE_PATH }}.snupkg
     
-    - name: Set Release Path
-      uses: allenevans/set-env@v2.0.0
-      with:
-        RELEASE_PATH: ./${{ env.RELEASE_NAME }}/bin/Release/${{ env.PACKAGE_NAME }}
-    
+    - name: Set Previous Version
+      id: previous-version
+      run: echo ::set-output name=semver::$( git tag -l '*alpha*' --sort='version:refname' | tail -n1 )
+
     - name: Unlist NuGet Package (${{ steps.previous-version.outputs.semver }})
       run: dotnet nuget delete ${{ env.PACKAGE_NAME }} ${{ steps.previous-version.outputs.semver }} -k ${{ secrets.NUGETPACKAGEAPIKEY }} -s https://api.nuget.org/v3/index.json --non-interactive
