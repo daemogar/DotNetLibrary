@@ -24,7 +24,7 @@ jobs:
         
     - name: Set Previous Version
       id: previous-version
-      run: echo "::set-output name=previous-version::$( git tag -l '*alpha*' --sort=\"version:refname\" | tail -n1 )"
+      run: echo ::set-output name=previous-version::$( git tag -l '*alpha*' --sort='version:refname' | tail -n1 )
 
     - name: Set Release Path
       uses: allenevans/set-env@v2.0.0
