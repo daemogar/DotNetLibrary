@@ -67,12 +67,5 @@ jobs:
         path: ${{ env.RELEASE_PATH }}.snupkg
     
     - name: Publish NuGet Package
-      if: ${{ env.VERSION != '0.0.0' }}
       run: dotnet nuget push **/*.nupkg -k ${{ secrets.NUGETPACKAGEAPIKEY }} -s https://api.nuget.org/v3/index.json
-      
-    - name: Previous Version
-      id: previous-version
-      uses: WyriHaximus/github-action-get-previous-tag@v1
-
-    - name: Unlist NuGet Package
-      run: dotnet nuget delete ${{ env.RELEASE_NAME }} ${{ steps.previous-version.outputs.tag }} -k ${{ secrets.NUGETPACKAGEAPIKEY }} -s https://api.nuget.org/v3/index.json --non-interactive
+    
