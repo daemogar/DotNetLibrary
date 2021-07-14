@@ -5,6 +5,7 @@ on: push
 env:
   PROJECT: 'DotNetLibrary'
   VERSION: ${{ github.event.release.tag_name || '0.0.0' }}
+  RELEASE_NAME: ${{ env.PROJECT }}
 
 jobs:    
   pack:
@@ -12,7 +13,7 @@ jobs:
     
     strategy:
       matrix:
-        project-name: [ Core, Client, Server ]
+        project-name: [ Core, Client, Server ]        
         
     steps:
     - uses: actions/checkout@v2
@@ -30,6 +31,7 @@ jobs:
         include-prerelease: true
         
     - name: Set Release Name
+      if: ${{ matrix.project-name != 'Core' }}
       uses: allenevans/set-env@v2.0.0
       with:
         RELEASE_NAME: ${{ env.PROJECT }}.${{ matrix.project-name }}
@@ -71,9 +73,4 @@ jobs:
       uses: WyriHaximus/github-action-get-previous-tag@v1
 
     - name: Unlist NuGet Package
-      uses: darenm/unlist-nuget@v1
-      with:
-        NUGET_PACKAGE: ${{ env.RELEASE_NAME }}
-        VERSION_REGEX: ${{ steps.previous-version.outputs.tag }}
-        NUGET_KEY: ${{ secrets.NUGETPACKAGEAPIKEY }}
-      
+      run: dotnet nuget delete ${{ env.RELEASE_NAME }} ${{ steps.previous-version.outputs.tag }} -k ${{ secrets.NUGETPACKAGEAPIKEY }} -s https://api.nuget.org/v3/index.json --non-interactive
