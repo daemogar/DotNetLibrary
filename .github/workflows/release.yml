@@ -7,93 +7,50 @@ on:
 env:
   PROJECT: 'DotNetLibrary'
 
-jobs:
+jobs:    
   build:
     runs-on: ubuntu-latest
+    
+    strategy:
+      max-parallel: 1
+      matrix:
+        dotnet-version: [ '5.0.x' ]
+        include-prerelease: [ false ]
+        project-name: [ '${{ env.PROJECT }}.Core', '${{ env.PROJECT }}.Client', '${{ env.PROJECT }}.Server' ]
+        
+        include:
+          - dotnet-version: 6.0.x
+            include-prerelease: true
+    
+    continue-on-error: ${{ matrix.include-prerelease }}
     
     steps:
     - uses: actions/checkout@v2
     
-    - name: Setup .NET
+    - name: Setup .NET (${{ matrix.dotnet-version }})
       uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.0.x
-        include-prerelease: true
+    
+    - name: Building ${{ matrix.project-name }}
+      env:
+        RELEASE_PATH: ./${{ matrix.project-name }}/bin/Release/${{ env.PROJECT }}.${{ github.event.release.tag_name }}
+        RELEASE_NOTE: https://github.com/daemogar/DotNetLibrary/releases/tag/${{ github.event.release.tag_name }}
         
     - name: Create NuGet Package
-      run: dotnet pack -c Release --include-symbols /p:Version=${{ github.event.release.tag_name }} /p:PackageReleaseNotes="See https://github.com/daemogar/DotNetLibrary/releases/tag/${{ github.event.release.tag_name }}"
-      working-directory: ./${{ env.PROJECT }}.Core
+      run: |
+        dotnet pack -c Release --include-symbols |
+          /p:Version=${{ github.event.release.tag_name }} |
+          /p:PackageReleaseNotes="See ${{ env.RELEASE_NOTE }}"
+      working-directory: ./${{ matrix.project-name }}
+   
     - name: Archive Artifacts
       uses: actions/upload-artifact@v1
       with:
         name: ${{ env.PROJECT }}
-        path: ./${{ env.PROJECT }}.Core/bin/Release/${{ env.PROJECT }}.${{ github.event.release.tag_name }}.nupkg
+        path: ${{ env.RELEASE_PATH }}.nupkg
+   
     - name: Archive Artifacts
       uses: actions/upload-artifact@v1
       with:
         name: ${{ env.PROJECT }}
-        path: ./${{ env.PROJECT }}.Core/bin/Release/${{ env.PROJECT }}.${{ github.event.release.tag_name }}.snupkg
+        path: ${{ env.RELEASE_PATH }}.snupkg
     
-    - name: Create NuGet Package
-      run: dotnet pack -c Release --include-symbols /p:Version=${{ github.event.release.tag_name }} /p:PackageReleaseNotes="See https://github.com/daemogar/DotNetLibrary/releases/tag/${{ github.event.release.tag_name }}"
-      working-directory: ./${{ env.PROJECT }}.Client
-    - name: Archive Artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: ${{ env.PROJECT }}.Client
-        path: ./${{ env.PROJECT }}.Client/bin/Release/${{ env.PROJECT }}.Client.${{ github.event.release.tag_name }}.nupkg
-    - name: Archive Artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: ${{ env.PROJECT }}.Client
-        path: ./${{ env.PROJECT }}.Client/bin/Release/${{ env.PROJECT }}.Client.${{ github.event.release.tag_name }}.snupkg
-
-    - name: Create NuGet Package
-      run: dotnet pack -c Release --include-symbols /p:Version=${{ github.event.release.tag_name }} /p:PackageReleaseNotes="See https://github.com/daemogar/DotNetLibrary/releases/tag/${{ github.event.release.tag_name }}"
-      working-directory: ./${{ env.PROJECT }}.Server
-    - name: Archive Artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: ${{ env.PROJECT }}.Server
-        path: ./${{ env.PROJECT }}.Server/bin/Release/${{ env.PROJECT }}.Server.${{ github.event.release.tag_name }}.nupkg
-    - name: Archive Artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: ${{ env.PROJECT }}.Server
-        path: ./${{ env.PROJECT }}.Server/bin/Release/${{ env.PROJECT }}.Server.${{ github.event.release.tag_name }}.snupkg
-
-  unlist:
-    runs-on: windows-latest
-    
-    steps:
-    - name: Unlist NuGet Packages
-      uses: darenm/unlist-nuget@v1
-      with:
-        NUGET_PACKAGE: ${{ env.PROJECT }}.Core
-        VERSION_REGEX: ^.+-alpha.+
-        NUGET_KEY: ${{ secrets.NUGETPACKAGEAPIKEY }}
-      
-    - name: Unlist NuGet Packages
-      uses: darenm/unlist-nuget@v1
-      with:
-        NUGET_PACKAGE: ${{ env.PROJECT }}.Client
-        VERSION_REGEX: ^.+-alpha.+
-        NUGET_KEY: ${{ secrets.NUGETPACKAGEAPIKEY }}
-      
-    - name: Unlist NuGet Packages
-      uses: darenm/unlist-nuget@v1
-      with:
-        NUGET_PACKAGE: ${{ env.PROJECT }}.Server
-        VERSION_REGEX: ^.+-alpha.+
-        NUGET_KEY: ${{ secrets.NUGETPACKAGEAPIKEY }}
-        
-  publish:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Publish NuGet Package
-      run: dotnet nuget push **/*.nupkg -k ${{ secrets.NUGETPACKAGEAPIKEY }} -s https://api.nuget.org/v3/index.json
