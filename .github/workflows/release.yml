@@ -60,6 +60,3 @@ jobs:
         name: ${{ env.PROJECT }}
         path: ${{ env.RELEASE_PATH }}.snupkg
     
-    - name: 
-    
-    - name: Unlist 
