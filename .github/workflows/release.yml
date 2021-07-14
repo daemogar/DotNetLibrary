@@ -17,11 +17,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Set Release Name
-      uses: allenevans/set-env@v2.0.0
-      with:
-        RELEASE_NAME: ${{ env.PROJECT }}.${{ matrix.project-name }}
-        
     - name: Setup .NET (5.0.x)
       uses: actions/setup-dotnet@v1
       with:
@@ -32,6 +27,11 @@ jobs:
       with:
         dotnet-version: 6.0.x
         include-prerelease: true
+        
+    - name: Set Release Name
+      uses: allenevans/set-env@v2.0.0
+      with:
+        RELEASE_NAME: ${{ env.PROJECT }}.${{ matrix.project-name }}
         
     - name: NuGet Package (${{ env.RELEASE_NAME }})
       env:
@@ -63,7 +63,7 @@ jobs:
     
     - name: Set Previous Version
       id: previous-version
-      run: echo ::set-output name=semver::$( git tag -l '*alpha*' --sort='version:refname' | tail -n1 )
+      run: echo "::set-output name=semver::$( git tag -l '*alpha*' --sort='version:refname' | tail -n1 )"
 
     - name: Unlist NuGet Package (${{ steps.previous-version.outputs.semver }})
       run: dotnet nuget delete ${{ env.PACKAGE_NAME }} ${{ steps.previous-version.outputs.semver }} -k ${{ secrets.NUGETPACKAGEAPIKEY }} -s https://api.nuget.org/v3/index.json --non-interactive
