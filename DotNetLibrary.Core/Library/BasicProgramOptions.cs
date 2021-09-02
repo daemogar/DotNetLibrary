@@ -9,7 +9,7 @@ using DotNetLibrary.Routing;
 namespace DotNetLibrary
 {
 	public class BasicProgramOptions : IProgramOptions
-	{
+	{		
 		public virtual string? IssuerName { get; init; }
 
 		public virtual bool AuthenticationEnabled { get; init; } = true;
