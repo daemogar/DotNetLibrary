@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net5.0;net6.0</TargetFrameworks>
+		<TargetFrameworks>net6.0</TargetFrameworks>
 		<OutputType>Library</OutputType>
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
@@ -19,7 +19,7 @@
 		<AssemblyName>DotNetLibrary.Server</AssemblyName>
 		<RootNamespace>DotNetLibrary</RootNamespace>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net5.0|AnyCPU'">
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|AnyCPU'">
 		<DocumentationFile>C:\Users\irwinj\Source\Repos\daemogar\DotNetLibrary\DotNetLibrary.Server\DotNetLibrary.Server.xml</DocumentationFile>
 	</PropertyGroup>
 	<ItemGroup>
@@ -29,7 +29,7 @@
 		</None>
 	</ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.9" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetLibrary.Core\DotNetLibrary.Core.csproj" />

@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DotNetLibrary.Core</name>
+    </assembly>
+    <members>
+        <member name="T:DotNetLibrary.BasicProgram`1">
+            <summary>
+            Program.main class methods. The application's program class should
+            inherit this class and override any methods appropriately.
+            </summary>
+        </member>
+        <member name="M:DotNetLibrary.BasicProgram`1.RunAsync(System.String[])">
+            <summary>
+            Start the web application with the supplied <paramref name="endPointAppSettings" />.
+            </summary>
+            <param name="args">Command line arguments to be passed to <see cref="!:Host.CreateDefaultBuilder()"/>.</param>
+            <returns>Task of a running web application.</returns>
+        </member>
+        <member name="M:DotNetLibrary.BasicProgram`1.ConfigureHandlerAndRoutingAssemblies(DotNetLibrary.BasicProgramOptions,System.Reflection.Assembly[])">
+            <summary>
+            Gets a list of assemblies that contain MediatR handlers.
+            </summary>
+            <returns>List of assemblies with MediatR handlers.</returns>
+        </member>
+        <member name="M:DotNetLibrary.BasicProgram`1.CreateLogger(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Optionally override this method to configure the logger manually. The default
+            is to read from the appsettings configuration for the project.
+            </summary>
+            <returns>This should return a manually created <see cref="N:Serilog"/> Logger or null to use the configuration file to create it.</returns>
+        </member>
+        <member name="M:DotNetLibrary.Expressions.PropertyExtension.CompileLambda``1(``0,System.String)">
+            <summary>
+            Use this method to convert a string expression into a lambda function that 
+            takes a typeof(T) object. The method then invokes that property on the object
+            returning the value of that property.
+            </summary>
+            <typeparam name="T">The object type to get the value from.</typeparam>
+            <param name="_">Target model to build lambda model from.</param>
+            <param name="propertyExpression">
+            	A string representation of the property to get the value of.
+            </param>
+            <returns>The string value of the property retrieved.</returns>
+        </member>
+        <member name="M:DotNetLibrary.Expressions.PropertyExtension.CompileLambda``1(System.String)">
+            <summary>
+            Use this method to convert a string expression into a lambda function that 
+            takes a typeof(T) object. The method then invokes that property on the object
+            returning the value of that property.
+            </summary>
+            <typeparam name="T">The object to get the value from.</typeparam>
+            <param name="propertyExpression">
+            	A string representation of the property to get the value of.
+            </param>
+            <returns>The string value of the property retrieved.</returns>
+        </member>
+        <member name="T:DotNetLibrary.Routing.UriArray">
+            <summary>
+            Object for collection Style/Javascript pathes for use on the _Host.cshtml file.
+            </summary>
+        </member>
+        <member name="M:DotNetLibrary.Routing.UriArray.Add(System.String)">
+            <summary>
+            Add a Style/Javascript to the end of the section.
+            </summary>
+            <param name="uri">The absolute or relative path for the resource.</param>
+        </member>
+        <member name="M:DotNetLibrary.Routing.UriArray.Insert(System.String)">
+            <summary>
+            Add a Style/Javascript to the beginning of the section.
+            </summary>
+            <param name="uri">The absolute or relative path for the resource.</param>
+        </member>
+        <member name="M:DotNetLibrary.Routing.UriArray.InsertRange(System.String[])">
+            <summary>
+            Add a range of Styles/Javascript to the beginning of the section.
+            </summary>
+            <param name="uris">List of absolute or relative pathes for the resource.</param>
+        </member>
+        <member name="M:DotNetLibrary.Routing.UriArray.AddRange(System.String[])">
+            <summary>
+            Add a range of Styles/Javascript to the end of the section.
+            </summary>
+            <param name="uris">List of absolute or relative pathes for the resource.</param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Components.Authorization.BasicAuthenticationStateProvider`2.GetAuthenticationStateAsync(System.Threading.CancellationToken)">
+            <summary>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Components.Authorization.BasicAuthenticationStateProvider`2.GetAuthenticationStateAsync"/>
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Components.Authorization.BasicAuthenticationStateProvider`2.GetStateAsync(System.Threading.CancellationToken)">
+            <summary>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Components.Authorization.BasicAuthenticationStateProvider`2.GetAuthenticationStateAsync"/>
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Components.Authorization.BasicAuthenticationStateProvider`2.GetAuthenticationStateAsync">
+            <summary>
+            Return the authorized user after populating from IM DB.
+            
+            There are 3 ways to access this data:
+            1. Inside an <AuthorizeView></AuthorizeView> within a 
+            	razor page/component.
+            2. Using a [CascadingParameter] of type Task&lt;AuthenticationState>.
+            3. Dependency injecting a AuthenticationStateProvider into 
+            	the page/component or other service.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:System.Diagnostics.BenDemystifyExceptionsSerilogEnricher">
+            <summary>
+            This converts a Microsoft Exception into something that is readable and 
+            understandable to a human. This uses Ben Adams Demystifier project to 
+            clean the stack trace up.
+            <see cref="!:https://github.com/benaadams/Ben.Demystifier"/>
+            </summary>
+        </member>
+        <member name="M:System.Diagnostics.BenDemystifyExceptionsSerilogEnricher.Enrich(Serilog.Events.LogEvent,Serilog.Core.ILogEventPropertyFactory)">
+            <summary>
+            <inheritdoc cref="M:System.Diagnostics.BenDemystifyExceptionsSerilogEnricher.Enrich(Serilog.Events.LogEvent,Serilog.Core.ILogEventPropertyFactory)"/>
+            </summary>
+            <param name="logEvent"><inheritdoc cref="T:Serilog.Events.LogEvent"/></param>
+            <param name="propertyFactory"><inheritdoc cref="T:Serilog.Core.ILogEventPropertyFactory"/></param>
+        </member>
+        <member name="M:System.Text.Json.JsonExtensions.ToJsonString``1(``0)">
+            <summary>
+            Convert target object into a JSON serialized string.
+            </summary>
+            <typeparam name="T">Any object type can be converted.</typeparam>
+            <param name="data">Object that should be serialized to a json string.</param>
+            <returns>JSON </returns>
+        </member>
+        <member name="M:System.Text.StringExtensions.SubstringClip(System.String,System.Int32)">
+            <summary>
+            Safely returns up to <paramref name="length"/> number of characters from 
+            <paramref name="text"/>. Unlike the <see cref="M:System.String.Substring(System.Int32,System.Int32)"/> 
+            with a start index of 0 which throws an error if the requested start and length 
+            parameters are outside the bounds of the <paramref name="text"/>. This will also 
+            return the original value if it is null or white space.
+            </summary>
+            <param name="text">The text to clip and return the first <paramref name="length"/> number of characters.</param>
+            <param name="length">The maximum number of characters to return from the start <paramref name="text"/>.</param>
+            <returns>Returns up to <paramref name="length"/> of characters from start of <paramref name="text"/>.</returns>
+        </member>
+        <member name="M:System.Text.StringExtensions.SubstringClip(System.String,System.Int32,System.Int32)">
+            <summary>
+            Safely returns up to <paramref name="length"/> number of characters starting at the
+            <paramref name="startIndex"/> index of the <paramref name="text"/>. Unlike the 
+            <see cref="M:System.String.Substring(System.Int32,System.Int32)"/> which throws an error if the requested start 
+            or/and length parameters are outside the bounds of the <paramref name="text"/>. This 
+            will also return the original value if it is null or white space or start is outside 
+            the bounds of the <paramref name="text"/>.
+            </summary>
+            <param name="text">The text to clip and return the <paramref name="length"/> number of characters starting at the <paramref name="startIndex"/>.</param>
+            <param name="startIndex">The first character position to start clipping.</param>
+            <param name="length">The maximum number of characters to return from the <paramref name="startIndex"/> of the <paramref name="text"/>.</param>
+            <returns>Returns up to <paramref name="length"/> of characters from the <paramref name="startIndex"/> of the <paramref name="text"/>.</returns>
+        </member>
+        <member name="M:System.Text.StringExtensions.ToTitleCase(System.String,System.Boolean)">
+            <summary>
+            Converts <paramref name="text"/> to title case (except for words that are 
+            entirely in uppercase, which are considered to be acronyms). By default
+            the text will first be expanded. This is useful for turning camel or Pascal
+            case <paramref name="text"/> in prep to title case it.
+            <example><code>ie: theQuickBrownFox_1Jumped|orRatherRan => the Quick Brown Fox_1 Jumped|or Rather Ran</code></example>
+            </summary>
+            <param name="text">The string to convert to title case.</param>
+            <param name="expandWords">By default spaces are added before capital letters unless false is passed and the text is used as passed in.</param>
+            <returns>The specified string converted to title case.</returns>
+        </member>
+    </members>
+</doc>

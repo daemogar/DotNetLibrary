@@ -1,0 +1,21 @@
+﻿@inherits TestContext
+
+@code{
+	[Theory]
+	[AutoMoqData()]
+	public void TestTest(
+		[Frozen] IEnvironmentModel environment,
+		[Frozen] LayoutComponentBase layout,
+		[Frozen] INavigationInterception navigation)
+	{
+		AddService(environment);
+		AddService(navigation);
+		var parameter = ComponentParameter.CreateParameter(
+			nameof(BasicRouter.LayoutType), layout.GetType());
+		var component = RenderComponent<BasicRouter>(parameter);
+		component.MarkupMatches("");
+	}
+
+	private void AddService<T>(T data)
+		=> Services.Add(new(typeof(T), data));
+}
