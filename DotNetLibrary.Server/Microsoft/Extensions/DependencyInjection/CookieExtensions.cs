@@ -1,4 +1,4 @@
-﻿using DotNetLibrary.Cookies;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace Microsoft.Extensions.DependencyInjection
 { 
@@ -7,7 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		public static void AddCookies(this IServiceCollection services)
 		{
 			services.AddTransient<CookieManager>();
-			services.AddTransient<ImpersonationCookie>();
+			services.AddTransient<CookieFactory>();
 		}
 	}
 }

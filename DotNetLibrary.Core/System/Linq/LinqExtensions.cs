@@ -1,27 +1,64 @@
 ﻿using System.Collections.Generic;
 
-namespace System.Linq
+namespace System.Linq;
+
+/// <summary>
+/// Linq extension methods.
+/// </summary>
+public static class LinqExtensions
 {
-	public delegate string FlattenToStringDelegate<T>(T item);
+	/// <summary>
+	/// Linq method to iterate over all items in a <paramref name="list"/> and
+	/// calling <paramref name="predicate"/> on each item.
+	/// </summary>
+	/// <typeparam name="T">Generic type list of objects to add a single item to.</typeparam>
+	/// <param name="list">List of items to have single item added to.</param>
+	/// <param name="predicate">A method to convert an each item in list to a string.</param>
+	public static void ForEach<T>(this IEnumerable<T> list, Action<T> predicate)
+		=> list.ToArray().ForEach(predicate);
 
-	public static class LinqExtensions
-	{
-		public static void ForEach<T>(this IEnumerable<T> list, Action<T> predicate)
-			=> list.ToArray().ForEach(predicate);
+	/// <summary>
+	/// Linq method to iterate over all items in a <paramref name="list"/> and
+	/// calling <paramref name="predicate"/> on each item.
+	/// </summary>
+	/// <typeparam name="T">Generic type list of objects to add a single item to.</typeparam>
+	/// <param name="list">List of items to have single item added to.</param>
+	/// <param name="predicate">A method to convert an each item in list to a string.</param>
+	public static void ForEach<T>(this T[] list, Action<T> predicate)
+		=> Array.ForEach(list, p => predicate(p));
 
-		public static void ForEach<T>(this T[] list, Action<T> predicate)
-			=> Array.ForEach(list, p => predicate(p));
+	/// <summary>
+	/// General method to flatten a <paramref name="list"/> into a string of 
+	/// each string in list and seperated by <paramref name="seperator"/>.
+	/// </summary>
+	/// <param name="list">List of items to have single item added to.</param>
+	/// <param name="seperator">The string seperater to place between each item.</param>
+	/// <returns>String converted of <paramref name="list"/> and joined by <paramref name="seperator"/>.</returns>
+	public static string Join(this IEnumerable<string> list, string seperator)
+		=> string.Join(seperator, list);
 
-		public static string Join(this IEnumerable<string> list, string seperator)
-			=> string.Join(seperator, list);
+	/// <summary>
+	/// General method to flatten a <paramref name="list"/> into a string of 
+	/// each item converted and seperated by <paramref name="seperator"/>.
+	/// </summary>
+	/// <typeparam name="T">Generic type list of objects to add a single item to.</typeparam>
+	/// <param name="list">List of items to have single item added to.</param>
+	/// <param name="seperator">The string seperater to place between each item.</param>
+	/// <param name="predicate">A method to convert an each item in list to a string.</param>
+	/// <returns>String converted of <paramref name="list"/> and joined by <paramref name="seperator"/>.</returns>
+	public static string Flatten<T>(
+		this IEnumerable<T> list,
+		string seperator,
+		Func<T, string> predicate)
+		=> string.Join(seperator, list.Select(p => predicate(p)));
 
-		public static string Flatten<T>(
-			this IEnumerable<T> list,
-			string seperator,
-			FlattenToStringDelegate<T> callback)
-			=> string.Join(seperator, list.Select(p => callback(p)));
-
-		public static IEnumerable<T> Union<T>(this IEnumerable<T> list, T item)
-			=> Enumerable.Union(list, new [] { item });
-	}
+	/// <summary>
+	/// Linq extension to union/join an object to a list.
+	/// </summary>
+	/// <typeparam name="T">Generic type list of objects to add a single item to.</typeparam>
+	/// <param name="list">List of items to have single item added to.</param>
+	/// <param name="item">The item to add to the list.</param>
+	/// <returns>The list with the item added to it.</returns>
+	public static IEnumerable<T> Union<T>(this IEnumerable<T> list, T item)
+		=> Enumerable.Union(list, new[] { item });
 }
