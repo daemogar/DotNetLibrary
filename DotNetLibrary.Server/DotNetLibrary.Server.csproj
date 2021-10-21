@@ -22,19 +22,23 @@
 		<AssemblyName>DotNetLibrary.Server</AssemblyName>
 		<RootNamespace>DotNetLibrary</RootNamespace>
 	</PropertyGroup>
-	
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|AnyCPU'">
 		<DocumentationFile>C:\Users\irwinj\Source\Repos\daemogar\DotNetLibrary\DotNetLibrary.Server\DotNetLibrary.Server.xml</DocumentationFile>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<None Include="..\LICENSE" Link="LICENSE">
 			<PackagePath></PackagePath>
 			<Pack>True</Pack>
 		</None>
 	</ItemGroup>
-	
-  <ItemGroup>
+
+	<ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0-rc.2.21480.10" />
   </ItemGroup>
 	

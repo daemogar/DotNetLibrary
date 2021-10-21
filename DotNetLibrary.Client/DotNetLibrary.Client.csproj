@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 	
 	<PropertyGroup>
 		<TargetFrameworks>net6.0</TargetFrameworks>
@@ -26,7 +26,7 @@
 	<ItemGroup>
 		<SupportedPlatform Include="browser" />
 	</ItemGroup>
-	
+
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|AnyCPU'">
 	  <DocumentationFile>C:\Users\irwinj\Source\Repos\daemogar\DotNetLibrary\DotNetLibrary.Client\DotNetLibrary.Client.xml</DocumentationFile>
 	</PropertyGroup>
