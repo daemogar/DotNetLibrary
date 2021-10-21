@@ -4,7 +4,9 @@
 		<TargetFrameworks>net6.0</TargetFrameworks>
 		<OutputType>Library</OutputType>
 		<LangVersion>latest</LangVersion>
+		<RazorLangVersion>latest</RazorLangVersion>
 		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
 		<PackageId>DotNetLibrary.Server</PackageId>
 		<Authors>Dæmogar</Authors>
 		<Description>Library with reusable generic code for server side.</Description>
