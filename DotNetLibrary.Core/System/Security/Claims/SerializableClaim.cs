@@ -1,14 +1,38 @@
 ﻿namespace System.Security.Claims;
 
 /// <summary>
-/// Create a simple claim with an issuer.
+/// Create a simple claim that is useful for serializing and deserializing.
 /// </summary>
-/// <param name="Type">This is the key of the key/value claim.</param>
-/// <param name="Value">The value of the claim.</param>
-/// <param name="Issuer">The issuer of the claim.</param>
-public record struct SerializableClaim(
-	string Type, string Value, string Issuer)
+public class SerializableClaim
 {
+	/// <summary>
+	/// This is the key of the key/value claim.
+	/// </summary>
+	public string Type { get; init; }
+
+	/// <summary>
+	/// The value of the claim.
+	/// </summary>
+	public string Value { get; init; }
+
+	/// <summary>
+	/// The issuer of the claim.
+	/// </summary>
+	public string Issuer { get; init; }
+
+	/// <summary>
+	/// Create a simple claim with an issuer.
+	/// </summary>
+	/// <param name="type">This is the key of the key/value claim.</param>
+	/// <param name="value">The value of the claim.</param>
+	/// <param name="issuer">The issuer of the claim.</param>
+	public SerializableClaim(string type, string value, string issuer)
+	{
+		Type = type;
+		Value = value;
+		Issuer = issuer;
+	}
+
 	/// <summary>
 	/// Create a simple claim without an issuer.
 	/// </summary>
