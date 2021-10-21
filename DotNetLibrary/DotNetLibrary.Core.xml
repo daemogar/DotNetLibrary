@@ -1,0 +1,389 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DotNetLibrary.Core</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Extensions.DependencyInjection.DiscoverableServicesExtensions">
+            <summary>
+            Extension method for discovering all services and registering them 
+            with the dependency injection system.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableServicesExtensions.AddDiscoverableServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Discovering all services and registering them with the 
+            dependency injection services collection. This method will try to
+            find all references classes the <seealso cref="T:Microsoft.Extensions.DependencyInjection.IDiscoverableService"/>
+            interface implimented.
+            </summary>
+            <param name="services">The service collection used for registering application dependencies.</param>
+            <param name="configuration">The application configuration.</param>
+            <returns>For chainging calls to the services collection, it is returned.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableServicesExtensions.AddDiscoverableServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,System.Reflection.Assembly[])">
+            <summary>
+            Discovering all services and registering them with the 
+            dependency injection services collection.
+            </summary>
+            <param name="services">The service collection used for registering application dependencies.</param>
+            <param name="assembliesToSearch">List assembly that should be searched for references to the <seealso cref="T:Microsoft.Extensions.DependencyInjection.IDiscoverableService"/> interface implmentation.</param>
+            <param name="configuration">The application configuration.</param>
+            <returns>For chainging calls to the services collection, it is returned.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableServicesExtensions.AddDiscoverableService``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Register the type as a service using its registration method defined by
+            the <seealso cref="T:Microsoft.Extensions.DependencyInjection.IDiscoverableService"/> interface.
+            </summary>
+            <typeparam name="TDiscoverableService">The object type that should be registerd with the dependency injection services collection.</typeparam>
+            <param name="services">The service collection used for registering application dependencies.</param>
+            <param name="configuration">The application configuration.</param>
+            <returns>For chainging calls to the services collection, it is returned.</returns>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.IDiscoverableService">
+            <summary>
+            Interface to add to a class so it is auto discoverable and setup 
+            for dependency injection.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.DependencyInjection.IDiscoverableService.Order">
+            <summary>
+            The order in which the service should be registered. Lower order 
+            numbers will be registered before higher order numbers. Orders can be 
+            negative. Zero is the default order and order of registration is not
+            garenteed if the order matches another services order number.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IDiscoverableService.Register(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Method called on the object to run the objects registration with
+            the dependency injection system.
+            </summary>
+            <param name="services">The service collection used for registering application dependencies.</param>
+            <param name="configuration">The application configuration.</param>
+        </member>
+        <member name="T:System.Linq.LinqExtensions">
+            <summary>
+            Linq extension methods.
+            </summary>
+        </member>
+        <member name="M:System.Linq.LinqExtensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
+            <summary>
+            Linq method to iterate over all items in a <paramref name="list"/> and
+            calling <paramref name="predicate"/> on each item.
+            </summary>
+            <typeparam name="T">Generic type list of objects to add a single item to.</typeparam>
+            <param name="list">List of items to have single item added to.</param>
+            <param name="predicate">A method to convert an each item in list to a string.</param>
+        </member>
+        <member name="M:System.Linq.LinqExtensions.ForEach``1(``0[],System.Action{``0})">
+            <summary>
+            Linq method to iterate over all items in a <paramref name="list"/> and
+            calling <paramref name="predicate"/> on each item.
+            </summary>
+            <typeparam name="T">Generic type list of objects to add a single item to.</typeparam>
+            <param name="list">List of items to have single item added to.</param>
+            <param name="predicate">A method to convert an each item in list to a string.</param>
+        </member>
+        <member name="M:System.Linq.LinqExtensions.Join(System.Collections.Generic.IEnumerable{System.String},System.String)">
+            <summary>
+            General method to flatten a <paramref name="list"/> into a string of 
+            each string in list and seperated by <paramref name="seperator"/>.
+            </summary>
+            <param name="list">List of items to have single item added to.</param>
+            <param name="seperator">The string seperater to place between each item.</param>
+            <returns>String converted of <paramref name="list"/> and joined by <paramref name="seperator"/>.</returns>
+        </member>
+        <member name="M:System.Linq.LinqExtensions.Flatten``1(System.Collections.Generic.IEnumerable{``0},System.String,System.Func{``0,System.String})">
+            <summary>
+            General method to flatten a <paramref name="list"/> into a string of 
+            each item converted and seperated by <paramref name="seperator"/>.
+            </summary>
+            <typeparam name="T">Generic type list of objects to add a single item to.</typeparam>
+            <param name="list">List of items to have single item added to.</param>
+            <param name="seperator">The string seperater to place between each item.</param>
+            <param name="predicate">A method to convert an each item in list to a string.</param>
+            <returns>String converted of <paramref name="list"/> and joined by <paramref name="seperator"/>.</returns>
+        </member>
+        <member name="M:System.Linq.LinqExtensions.Union``1(System.Collections.Generic.IEnumerable{``0},``0)">
+            <summary>
+            Linq extension to union/join an object to a list.
+            </summary>
+            <typeparam name="T">Generic type list of objects to add a single item to.</typeparam>
+            <param name="list">List of items to have single item added to.</param>
+            <param name="item">The item to add to the list.</param>
+            <returns>The list with the item added to it.</returns>
+        </member>
+        <member name="T:System.Net.Http.EnhancedLimitedHttpClient">
+            <summary>
+            Class for enhancing the base HttpClient.
+            </summary>
+        </member>
+        <member name="P:System.Net.Http.EnhancedLimitedHttpClient.BaseAddress">
+            <summary>
+            The base address of all calls that the endpoints will use as a reference.
+            </summary>
+        </member>
+        <member name="M:System.Net.Http.EnhancedLimitedHttpClient.#ctor(Serilog.ILogger,System.Net.Http.HttpClient)">
+            <summary>
+            Converts an HttpClient into a restricted version that has enhanced
+            methods for getting data.
+            </summary>
+            <param name="logger">Serilog Logger</param>
+            <param name="client">HttpClient to use for making calls.</param>
+        </member>
+        <member name="M:System.Net.Http.EnhancedLimitedHttpClient.GetJsonAsync``1(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Get object from <paramref name="url"/> and throws a 
+            <seealso cref="T:System.NullReferenceException"/> if object is null or un able 
+            to be converted to <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The type of the object that shoudld be returned.</typeparam>
+            <param name="url">The end point to get data back from using a GET method using json.</param>
+            <param name="cancellationToken">Cancelation token.</param>
+            <returns></returns>
+            <exception cref="T:System.NullReferenceException">Throw if the object returned is null.</exception>
+        </member>
+        <member name="M:System.Net.Http.EnhancedLimitedHttpClient.GetJsonAsync``1(System.String,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Get object from <paramref name="url"/> and allow null result
+            if <paramref name="allowNulls"/> is true. Throws a 
+            <seealso cref="T:System.NullReferenceException"/> if object is null or un able 
+            to be converted to <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The type of the object that shoudld be returned.</typeparam>
+            <param name="url">The end point to get data back from using a GET method using json.</param>
+            <param name="allowNulls">If true, allow for nulls to be returned else throw null reference exception.</param>
+            <param name="cancellationToken">Cancelation token.</param>
+            <returns></returns>
+            <exception cref="T:System.NullReferenceException">Throw if the <paramref name="allowNulls"/> is false and the object returned is null.</exception>
+        </member>
+        <member name="T:System.Net.Http.HttpClientFactoryExtensions">
+            <summary>
+            <seealso cref="T:System.Net.Http.IHttpClientFactory"/> extension method helpers.
+            </summary>
+        </member>
+        <member name="M:System.Net.Http.HttpClientFactoryExtensions.GetClient(System.Net.Http.IHttpClientFactory,System.String)">
+            <summary>
+            Get an <seealso cref="T:System.Net.Http.EnhancedLimitedHttpClient"/> by calling the 
+            create client method 
+            </summary>
+            <param name="factory">A factory abstraction for creating HttpClients.</param>
+            <param name="name">The logical name of the client to create.</param>
+            <returns>A <seealso cref="T:System.Net.Http.EnhancedLimitedHttpClient"/> created with the <seealso cref="M:System.Net.Http.IHttpClientFactory.CreateClient(System.String)"/>.</returns>
+        </member>
+        <member name="T:System.Security.Claims.SerializableClaim">
+            <summary>
+            Create a simple claim with an issuer.
+            </summary>
+            <param name="Type">This is the key of the key/value claim.</param>
+            <param name="Value">The value of the claim.</param>
+            <param name="Issuer">The issuer of the claim.</param>
+        </member>
+        <member name="M:System.Security.Claims.SerializableClaim.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Create a simple claim with an issuer.
+            </summary>
+            <param name="Type">This is the key of the key/value claim.</param>
+            <param name="Value">The value of the claim.</param>
+            <param name="Issuer">The issuer of the claim.</param>
+        </member>
+        <member name="M:System.Security.Claims.SerializableClaim.#ctor(System.String,System.String)">
+            <summary>
+            Create a simple claim without an issuer.
+            </summary>
+            <param name="type">This is the key of the key/value claim.</param>
+            <param name="value">The value of the claim.</param>
+        </member>
+        <member name="M:System.Security.Claims.SerializableClaim.#ctor(System.Security.Claims.Claim)">
+            <summary>
+            Create a simple claim from <seealso cref="T:System.Security.Claims.Claim"/>.
+            </summary>
+            <param name="claim">A <seealso cref="T:System.Security.Claims.Claim"/> to be simplified.</param>
+        </member>
+        <member name="M:System.Security.Claims.SerializableClaim.AsClaim">
+            <summary>
+            Convert simple claim into a <seealso cref="T:System.Security.Claims.Claim"/>.
+            </summary>
+            <returns><seealso cref="T:System.Security.Claims.Claim"/> of simple type.</returns>
+        </member>
+        <member name="T:System.Text.ByteEncodingExtensions">
+            <summary>
+            Generic extension methods for simplifing byte encoding and
+            decoding to and from strings.
+            </summary>
+        </member>
+        <member name="M:System.Text.ByteEncodingExtensions.ToBase64ByteEncodedString``1(``0)">
+            <summary>
+            Convert <paramref name="data"/> into a json string and 
+            byte encode into a UTF32 encoded string.
+            </summary>
+            <typeparam name="T">The type of an object that should be byte encoded into a UTF32 encoded string.</typeparam>
+            <param name="data">An object that should be byte encoded into a UTF32 encoded string.</param>
+            <returns>String UTF32 byte encoded string of an object.</returns>
+            <exception cref="T:System.NullReferenceException">Throws null if the object is null.</exception>
+        </member>
+        <member name="M:System.Text.ByteEncodingExtensions.FromBase64ByteEncodedString``1(System.String)">
+            <summary>
+            Extract object from a UTF32 encoded string.
+            </summary>
+            <typeparam name="T">The type of an object that should be return from the byte encoded UTF32 encoded string.</typeparam>
+            <param name="json">UTF32 byte encoded string to be decoded.</param>
+            <returns>An object decoded from the UTF32 byte encoded string.</returns>
+        </member>
+        <member name="T:System.Text.Json.JsonExtensions">
+            <summary>
+            Json serialization and deserialization helper extension methods.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.JsonExtensions.ToJsonString``1(``0)">
+            <summary>
+            Convert target object into a JSON serialized string.
+            </summary>
+            <typeparam name="T">Any object type can be converted.</typeparam>
+            <param name="data">Object that should be serialized to a json string.</param>
+            <returns>JSON string of the object.</returns>
+        </member>
+        <member name="M:System.Text.Json.JsonExtensions.ToJsonString``1(``0,System.Boolean)">
+            <summary>
+            Convert target object into a JSON serialized string.
+            </summary>
+            <typeparam name="T">Any object type can be converted.</typeparam>
+            <param name="data">Object that should be serialized to a json string.</param>
+            <param name="writeIndented">Should it be formatted with tabs and returns.</param>
+            <returns>JSON string of the object.</returns>
+        </member>
+        <member name="M:System.Text.Json.JsonExtensions.ToJsonString``1(``0,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            Convert target object into a JSON serialized string.
+            </summary>
+            <typeparam name="T">Any object type can be converted.</typeparam>
+            <param name="data">Object that should be serialized to a json string.</param>
+            <param name="options">JsonSerializerOptions configuration for serializing the object into a string.</param>
+            <returns>JSON string of the object.</returns>
+        </member>
+        <member name="M:System.Text.Json.JsonExtensions.FromJsonString``1(System.String)">
+            <summary>
+            Convert a json string into an object.
+            </summary>
+            <typeparam name="T">Any object type can be converted.</typeparam>
+            <param name="json">A string json representation to be converted into an object.</param>
+            <returns>The object that is returned from deserializing the json string.</returns>
+        </member>
+        <member name="M:System.Text.Json.JsonExtensions.FromJsonStringUsingModel``1(System.String,``0)">
+            <summary>
+            Convert a json string into an object.
+            </summary>
+            <typeparam name="T">Any object type can be converted.</typeparam>
+            <param name="json">A string json representation to be converted into an object.</param>
+            <param name="model">A target type to convert the json string into.</param>
+            <returns>The object that is returned from deserializing the json string.</returns>
+        </member>
+        <member name="M:System.Text.Json.JsonExtensions.FromJsonStringUsingType(System.String,System.Type)">
+            <summary>
+            Convert a json string into an object.
+            </summary>
+            <param name="json">A string json representation to be converted into an object.</param>
+            <param name="type">A target type to convert the json string into.</param>
+            <returns>The object that is returned from deserializing the json string.</returns>
+        </member>
+        <member name="M:System.Text.Json.JsonExtensions.FromJsonStreamAsync``1(System.Threading.Tasks.Task{System.IO.Stream},System.Threading.CancellationToken)">
+            <summary>
+            Convert a json string into an object.
+            </summary>
+            <typeparam name="T">Any object type can be converted.</typeparam>
+            <param name="stream">A stream of data that represents a json string of an object.</param>
+            <param name="cancellationToken">Cancellation token.</param>
+            <returns>The object that is returned from deserializing the json string.</returns>
+            <exception cref="T:System.NullReferenceException">If allowNull is false and the json string deserializes into a null object, this exception is thrown.</exception>
+        </member>
+        <member name="M:System.Text.Json.JsonExtensions.FromJsonStreamAsync``1(System.Threading.Tasks.Task{System.IO.Stream},System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Convert a json string into an object.
+            </summary>
+            <typeparam name="T">Any object type can be converted.</typeparam>
+            <param name="stream">A stream of data that represents a json string of an object.</param>
+            <param name="allowNull">Allow a null value or object to be returned. True to allow nulls, and false to throw null exception error.</param>
+            <param name="cancellationToken">Cancellation token.</param>
+            <returns>The object that is returned from deserializing the json string.</returns>
+            <exception cref="T:System.NullReferenceException">If allowNull is false and the json string deserializes into a null object, this exception is thrown.</exception>
+        </member>
+        <member name="T:System.Text.Json.Serialization.JsonListStringConverter">
+            <summary>
+            Converter for lists of strings to and from json strings.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.Serialization.JsonListStringConverter.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            Read a comma seperated string array from reader.
+            </summary>
+            <param name="reader">Utf8JsonReader</param>
+            <param name="typeToConvert">typeof(List&lt;string&gt;)</param>
+            <param name="options">JsonSerializerOptions</param>
+            <returns>A list of strings from a comma seperated string array.</returns>
+        </member>
+        <member name="M:System.Text.Json.Serialization.JsonListStringConverter.Write(System.Text.Json.Utf8JsonWriter,System.Collections.Generic.List{System.String},System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            Write string output of list of strings into a comma seperated string array.
+            </summary>
+            <param name="writer">Utf8JsonWriter</param>
+            <param name="list">List of string to turn into comma seperated string array.</param>
+            <param name="options">JsonSerializerOptions</param>
+        </member>
+        <member name="T:System.Text.Json.Serialization.JsonListStringConverterAttribute">
+            <summary>
+            Attribute for marking property of type of list of strings to use
+            the jsoncoverter to change to comma list of string.
+            </summary>
+        </member>
+        <member name="M:System.Text.Json.Serialization.JsonListStringConverterAttribute.#ctor">
+            <summary>
+            Constructor for attribute.
+            </summary>
+        </member>
+        <member name="T:System.Text.StringExtensions">
+            <summary>
+            Generic extension methods for enhancing string functions.
+            </summary>
+        </member>
+        <member name="M:System.Text.StringExtensions.SubstringClip(System.String,System.Int32)">
+            <summary>
+            Safely returns up to <paramref name="length"/> number of characters from 
+            <paramref name="text"/>. Unlike the <see cref="M:System.String.Substring(System.Int32,System.Int32)"/> 
+            with a start index of 0 which throws an error if the requested start and length 
+            parameters are outside the bounds of the <paramref name="text"/>. This will also 
+            return the original value if it is null or white space.
+            </summary>
+            <param name="text">The text to clip and return the first <paramref name="length"/> number of characters.</param>
+            <param name="length">The maximum number of characters to return from the start <paramref name="text"/>.</param>
+            <returns>Returns up to <paramref name="length"/> of characters from start of <paramref name="text"/>.</returns>
+        </member>
+        <member name="M:System.Text.StringExtensions.SubstringClip(System.String,System.Int32,System.Int32)">
+            <summary>
+            Safely returns up to <paramref name="length"/> number of characters starting at the
+            <paramref name="startIndex"/> index of the <paramref name="text"/>. Unlike the 
+            <see cref="M:System.String.Substring(System.Int32,System.Int32)"/> which throws an error if the requested start 
+            or/and length parameters are outside the bounds of the <paramref name="text"/>. This 
+            will also return the original value if it is null or white space or start is outside 
+            the bounds of the <paramref name="text"/>.
+            </summary>
+            <param name="text">The text to clip and return the <paramref name="length"/> number of characters starting at the <paramref name="startIndex"/>.</param>
+            <param name="startIndex">The first character position to start clipping.</param>
+            <param name="length">The maximum number of characters to return from the <paramref name="startIndex"/> of the <paramref name="text"/>.</param>
+            <returns>Returns up to <paramref name="length"/> of characters from the <paramref name="startIndex"/> of the <paramref name="text"/>.</returns>
+        </member>
+        <member name="M:System.Text.StringExtensions.ToTitleCase(System.String,System.Boolean)">
+            <summary>
+            Converts <paramref name="text"/> to title case (except for words that are 
+            entirely in uppercase, which are considered to be acronyms). By default
+            the text will first be expanded. This is useful for turning camel or Pascal
+            case <paramref name="text"/> in prep to title case it.
+            <example><code>ie: theQuickBrownFox_1Jumped|orRatherRan => the Quick Brown Fox_1 Jumped|or Rather Ran</code></example>
+            </summary>
+            <param name="text">The string to convert to title case.</param>
+            <param name="expandWords">By default spaces are added before capital letters unless false is passed and the text is used as passed in.</param>
+            <returns>The specified string converted to title case.</returns>
+        </member>
+    </members>
+</doc>

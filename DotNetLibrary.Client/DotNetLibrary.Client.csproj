@@ -1,4 +1,5 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project Sdk="Microsoft.NET.Sdk">
+	
 	<PropertyGroup>
 		<TargetFrameworks>net6.0</TargetFrameworks>
 		<OutputType>Library</OutputType>
@@ -19,24 +20,30 @@
 		<AssemblyName>DotNetLibrary.Client</AssemblyName>
 		<RootNamespace>DotNetLibrary</RootNamespace>
 	</PropertyGroup>
+	
 	<ItemGroup>
 		<SupportedPlatform Include="browser" />
 	</ItemGroup>
+	
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|AnyCPU'">
 	  <DocumentationFile>C:\Users\irwinj\Source\Repos\daemogar\DotNetLibrary\DotNetLibrary.Client\DotNetLibrary.Client.xml</DocumentationFile>
 	</PropertyGroup>
+	
 	<ItemGroup>
 	  <None Include="..\LICENSE" Link="LICENSE">
 	    <PackagePath></PackagePath>
 	    <Pack>True</Pack>
 	  </None>
 	</ItemGroup>
+	
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="5.0.9" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.9" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.0-rc.2.21480.10" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0-rc.2.21480.10" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.0-rc.2.21480.10" />
 	</ItemGroup>
+	
 	<ItemGroup>
 	  <ProjectReference Include="..\DotNetLibrary.Core\DotNetLibrary.Core.csproj" />
 	</ItemGroup>
+	
 </Project>

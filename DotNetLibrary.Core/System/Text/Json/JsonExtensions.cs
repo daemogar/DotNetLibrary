@@ -78,7 +78,6 @@ public static class JsonExtensions
 	/// <summary>
 	/// Convert a json string into an object.
 	/// </summary>
-	/// <typeparam name="T">Any object type can be converted.</typeparam>
 	/// <param name="json">A string json representation to be converted into an object.</param>
 	/// <param name="type">A target type to convert the json string into.</param>
 	/// <returns>The object that is returned from deserializing the json string.</returns>

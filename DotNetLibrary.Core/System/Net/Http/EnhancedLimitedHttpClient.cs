@@ -41,7 +41,7 @@ public class EnhancedLimitedHttpClient
 	/// <param name="url">The end point to get data back from using a GET method using json.</param>
 	/// <param name="cancellationToken">Cancelation token.</param>
 	/// <returns></returns>
-	/// <exception cref="NullReferenceException">Throw if the <paramref name="allowNulls"/> is false and the object returned is null.</exception>
+	/// <exception cref="NullReferenceException">Throw if the object returned is null.</exception>
 	public async Task<T> GetJsonAsync<T>(
 		string url,
 		CancellationToken cancellationToken)
