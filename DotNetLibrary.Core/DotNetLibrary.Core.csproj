@@ -29,7 +29,7 @@
 	
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<DefineConstants>DEBUG;TRACE</DefineConstants>
-		<DocumentationFile>C:\dev\projects\DotNetLibrary\DotNetLibrary\DotNetLibrary.Core.xml</DocumentationFile>
+		<DocumentationFile>C:\dev\projects\DotNetLibrary\DotNetLibrary.Core\DotNetLibrary.Core.xml</DocumentationFile>
 	</PropertyGroup>
 	
 	<ItemGroup>

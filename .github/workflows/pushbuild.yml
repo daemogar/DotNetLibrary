@@ -1,0 +1,40 @@
+name: Build Repository on Push
+
+on:
+  push:
+    branches:
+      - 'master'
+  pull_request:
+    branches:
+      - 'master'
+  
+env:
+  PROJECT: 'DotNetLibrary'
+  RELEASE_NAME: 'DotNetLibrary'
+
+jobs:    
+  pack:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        project-name: [ Core, Client, Server ]        
+        
+    steps:
+    - uses: actions/checkout@v2
+    - run: git fetch --prune --unshallow
+    
+    - name: Setup .NET (6.0.x)
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+        include-prerelease: true
+        
+    - name: Set Release Name
+      if: ${{ matrix.project-name != 'Core' }}
+      uses: allenevans/set-env@v2.0.0
+      with:
+        RELEASE_NAME: ${{ env.PROJECT }}.${{ matrix.project-name }}
+        
+    - name: Build (${{ env.RELEASE_NAME }})
+      run: dotnet build -c Release
