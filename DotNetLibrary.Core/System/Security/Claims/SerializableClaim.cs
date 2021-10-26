@@ -21,6 +21,13 @@ public class SerializableClaim
 	public string Issuer { get; init; }
 
 	/// <summary>
+	/// Create a simple claim without any data. This constructor is intended
+	/// for deserializing a json object.
+	/// </summary>
+	public SerializableClaim()
+		: this(null!, null!, null!) { }
+
+	/// <summary>
 	/// Create a simple claim with an issuer.
 	/// </summary>
 	/// <param name="type">This is the key of the key/value claim.</param>
