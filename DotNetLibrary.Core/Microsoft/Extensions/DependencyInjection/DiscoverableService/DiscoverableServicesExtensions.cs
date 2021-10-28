@@ -16,8 +16,8 @@ public static class DiscoverableServicesExtensions
 	/// <summary>
 	/// Discovering all services and registering them with the 
 	/// dependency injection services collection. This method will try to
-	/// find all references classes the <seealso cref="IDiscoverableService"/>
-	/// interface implimented.
+	/// find all references classes the override the abstract class
+	/// <seealso cref="DiscoverableService"/>.
 	/// </summary>
 	/// <param name="services">The service collection used for registering application dependencies.</param>
 	/// <param name="configuration">The application configuration.</param>
@@ -71,14 +71,14 @@ public static class DiscoverableServicesExtensions
 	public static IServiceCollection AddDiscoverableService<TDiscoverableService>(
 		this IServiceCollection services,
 		IConfiguration configuration)
-		where TDiscoverableService : IDiscoverableService
+		where TDiscoverableService : DiscoverableService
 	{
 		var service = Construct(typeof(TDiscoverableService));
 		service.Register(services, configuration);
 		return services;
 	}
 
-	private static IDiscoverableService Construct(Type type)
-		=> (IDiscoverableService)FormatterServices
+	private static DiscoverableService Construct(Type type)
+		=> (DiscoverableService)FormatterServices
 			.GetUninitializedObject(type);
 }

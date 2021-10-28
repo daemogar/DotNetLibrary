@@ -1,12 +1,14 @@
 ﻿using Microsoft.Extensions.Configuration;
 
+using Serilog;
+
 namespace Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
-/// Interface to add to a class so it is auto discoverable and setup 
-/// for dependency injection.
+/// Abstract implimentation of the discoverable service. Override
+/// this class by class that should be provided as a application service.
 /// </summary>
-public interface IDiscoverableService
+public abstract class DiscoverableService : IDiscoverableService
 {
 	/// <summary>
 	/// The order in which the service should be registered. Lower order 
@@ -14,7 +16,7 @@ public interface IDiscoverableService
 	/// negative. Zero is the default order and order of registration is not
 	/// garenteed if the order matches another services order number.
 	/// </summary>
-	int Order => 0;
+	public virtual int Order { get; } = 0;
 
 	/// <summary>
 	/// Method called on the object to run the objects registration with
@@ -22,5 +24,21 @@ public interface IDiscoverableService
 	/// </summary>
 	/// <param name="services">The service collection used for registering application dependencies.</param>
 	/// <param name="configuration">The application configuration.</param>
-	void Register(IServiceCollection services, IConfiguration configuration);
+	public abstract void ConfigureAsService(IServiceCollection services, IConfiguration configuration);
+
+	private bool IsRegistered { get; set; }
+	internal void Register(IServiceCollection services, IConfiguration configuration)
+	{
+		if (IsRegistered)
+		{
+			Log.Logger.Warning(
+				"Trying to register {Service} more than once.",
+				GetType().Name);
+
+			return;
+		}
+
+		IsRegistered = true;
+		ConfigureAsService(services, configuration);
+	}
 }
