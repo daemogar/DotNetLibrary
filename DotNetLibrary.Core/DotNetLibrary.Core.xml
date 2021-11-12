@@ -4,6 +4,204 @@
         <name>DotNetLibrary.Core</name>
     </assembly>
     <members>
+        <member name="T:Microsoft.AspNetCore.Http.BasicCookie">
+            <summary>
+            Basic cookie accessor.
+            </summary>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Http.BasicCookie.CookieKey">
+            <summary>
+            Cookie key name.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookie.#ctor(Microsoft.AspNetCore.Http.CookieManager,System.String)">
+            <summary>
+            Constructor that takes a manager and cookie key.
+            </summary>
+            <param name="manager">A cookie manager for accessing the underlying cookies.</param>
+            <param name="cookieKey">The key of the cookie.</param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookie.Get">
+            <summary>
+            Get cookie from cookie manager using the constructor cookie key.
+            </summary>
+            <returns>The string value of the cookie.</returns>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookie.Set(System.String)">
+            <summary>
+            Set the cookie value using the manager and the constructor cookie key.
+            </summary>
+            <param name="value">Cookie value.</param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookie.Set(System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+            <summary>
+            Set the cookie value using the manager and the constructor cookie key.
+            </summary>
+            <param name="value">Cookie value.</param>
+            <param name="options">CookieOptions</param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookie.Delete">
+            <summary>
+            Delete cookie using manager and using the constructor cookie key.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookie.Delete(Microsoft.AspNetCore.Http.CookieOptions)">
+            <summary>
+            Delete cookie using manager and using the constructor cookie key.
+            </summary>
+            <param name="options">CookieOptions</param>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Http.CookieFactory">
+            <summary>
+            A factory for creating individual cookies.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieFactory.#ctor(Microsoft.AspNetCore.Http.CookieManager)">
+            <summary>
+            Constructor for cookie factory
+            </summary>
+            <param name="manager">CookieManager</param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieFactory.GetCookie(System.String)">
+            <summary>
+            Create the cookie.
+            </summary>
+            <param name="cookieKey">The cookie key.</param>
+            <returns>A basic cookie for getting, setting, and deleting cookie values.</returns>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Http.CookieManager">
+            <summary>
+            Manager for getting, setting, and deleting cookies.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.#ctor(Serilog.ILogger,Microsoft.AspNetCore.Http.IHttpContextAccessor)">
+            <summary>
+            Construct a cookie manager.
+            </summary>
+            <param name="logger">Serilog Logger.</param>
+            <param name="context">IHttpContextAccessor</param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(System.String,System.String)">
+            <summary>
+            If the value is null:<br />
+            <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
+            <br />
+            <br />
+            If value is not null:<br />
+            <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
+            </summary>
+            <param name="key">The key of the cookie.</param>
+            <param name="value">The value to set the cookie to or delete if null.</param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+            <summary>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(System.String,System.String)"/>
+            </summary>
+            <param name="key">The key of the cookie.</param>
+            <param name="value">The value to set the cookie to or delete if null.</param>
+            <param name="options">CookieOptions</param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String)">
+            <summary>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(System.String,System.String)"/>
+            </summary>
+            <param name="context">HttpContext</param>
+            <param name="key">The key of the cookie.</param>
+            <param name="value">The value to set the cookie to or delete if null.</param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+            <summary>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(System.String,System.String)"/>
+            </summary>
+            <param name="context">HttpContext</param>
+            <param name="key">The key of the cookie.</param>
+            <param name="value">The value to set the cookie to or delete if null.</param>
+            <param name="options">CookieOptions</param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(System.String)">
+            <summary>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
+            </summary>
+            <param name="key">The key of the cookie.</param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+            <summary>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(System.String)"/>
+            </summary>
+            <param name="key">The key of the cookie.</param>
+            <param name="options">CookieOptions</param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(System.String)"/>
+            </summary>
+            <param name="context">HttpContext</param>
+            <param name="key">The key of the cookie.</param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+            <summary>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(System.String)"/>
+            </summary>
+            <param name="context">HttpContext</param>
+            <param name="key">The key of the cookie.</param>
+            <param name="options">CookieOptions</param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.GetRequestCookie(System.String)">
+            <summary>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)"/>
+            </summary>
+            <param name="key">The key of the cookie.</param>
+            <returns>String value of cookie or null.</returns>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.GetRequestCookie(System.String,System.Boolean)">
+            <summary>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)"/>
+            </summary>
+            <param name="key">The key of the cookie.</param>
+            <param name="allowNull">Return null if true or throw <seealso cref="T:Microsoft.AspNetCore.Http.NullCookieValueException"/> if false.</param>
+            <returns>String value of cookie or null</returns>
+            <exception cref="T:Microsoft.AspNetCore.Http.NullCookieValueException" />
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <summary>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)"/>
+            </summary>
+            <param name="context">HttpContext</param>
+            <param name="key">The key of the cookie.</param>
+            <returns>String value of cookie or null</returns>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Boolean)">
+            <summary>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)"/>
+            </summary>
+            <param name="context">HttpContext</param>
+            <param name="key">The key of the cookie.</param>
+            <param name="allowNull">Return null if true or throw <seealso cref="T:Microsoft.AspNetCore.Http.NullCookieValueException"/> if false.</param>
+            <returns>String value of cookie or null</returns>
+            <exception cref="T:Microsoft.AspNetCore.Http.NullCookieValueException"></exception>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.DiscoverableService">
+            <summary>
+            Abstract implimentation of the discoverable service. Override
+            this class by class that should be provided as a application service.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.DependencyInjection.DiscoverableService.Order">
+            <summary>
+            The order in which the service should be registered. Lower order 
+            numbers will be registered before higher order numbers. Orders can be 
+            negative. Zero is the default order and order of registration is not
+            garenteed if the order matches another services order number.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableService.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Method called on the object to run the objects registration with
+            the dependency injection system.
+            </summary>
+            <param name="services">The service collection used for registering application dependencies.</param>
+            <param name="configuration">The application configuration.</param>
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.DiscoverableServicesExtensions">
             <summary>
             Extension method for discovering all services and registering them 
@@ -14,8 +212,8 @@
             <summary>
             Discovering all services and registering them with the 
             dependency injection services collection. This method will try to
-            find all references classes the <seealso cref="T:Microsoft.Extensions.DependencyInjection.IDiscoverableService"/>
-            interface implimented.
+            find all references classes the override the abstract class
+            <seealso cref="T:Microsoft.Extensions.DependencyInjection.DiscoverableService"/>.
             </summary>
             <param name="services">The service collection used for registering application dependencies.</param>
             <param name="configuration">The application configuration.</param>
@@ -41,6 +239,12 @@
             <param name="configuration">The application configuration.</param>
             <returns>For chainging calls to the services collection, it is returned.</returns>
         </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.IDiscoverableService">
+            <summary>
+            Interface to add to a class so it is auto discoverable and setup 
+            for dependency injection.
+            </summary>
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpContextExtensions">
             <summary>
             Add <seealso cref="T:Microsoft.AspNetCore.Http.IHttpContextAccessor"/> and
@@ -54,28 +258,6 @@
             <param name="services"><seealso cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/></param>
             <returns><seealso cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/></returns>
             <exception cref="T:System.NullReferenceException"></exception>
-        </member>
-        <member name="T:Microsoft.Extensions.DependencyInjection.IDiscoverableService">
-            <summary>
-            Interface to add to a class so it is auto discoverable and setup 
-            for dependency injection.
-            </summary>
-        </member>
-        <member name="P:Microsoft.Extensions.DependencyInjection.IDiscoverableService.Order">
-            <summary>
-            The order in which the service should be registered. Lower order 
-            numbers will be registered before higher order numbers. Orders can be 
-            negative. Zero is the default order and order of registration is not
-            garenteed if the order matches another services order number.
-            </summary>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.IDiscoverableService.Register(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
-            <summary>
-            Method called on the object to run the objects registration with
-            the dependency injection system.
-            </summary>
-            <param name="services">The service collection used for registering application dependencies.</param>
-            <param name="configuration">The application configuration.</param>
         </member>
         <member name="T:System.Linq.LinqExtensions">
             <summary>
@@ -205,6 +387,12 @@
         <member name="P:System.Security.Claims.SerializableClaim.Issuer">
             <summary>
             The issuer of the claim.
+            </summary>
+        </member>
+        <member name="M:System.Security.Claims.SerializableClaim.#ctor">
+            <summary>
+            Create a simple claim without any data. This constructor is intended
+            for deserializing a json object.
             </summary>
         </member>
         <member name="M:System.Security.Claims.SerializableClaim.#ctor(System.String,System.String,System.String)">
