@@ -41,7 +41,7 @@ public static class EnumExtensions
 	/// </summary>
 	/// <typeparam name="TEnum">The type of the target enum to search for an attribute on.</typeparam>
 	/// <param name="enumerationValue">The target enum to search for an attribute on.</param>
-	/// <returns>The results of the <paramref name="callback"/>.</returns>
+	/// <returns>The value of the description attribute or the enum string value.</returns>
 	public static string GetDescription<TEnum>(this TEnum enumerationValue)
 			where TEnum : struct
 		=> GetAttribute(enumerationValue , 
