@@ -11,10 +11,12 @@ public static class LinqExtensions
 	/// Linq method to iterate over all items in a <paramref name="list"/> and
 	/// calling <paramref name="predicate"/> on each item.
 	/// </summary>
-	/// <typeparam name="T">Generic type list of objects to add a single item to.</typeparam>
+	/// <typeparam name="TModel">Generic type list of objects to add a single item to.</typeparam>
+	/// <typeparam name="TResult">The type to return from the <paramref name="predicate"/>.</typeparam>
 	/// <param name="list">List of items to have single item added to.</param>
 	/// <param name="predicate">A method to convert an each item in list to a string.</param>
-	public static void ForEach<T>(this IEnumerable<T> list, Action<T> predicate)
+	public static TResult[] ForEach<TModel, TResult>(
+		this IEnumerable<TModel> list, Func<TModel, TResult> predicate)
 		=> list.ToArray().ForEach(predicate);
 
 	/// <summary>
@@ -24,7 +26,31 @@ public static class LinqExtensions
 	/// <typeparam name="T">Generic type list of objects to add a single item to.</typeparam>
 	/// <param name="list">List of items to have single item added to.</param>
 	/// <param name="predicate">A method to convert an each item in list to a string.</param>
-	public static void ForEach<T>(this T[] list, Action<T> predicate)
+	public static void ForEach<T>(
+		this IEnumerable<T> list, Action<T> predicate)
+		=> list.ToArray().ForEach(predicate);
+
+	/// <summary>
+	/// Linq method to iterate over all items in a <paramref name="list"/> and
+	/// calling <paramref name="predicate"/> on each item.
+	/// </summary>
+	/// <typeparam name="TModel">Generic type list of objects to add a single item to.</typeparam>
+	/// <typeparam name="TResult">The type to return from the <paramref name="predicate"/>.</typeparam>
+	/// <param name="list">List of items to have single item added to.</param>
+	/// <param name="predicate">A method to convert an each item in list to a string.</param>
+	public static TResult[] ForEach<TModel, TResult>(
+		this TModel[] list, Func<TModel, TResult> predicate)
+		=> list.Select(p => predicate(p)).ToArray();
+
+	/// <summary>
+	/// Linq method to iterate over all items in a <paramref name="list"/> and
+	/// calling <paramref name="predicate"/> on each item.
+	/// </summary>
+	/// <typeparam name="T">Generic type list of objects to add a single item to.</typeparam>
+	/// <param name="list">List of items to have single item added to.</param>
+	/// <param name="predicate">A method to convert an each item in list to a string.</param>
+	public static void ForEach<T>(
+		this T[] list, Action<T> predicate)
 		=> Array.ForEach(list, p => predicate(p));
 
 	/// <summary>
