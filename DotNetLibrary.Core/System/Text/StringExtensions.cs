@@ -9,6 +9,21 @@ namespace System.Text;
 public static class StringExtensions
 {
 	/// <summary>
+	/// Return the suffix of a number. 1st, 2nd, 3rd, etc.
+	/// </summary>
+	/// <param name="number">The number to format.</param>
+	/// <param name="format">Additional formatting for the number.</param>
+	/// <returns>The formatted number with the suffix added at the end.</returns>
+	public static string WithSuffix(this int number, string? format = default)
+		=> (format is null ? number : number.ToString(format)) + (number % 10, number) switch
+		{
+			(1, not 11) => $"{number}st",
+			(2, not 12) => $"{number}nd",
+			(3, not 13) => $"{number}rd",
+			_ => "th"
+		};
+
+	/// <summary>
 	/// Safely returns up to <paramref name="length"/> number of characters from 
 	/// <paramref name="text"/>. Unlike the <see cref="String.Substring(int, int)"/> 
 	/// with a start index of 0 which throws an error if the requested start and length 
