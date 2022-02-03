@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 
+using Serilog;
+
 using System;
 using System.Linq;
 using System.Reflection;
@@ -42,7 +44,7 @@ public static class DiscoverableServicesExtensions
 		IConfiguration configuration,
 		params Assembly[] assembliesToSearch)
 	{
-		var discoverableType = typeof(IDiscoverableService);
+		var discoverableType = typeof(DiscoverableService);
 
 		assembliesToSearch
 			.SelectMany(p => p
@@ -50,7 +52,7 @@ public static class DiscoverableServicesExtensions
 			.Where(IsDiscoverableType)
 			.Select(Construct))
 			.OrderBy(p => p.Order)
-			.ForEach(p => p.Register(services, configuration));
+			.ForEach(p => Register(p, services, configuration));
 
 		return services;
 
@@ -58,6 +60,27 @@ public static class DiscoverableServicesExtensions
 			=> type.IsAssignableTo(discoverableType)
 				&& !type.IsInterface
 				&& !type.IsAbstract;
+	}
+
+	private static readonly List<string> RegisteredTypes = new();
+	private static void Register(
+		DiscoverableService service,
+		IServiceCollection services,
+		IConfiguration configuration)
+	{
+		var type = service.GetType();
+		var key = type.FullName ?? type.Name;
+		if (RegisteredTypes.Contains(key))
+		{
+			Log.Logger.Warning(
+				"Trying to register {Service} more than once.",
+				type.Name);
+		}
+		else
+		{
+			RegisteredTypes.Add(key);
+			service.ConfigureAsService(services, configuration);
+		}
 	}
 
 	/// <summary>
@@ -74,7 +97,7 @@ public static class DiscoverableServicesExtensions
 		where TDiscoverableService : DiscoverableService
 	{
 		var service = Construct(typeof(TDiscoverableService));
-		service.Register(services, configuration);
+		Register(service, services, configuration);
 		return services;
 	}
 

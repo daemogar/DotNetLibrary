@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-
-using Serilog;
+using Microsoft.Extensions.Hosting;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -8,7 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// Abstract implimentation of the discoverable service. Override
 /// this class by class that should be provided as a application service.
 /// </summary>
-public abstract class DiscoverableService : IDiscoverableService
+public abstract class DiscoverableService : BackgroundService
 {
 	/// <summary>
 	/// The order in which the service should be registered. Lower order 
@@ -16,7 +15,22 @@ public abstract class DiscoverableService : IDiscoverableService
 	/// negative. Zero is the default order and order of registration is not
 	/// garenteed if the order matches another services order number.
 	/// </summary>
-	public virtual int Order { get; } = 0;
+	protected internal virtual int Order { get; } = 0;
+
+	/// <summary>
+	/// Override this method if this discoverable service is to be used
+	/// as a background service.
+	/// <inheritdoc />
+	/// </summary>
+	/// <param name="stoppingToken"><inheritdoc /></param>
+	/// <returns><inheritdoc /></returns>
+	/// <exception cref="NotImplementedException"><inheritdoc /></exception>
+	protected override Task ExecuteAsync(CancellationToken stoppingToken)
+	{
+		var type = GetType();
+		throw new NotImplementedException(
+			$"{type.Name} has not been configured as a background service.");
+	}
 
 	/// <summary>
 	/// Method called on the object to run the objects registration with
@@ -24,21 +38,6 @@ public abstract class DiscoverableService : IDiscoverableService
 	/// </summary>
 	/// <param name="services">The service collection used for registering application dependencies.</param>
 	/// <param name="configuration">The application configuration.</param>
-	public abstract void ConfigureAsService(IServiceCollection services, IConfiguration configuration);
-
-	private bool IsRegistered { get; set; }
-	internal void Register(IServiceCollection services, IConfiguration configuration)
-	{
-		if (IsRegistered)
-		{
-			Log.Logger.Warning(
-				"Trying to register {Service} more than once.",
-				GetType().Name);
-
-			return;
-		}
-
-		IsRegistered = true;
-		ConfigureAsService(services, configuration);
-	}
+	protected internal abstract void ConfigureAsService(
+		IServiceCollection services, IConfiguration configuration);
 }

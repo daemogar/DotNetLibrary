@@ -1,10 +1,40 @@
-﻿namespace System.ComponentModel;
+﻿using Microsoft.Extensions.Hosting;
+
+namespace System.ComponentModel;
 
 /// <summary>
 /// Simplified attribute getter for enums.
 /// </summary>
 public static class EnumExtensions
 {
+	internal record UseDayTime(bool UseDay, bool UseTime, bool AllowMultipleDays, bool UseHoursMinutes)
+	{
+		public UseDayTime() : this(false, false, false, false) { }
+	}
+
+	internal static UseDayTime GetDayTime<TEnum>(this TEnum enumerationValue)
+			where TEnum : struct
+		=> enumerationValue.UseDay(enumerationValue.UseTime(new()));
+
+	private static UseDayTime UseTime<TEnum>(this TEnum enumerationValue, UseDayTime model)
+			where TEnum : struct
+		=> GetAttribute(enumerationValue,
+			(string p, UseTimeAttribute? q)
+				=> model with {
+					UseTime = q is not null,
+					UseHoursMinutes = q?.UseHoursMinutes ?? false
+				});
+
+	private static UseDayTime UseDay<TEnum>(this TEnum enumerationValue, UseDayTime model)
+			where TEnum : struct
+		=> GetAttribute(enumerationValue,
+			(string p, UseDayAttribute? q)
+				=> model with
+				{
+					UseDay = q is not null,
+					AllowMultipleDays = q?.AllowMultipleDays ?? false
+				});
+
 	/// <summary>
 	/// Get the description value of the attribute if it exists. Otherwise
 	/// return the attribute string representation.
