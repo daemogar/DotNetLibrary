@@ -76,4 +76,56 @@ public static class StringExtensions
 						"([^A-Z_|])([A-Z])",
 						"$1 $2")
 					: text);
+
+	/// <summary>
+	/// Mask a portion of the <paramref name="text"/> given a <paramref name="filter"/>.
+	/// </summary>
+	/// <param name="text">The string that should have the <paramref name="filter"/> applied to it.</param>
+	/// <param name="filter">The string that should be masked out.</param>
+	/// <param name="mask">The char to be used for masking out the <paramref name="filter"/> from the <paramref name="text"/>.</param>
+	/// <returns>The <paramref name="text"/> with the <paramref name="filter"/> having been masked out with the <paramref name="mask"/> character.</returns>
+	public static string Mask(
+		this string text, string filter, char mask = '*')
+		=> Mask(text, filter, filter.Length, mask);
+
+	/// <summary>
+	/// <inheritdoc cref="Mask(string, string, char)"/> Mask will be
+	/// replaced by <paramref name="size"/> number of <paramref name="mask"/>.
+	/// </summary>
+	/// <param name="text"><inheritdoc cref="Mask(string, string, char)"/></param>
+	/// <param name="filter"><inheritdoc cref="Mask(string, string, char)"/></param>
+	/// <param name="mask"><inheritdoc cref="Mask(string, string, char)"/></param>
+	/// <param name="size">The number of characters that should replace the <paramref name="filter"/>.</param>
+	/// <returns><inheritdoc/> Mask will only be <paramref name="size"/> characters.</returns>
+	public static string Mask(
+		this string text, string filter, int size, char mask = '*')
+		=> text.Replace(filter, mask.Repeat(size));
+
+	/// <summary>
+	/// Take a <paramref name="character"/> and <paramref name="repeat"/> it a 
+	/// specified number of times.<br/>
+	/// <br/>
+	/// ie: '*'.Repeat(5) == "*****"
+	/// </summary>
+	/// <param name="character">The character to be <paramref name="repeat"/>ed.</param>
+	/// <param name="repeat">The number of times to repeat the <paramref name="character"/>.</param>
+	/// <returns>The full string of <paramref name="character"/>'s that have been <paramref name="repeat"/>ed.</returns>
+	public static string Repeat(
+		this char character, int repeat)
+		=> "".PadLeft(repeat, character);
+
+	/// <summary>
+	/// Add a number of <paramref name="character"/>s to the left side of <paramref name="text"/>.
+	/// </summary>
+	/// <param name="text">The text to be indented.</param>
+	/// <param name="indentLevel">The number of times <paramref name="indentSize"/> should be used for indention.</param>
+	/// <param name="character">The character to use for indention.</param>
+	/// <param name="indentSize">How many <paramref name="character"/> to use for each <paramref name="indentLevel"/>.</param>
+	/// <returns>The <paramref name="text"/> with <paramref name="character"/>s prepended.</returns>
+	public static string IndentLeft(
+		this string text, int indentLevel, char character = ' ', int indentSize = 2)
+	{
+		var width = text.Length + indentLevel * indentSize;
+		return text.PadLeft(width, character);
+	}
 }
