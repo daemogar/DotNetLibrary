@@ -47,9 +47,9 @@ public static class DiscoverableServicesExtensions
 		var discoverableType = typeof(DiscoverableService);
 
 		assembliesToSearch
+			.Union(discoverableType.Assembly)
 			.SelectMany(p => p
 			.DefinedTypes
-			.Union(discoverableType)
 			.Where(IsDiscoverableType)
 			.Select(Construct))
 			.OrderBy(p => p.Order)
