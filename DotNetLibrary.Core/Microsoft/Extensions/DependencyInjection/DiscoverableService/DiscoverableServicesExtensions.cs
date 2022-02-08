@@ -50,6 +50,7 @@ public static class DiscoverableServicesExtensions
 			.SelectMany(p => p
 			.DefinedTypes
 			.Where(IsDiscoverableType)
+			.Union(discoverableType)
 			.Select(Construct))
 			.OrderBy(p => p.Order)
 			.ForEach(p => Register(p, services, configuration));
