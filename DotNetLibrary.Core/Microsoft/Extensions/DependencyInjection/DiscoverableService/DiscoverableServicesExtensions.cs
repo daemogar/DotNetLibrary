@@ -86,7 +86,7 @@ public static class DiscoverableServicesExtensions
 
 	/// <summary>
 	/// Register the type as a service using its registration method defined by
-	/// the <seealso cref="IDiscoverableService"/> interface.
+	/// the <seealso cref="DiscoverableService"/> interface.
 	/// </summary>
 	/// <typeparam name="TDiscoverableService">The object type that should be registerd with the dependency injection services collection.</typeparam>
 	/// <param name="services">The service collection used for registering application dependencies.</param>
