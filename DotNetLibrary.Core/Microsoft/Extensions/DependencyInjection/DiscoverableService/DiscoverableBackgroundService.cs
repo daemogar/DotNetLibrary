@@ -8,11 +8,12 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// <seealso cref="BackgroundService"/>. <inheritdoc /> 
 /// </summary>
 /// <typeparam name="T">A type that implments <seealso cref="DiscoverableBackgroundService{T}"/>.</typeparam>
-public abstract class DiscoverableBackgroundService<T> : DiscoverableService
+public abstract class DiscoverableBackgroundService<T> : DiscoverableService, IHostedService, IDisposable
 	where T : DiscoverableBackgroundService<T>
 {
-	/// <inheritdoc cref="BackgroundService.ExecuteAsync(CancellationToken)" />
-	protected abstract new Task ExecuteAsync(CancellationToken stoppingToken);
+	private Task? Task;
+
+	private readonly CancellationTokenSource Source = new();
 
 	/// <summary>
 	/// <inheritdoc /> Base implementation just addes the <typeparamref name="T"/>
@@ -21,18 +22,40 @@ public abstract class DiscoverableBackgroundService<T> : DiscoverableService
 	/// </summary>
 	/// <param name="services"><inheritdoc /></param>
 	/// <param name="configuration"><inheritdoc /></param>
-	protected internal sealed override void ConfigureAsService(IServiceCollection services, IConfiguration configuration)
+	protected internal override void ConfigureAsService(
+		IServiceCollection services, IConfiguration configuration)
+		=> services.AddHostedService<T>();
+
+	/// <inheritdoc cref="BackgroundService.ExecuteAsync(CancellationToken)"/>
+	protected abstract Task ExecuteAsync(CancellationToken stoppingToken);
+
+	/// <inheritdoc cref="BackgroundService.StartAsync(CancellationToken)"/>
+	public virtual Task StartAsync(CancellationToken cancellationToken)
 	{
-		services.AddHostedService<T>();
-		ConfigureAsBackgroundService(services, configuration);
+		Task = ExecuteAsync(Source.Token);
+		return Task.IsCompleted ? Task : Task.CompletedTask;
 	}
 
-	/// <summary>
-	/// <inheritdoc cref="DiscoverableService.ConfigureAsService(IServiceCollection, IConfiguration)" />
-	/// This will call <see cref="ServiceCollectionHostedServiceExtensions.AddHostedService{T}(IServiceCollection)"/>
-	/// </summary>
-	/// before any addtional configuration.
-	/// <param name="services"><inheritdoc cref="ConfigureAsService(IServiceCollection, IConfiguration)" path="/param[@name='services']" /></param>
-	/// <param name="configuration"><inheritdoc cref="ConfigureAsService(IServiceCollection, IConfiguration)" path="/param[@name='configuration']" /></param>
-	protected virtual void ConfigureAsBackgroundService(IServiceCollection services, IConfiguration configuration) { }
+	/// <inheritdoc cref="BackgroundService.StopAsync(CancellationToken)"/>
+	public virtual async Task StopAsync(CancellationToken cancellationToken)
+	{
+		if (Task is null)
+			return;
+
+		try
+		{
+			Source.Cancel();
+		}
+		finally
+		{
+			await Task.WhenAny(new[]
+			{
+				Task,
+				Task.Delay(-1, cancellationToken)
+			});
+		}
+	}
+
+	/// <inheritdoc cref="BackgroundService.Dispose"/>
+	public virtual void Dispose() => Source.Cancel();
 }
