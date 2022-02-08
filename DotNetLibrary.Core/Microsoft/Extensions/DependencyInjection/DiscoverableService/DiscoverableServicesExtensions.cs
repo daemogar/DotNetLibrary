@@ -36,7 +36,7 @@ public static class DiscoverableServicesExtensions
 	/// dependency injection services collection.
 	/// </summary>
 	/// <param name="services">The service collection used for registering application dependencies.</param>
-	/// <param name="assembliesToSearch">List assembly that should be searched for references to the <seealso cref="IDiscoverableService"/> interface implmentation.</param>
+	/// <param name="assembliesToSearch">List assembly that should be searched for references to the <seealso cref="DiscoverableService"/> interface implmentation.</param>
 	/// <param name="configuration">The application configuration.</param>
 	/// <returns>For chainging calls to the services collection, it is returned.</returns>
 	public static IServiceCollection AddDiscoverableServices(
@@ -50,6 +50,7 @@ public static class DiscoverableServicesExtensions
 			.SelectMany(p => p
 			.DefinedTypes
 			.Where(IsDiscoverableType)
+			.Union(discoverableType)
 			.Select(Construct))
 			.OrderBy(p => p.Order)
 			.ForEach(p => Register(p, services, configuration));
