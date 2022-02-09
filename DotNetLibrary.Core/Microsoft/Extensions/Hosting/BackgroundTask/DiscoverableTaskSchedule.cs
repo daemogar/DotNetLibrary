@@ -52,25 +52,51 @@ public class DiscoverableTaskSchedule
 	/// <param name="stoppingToken">A token handling cancelling the task if it should be stopped early.</param>
 	/// <returns>An awaitable delay task.</returns>
 	public async Task DelayUntilNextEventAsync(DateTime lastRun, CancellationToken stoppingToken)
-		=> await Task.Delay(Type switch
-		{
-			DiscoverableTaskScheduleType.Continuously => TimeSpan.Zero,
-			DiscoverableTaskScheduleType.Frequency => Add(lastRun),
-			DiscoverableTaskScheduleType.Hourly => Add(lastRun),
-			DiscoverableTaskScheduleType.Daily => NextDay(lastRun, 1),
-			DiscoverableTaskScheduleType.Weekly => NextWeekDay(lastRun),
-			DiscoverableTaskScheduleType.Monthly => NextMonth(lastRun),
-			_ => TimeSpan.MaxValue
-		}, stoppingToken);
+	{
+		var next = NextScheduledTime(lastRun);
+		await Task.Delay(next < DateTime.Now
+			? TimeSpan.Zero
+			: next - DateTime.Now, stoppingToken);
+	}
 
+	/// <summary>
+	/// Get the next date and time for when the scheduled task should be run given a previous run time.
+	/// </summary>
+	/// <param name="lastRun">The date and time of the last run.</param>
+	/// <returns>The date and time of the next run.</returns>
+	public DateTime NextScheduledTime(DateTime lastRun)
+		=> Type switch
+		{
+			DiscoverableTaskScheduleType.Continuously => DateTime.Now,
+
+			DiscoverableTaskScheduleType.Frequency
+				=> lastRun.Add(Time),
+
+			DiscoverableTaskScheduleType.Hourly
+				=> lastRun.Date.AddHours(lastRun.Hour + 1).Add(Time),
+
+			DiscoverableTaskScheduleType.Daily
+				=> lastRun.Date.AddDays(1).Add(Time),
+
+			DiscoverableTaskScheduleType.Weekly
+				=> lastRun.Date.AddDays(DaysOfTheWeekArray[
+						DaysOfTheWeek().IndexOf(lastRun.DayOfWeek) + 1
+					].Days).Add(Time),
+
+			DiscoverableTaskScheduleType.Monthly
+				=> new DateTime(lastRun.Year, lastRun.Month, 1)
+					.AddMonths(1).Add(Time),
+
+			_ => DateTime.MaxValue
+		};
+	/*
 	private TimeSpan NextDay(DateTime lastRun, int days)
 	{
 		var next = lastRun.Date.AddDays(days).Add(Time);
 
-		if (next - lastRun > TimeSpan.FromDays(days))
-			next.AddDays(-days);
-
-		return next - DateTime.Now;
+		return DateTime.Now >= next
+			? TimeSpan.Zero
+			: DateTime.Now - next;
 	}
 
 	private TimeSpan NextMonth(DateTime lastRun)
@@ -91,7 +117,7 @@ public class DiscoverableTaskSchedule
 
 	private TimeSpan Add(DateTime lastRun)
 		=> new TimeSpan(lastRun.Ticks - DateTime.Now.Ticks).Add(Time);
-
+	*/
 	/// <summary>
 	/// Create a task schedule that is disabled.
 	/// </summary>
@@ -157,7 +183,7 @@ public class DiscoverableTaskSchedule
 			return new();
 		}
 
-		DiscoverableTaskSchedule service = new(DiscoverableTaskScheduleType.Weekly, 
+		DiscoverableTaskSchedule service = new(DiscoverableTaskScheduleType.Weekly,
 			HourMinute(hour, minute, $"weekly task was adjusted to run on the scheduled days"));
 		service.DaysOfTheWeekArray = Expand(0).Union(Expand(7)).ToList();
 		return service;
