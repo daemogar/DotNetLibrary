@@ -180,6 +180,47 @@
             <returns>String value of cookie or null</returns>
             <exception cref="T:Microsoft.AspNetCore.Http.NullCookieValueException"></exception>
         </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.CookieExtensions">
+            <summary>
+            Extensions for managing cookies.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.CookieExtensions.AddCookies(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            Extension method for adding <seealso cref="T:Microsoft.AspNetCore.Http.CookieManager"/> and <seealso cref="T:Microsoft.AspNetCore.Http.CookieFactory"/> to the services.
+            collection.
+            </summary>
+            <param name="services"><inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddTransient``1(Microsoft.Extensions.DependencyInjection.IServiceCollection)"/></param>
+            <returns><inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddTransient``1(Microsoft.Extensions.DependencyInjection.IServiceCollection)"/></returns>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1">
+            <summary>
+            Special case of a <seealso cref="T:Microsoft.Extensions.DependencyInjection.DiscoverableService"/> and 
+            <seealso cref="T:Microsoft.Extensions.Hosting.BackgroundService"/>. <inheritdoc /> 
+            </summary>
+            <typeparam name="T">A type that implments <seealso cref="T:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1"/>.</typeparam>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.ExecuteAsync(System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Microsoft.Extensions.Hosting.BackgroundService.ExecuteAsync(System.Threading.CancellationToken)" />
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            <inheritdoc /> Base implementation just addes the <typeparamref name="T"/>
+            as a hosted service to the services collection. Override to extend
+            functionality.
+            </summary>
+            <param name="services"><inheritdoc /></param>
+            <param name="configuration"><inheritdoc /></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.ConfigureAsBackgroundService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            <inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableService.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)" />
+            This will call <see cref="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionHostedServiceExtensions.AddHostedService``1(Microsoft.Extensions.DependencyInjection.IServiceCollection)"/>
+            </summary>
+            before any addtional configuration.
+            <param name="services"><inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)" path="/param[@name='services']" /></param>
+            <param name="configuration"><inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)" path="/param[@name='configuration']" /></param>
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.DiscoverableService">
             <summary>
             Abstract implimentation of the discoverable service. Override
@@ -193,6 +234,16 @@
             negative. Zero is the default order and order of registration is not
             garenteed if the order matches another services order number.
             </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableService.ExecuteAsync(System.Threading.CancellationToken)">
+            <summary>
+            Override this method if this discoverable service is to be used
+            as a background service.
+            <inheritdoc />
+            </summary>
+            <param name="stoppingToken"><inheritdoc /></param>
+            <returns><inheritdoc /></returns>
+            <exception cref="T:System.NotImplementedException"><inheritdoc /></exception>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableService.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
@@ -225,25 +276,19 @@
             dependency injection services collection.
             </summary>
             <param name="services">The service collection used for registering application dependencies.</param>
-            <param name="assembliesToSearch">List assembly that should be searched for references to the <seealso cref="T:Microsoft.Extensions.DependencyInjection.IDiscoverableService"/> interface implmentation.</param>
+            <param name="assembliesToSearch">List assembly that should be searched for references to the <seealso cref="T:Microsoft.Extensions.DependencyInjection.DiscoverableService"/> interface implmentation.</param>
             <param name="configuration">The application configuration.</param>
             <returns>For chainging calls to the services collection, it is returned.</returns>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableServicesExtensions.AddDiscoverableService``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             Register the type as a service using its registration method defined by
-            the <seealso cref="T:Microsoft.Extensions.DependencyInjection.IDiscoverableService"/> interface.
+            the <seealso cref="T:Microsoft.Extensions.DependencyInjection.DiscoverableService"/> interface.
             </summary>
             <typeparam name="TDiscoverableService">The object type that should be registerd with the dependency injection services collection.</typeparam>
             <param name="services">The service collection used for registering application dependencies.</param>
             <param name="configuration">The application configuration.</param>
             <returns>For chainging calls to the services collection, it is returned.</returns>
-        </member>
-        <member name="T:Microsoft.Extensions.DependencyInjection.IDiscoverableService">
-            <summary>
-            Interface to add to a class so it is auto discoverable and setup 
-            for dependency injection.
-            </summary>
         </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpContextExtensions">
             <summary>
@@ -259,10 +304,256 @@
             <returns><seealso cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/></returns>
             <exception cref="T:System.NullReferenceException"></exception>
         </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.DiscoverableTask`1">
+            <summary>
+            <inheritdoc /> This task is for configuring and setting scheduled 
+            events.
+            </summary>
+            <typeparam name="T"><inheritdoc /></typeparam>
+        </member>
+        <member name="P:Microsoft.Extensions.DependencyInjection.DiscoverableTask`1.LastRun">
+            <summary>
+            The date and time of the last run.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.DependencyInjection.DiscoverableTask`1.TaskSchedule">
+            <summary>
+            The schedule and frequency the <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`1.ExecuteTaskAsync(System.Threading.CancellationToken)"/>
+            method should be triggered.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`1.#ctor(System.DateTime,Microsoft.Extensions.Hosting.DiscoverableTaskSchedule)">
+            <summary>
+            A discoverable task that can be scheduled.
+            </summary>
+            <param name="lastRun">The date and time of the last run. If this task has never run this this should be set to <seealso cref="F:System.DateTime.MinValue"/>.</param>
+            <param name="schedule">A schedule describing how often this task should be run.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`1.ExecuteTaskAsync(System.Threading.CancellationToken)">
+            <summary>
+            This method is called every time the 
+            <inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.ExecuteAsync(System.Threading.CancellationToken)" />
+            </summary>
+            <param name="stoppingToken"></param>
+            <returns></returns>
+        </member>
+        <member name="E:Microsoft.Extensions.DependencyInjection.DiscoverableTask`1.OnLastRunUpdated">
+            <summary>
+            Notify any process that want to know that the last run date has been updated.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`1.ExecuteAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="T:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule">
+            <summary>
+            A schedule for when a task should be trigger.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule.Type">
+            <summary>
+            The schedule type for this task schedule.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule.DaysOfTheWeek">
+            <summary>
+            The days of the week this task should be run 
+            on if applicable.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule.Time">
+            <summary>
+            The time of day or frequency a task should run.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule.#ctor(Microsoft.Extensions.Hosting.DiscoverableTaskScheduleType,System.TimeSpan)">
+            <summary>
+            Create a task schedule. Not all parameters are used or needed or
+            interpreted the same, use with caution.
+            </summary>
+            <param name="type">The type of schedule.</param>
+            <param name="time">The time for frequency of triggers.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule.DelayUntilNextEventAsync(System.DateTime,System.Threading.CancellationToken)">
+            <summary>
+            Delay the processing until the next time a task should be run.
+            </summary>
+            <param name="lastRun">The date and time of the last run.</param>
+            <param name="stoppingToken">A token handling cancelling the task if it should be stopped early.</param>
+            <returns>An awaitable delay task.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule.CreateDisabledTask">
+            <summary>
+            Create a task schedule that is disabled.
+            </summary>
+            <returns>A disabled task schedule.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule.CreateContinuousTask">
+            <summary>
+            Create a task that runs again immediately after previous run finishes.
+            </summary>
+            <returns>A task schedule configured to run continuously.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule.CreateFrequencyTask(System.Int32)">
+            <summary>
+            Create a task that runs every x number of <paramref name="minutes"/>.
+            </summary>
+            <param name="minutes">The time between each run of the task.</param>
+            <returns>A task schedule configured for a frequency type.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule.CreateHourlyTask(System.Int32)">
+            <summary>
+            Create a task that runs every hour on the <paramref name="minute"/> mark.
+            </summary>
+            <param name="minute">The minute mark of the hour the task should run.</param>
+            <returns>A task schedule configured for a hourly task type.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule.CreateDaily(System.Int32,System.Int32)">
+            <summary>
+            Create a task that runs every day on the <paramref name="hour"/> and
+            <paramref name="minute"/>.
+            </summary>
+            <param name="hour">The hour the task should run each day.</param>
+            <param name="minute">The minute of the hour that the task should run each day.</param>
+            <returns>A task schedule configured for a daily running task.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule.CreateWeekly(System.Int32,System.Int32,System.DayOfWeek[])">
+            <summary>
+            Create a task that runs for each <paramref name="daysOfTheWeek"/> at
+            the specific <paramref name="hour"/> and <paramref name="minute"/>.
+            </summary>
+            <param name="hour">The hour the task should run each <paramref name="daysOfTheWeek"/>.</param>
+            <param name="minute">The minute of the hour that the task should run each <paramref name="daysOfTheWeek"/>.</param>
+            <param name="daysOfTheWeek">The days of the week the task should run on.</param>
+            <returns>A task schedule configured for a weekly running task.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule.CreateMonthly(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a task that runs each month on the <paramref name="day"/> of the
+            month at the specific <paramref name="hour"/> and <paramref name="minute"/>.
+            </summary>
+            <param name="day">The day of the month to run the task.</param>
+            <param name="hour">The hour of the day to run the task.</param>
+            <param name="minute">The minute of the hour to run the task.</param>
+            <returns>A task schedule configured for a monthly running task.</returns>
+        </member>
+        <member name="T:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleType">
+            <summary>
+            How frequently should a task be run.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleType.Disabled">
+            <summary>
+            Schedule is ignored.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleType.Continuously">
+            <summary>
+            As soon as the process is complete,
+            trigger the process again.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleType.Frequency">
+            <summary>
+            As soon as the process is complete,
+            wait for frequency to be met before
+            triggering the process again.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleType.Hourly">
+            <summary>
+            Run every day on an hourly bases 
+            at a specific time during the hour.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleType.Daily">
+            <summary>
+            Run every day at a specific time 
+            of day.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleType.Weekly">
+            <summary>
+            Run every day at a specific time
+            on specific days.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleType.Monthly">
+            <summary>
+            Run once a month at a specific
+            day and time.
+            </summary>
+        </member>
+        <member name="T:Serilog.LogStackTrace">
+            <summary>
+            Extension methods for logging stack traces not 
+            associated with an exception.
+            </summary>
+        </member>
+        <member name="M:Serilog.LogStackTrace.StackTrace``1(Serilog.ILogger,System.String,``0,System.UInt16)">
+            <inheritdoc cref="M:Serilog.LogStackTrace.StackTrace``1(Serilog.ILogger,System.String,System.Object,``0,System.UInt16)"/>
+        </member>
+        <member name="M:Serilog.LogStackTrace.StackTrace``1(Serilog.ILogger,System.String,System.Object,``0,System.UInt16)">
+            <summary>
+            Log results for debugging if debug logging is enabled.
+            <inheritdoc cref="M:Serilog.LogStackTrace.StackTrace(Serilog.ILogger,System.UInt16)" />
+            </summary>
+            <typeparam name="T">A type generic for passing through the results for chaining purposes.</typeparam>
+            <param name="logger"><inheritdoc cref="M:Serilog.LogStackTrace.StackTrace(Serilog.ILogger,System.UInt16)"/></param>
+            <param name="target">An custom identifier for what this log is being called against.</param>
+            <param name="data">Additional details that should be logged with stack trace for debugging.</param>
+            <param name="result">The interesting data to be returned after logging.</param>
+            <param name="skipFrames"><inheritdoc cref="M:Serilog.LogStackTrace.StackTrace(Serilog.ILogger,System.UInt16)"/></param>
+            <returns>The <paramref name="result"/> passed in without modifications.</returns>
+        </member>
+        <member name="M:Serilog.LogStackTrace.StackTrace(Serilog.ILogger,System.UInt16)">
+            <summary>
+            Log a stack trace at the point of caller if verbose logging is enabled.
+            </summary>
+            <param name="logger">The serilog logger.</param>
+            <param name="skipFrames">Number of stack frames to ignore. This is usuful if wanting to ignore a part of the stack frame because the caller is not the important part of the stack frame.</param>
+        </member>
+        <member name="T:System.ComponentModel.EnumExtensions">
+            <summary>
+            Simplified attribute getter for enums.
+            </summary>
+        </member>
+        <member name="M:System.ComponentModel.EnumExtensions.GetDescription``1(``0)">
+            <summary>
+            Get the description value of the attribute if it exists. Otherwise
+            return the attribute string representation.
+            </summary>
+            <typeparam name="TEnum">The type of the target enum to search for an attribute on.</typeparam>
+            <param name="enumerationValue">The target enum to search for an attribute on.</param>
+            <returns>The string description stored along with the enum value or the string representation of the enum value if not <seealso cref="T:System.ComponentModel.DescriptionAttribute"/> is attached.</returns>
+        </member>
+        <member name="M:System.ComponentModel.EnumExtensions.GetAttribute``3(``0,System.Func{System.String,``1,``2})">
+            <summary>
+            Get a specific attribute from an enum.
+            </summary>
+            <typeparam name="TEnum">The type of the target enum to search for an attribute on.</typeparam>
+            <typeparam name="TAttribute">The attribute type to search for.</typeparam>
+            <typeparam name="TResult">The type that should be returned.</typeparam>
+            <param name="enumerationValue">The target enum to search for an attribute on.</param>
+            <param name="callback">A method which takes in the stringified version of the <paramref name="enumerationValue"/> and the attribute attached to the enum value and returns a <typeparamref name="TResult"/>.</param>
+            <returns>The results of the <paramref name="callback"/>.</returns>
+            <exception cref="T:System.ArgumentException">If <paramref name="enumerationValue"/> is not an enum.</exception>
+            <exception cref="T:System.InvalidOperationException">If <paramref name="enumerationValue"/> does not return a string value.</exception>
+        </member>
         <member name="T:System.Linq.LinqExtensions">
             <summary>
             Linq extension methods.
             </summary>
+        </member>
+        <member name="M:System.Linq.LinqExtensions.ForEach``2(System.Collections.Generic.IEnumerable{``0},System.Func{``0,``1})">
+            <summary>
+            Linq method to iterate over all items in a <paramref name="list"/> and
+            calling <paramref name="predicate"/> on each item.
+            </summary>
+            <typeparam name="TModel">Generic type list of objects to add a single item to.</typeparam>
+            <typeparam name="TResult">The type to return from the <paramref name="predicate"/>.</typeparam>
+            <param name="list">List of items to have single item added to.</param>
+            <param name="predicate">A method to convert an each item in list to a string.</param>
         </member>
         <member name="M:System.Linq.LinqExtensions.ForEach``1(System.Collections.Generic.IEnumerable{``0},System.Action{``0})">
             <summary>
@@ -270,6 +561,16 @@
             calling <paramref name="predicate"/> on each item.
             </summary>
             <typeparam name="T">Generic type list of objects to add a single item to.</typeparam>
+            <param name="list">List of items to have single item added to.</param>
+            <param name="predicate">A method to convert an each item in list to a string.</param>
+        </member>
+        <member name="M:System.Linq.LinqExtensions.ForEach``2(``0[],System.Func{``0,``1})">
+            <summary>
+            Linq method to iterate over all items in a <paramref name="list"/> and
+            calling <paramref name="predicate"/> on each item.
+            </summary>
+            <typeparam name="TModel">Generic type list of objects to add a single item to.</typeparam>
+            <typeparam name="TResult">The type to return from the <paramref name="predicate"/>.</typeparam>
             <param name="list">List of items to have single item added to.</param>
             <param name="predicate">A method to convert an each item in list to a string.</param>
         </member>
@@ -560,6 +861,14 @@
             <summary>
             Generic extension methods for enhancing string functions.
             </summary>
+        </member>
+        <member name="M:System.Text.StringExtensions.WithSuffix(System.Int32,System.String)">
+            <summary>
+            Return the suffix of a number. 1st, 2nd, 3rd, etc.
+            </summary>
+            <param name="number">The number to format.</param>
+            <param name="format">Additional formatting for the number.</param>
+            <returns>The formatted number with the suffix added at the end.</returns>
         </member>
         <member name="M:System.Text.StringExtensions.SubstringClip(System.String,System.Int32)">
             <summary>

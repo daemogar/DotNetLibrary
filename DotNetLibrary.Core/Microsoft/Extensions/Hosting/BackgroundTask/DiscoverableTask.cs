@@ -53,7 +53,7 @@ public abstract class DiscoverableTask<T> : DiscoverableBackgroundService<T>
 		{
 			await Task.CompletedTask;
 			return;
-		}
+		} 
 
 		while (!stoppingToken.IsCancellationRequested)
 		{
@@ -61,8 +61,7 @@ public abstract class DiscoverableTask<T> : DiscoverableBackgroundService<T>
 			await ExecuteTaskAsync(stoppingToken);
 
 			LastRun = DateTime.Now;
-			if (OnLastRunUpdated is not null)
-				await OnLastRunUpdated.Invoke(LastRun);
+			await OnLastRunUpdated.Invoke(LastRun);
 		}
 	}
 }
