@@ -11,6 +11,11 @@ namespace Microsoft.Extensions.Hosting;
 public class DiscoverableTaskSchedule
 {
 	/// <summary>
+	/// Task ID for use 
+	/// </summary>
+	public DiscoverableTaskScheduleID Identification { get; } = new();
+
+	/// <summary>
 	/// The schedule type for this task schedule.
 	/// </summary>
 	public DiscoverableTaskScheduleType Type { get; }
