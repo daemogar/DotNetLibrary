@@ -198,7 +198,7 @@ public static class HealthCheckExtensions
 	/// </summary>
 	/// <param name="application">The <seealso cref="WebApplication"/>.</param>
 	/// <param name="basePath">The root or base path for health check endpoints.</param>
-	public static void MapHealthChecks(
+	public static void MapHealthCheckEndpoints(
 		this WebApplication application,
 		string basePath = "/heartbeat/")
 	{
@@ -211,18 +211,16 @@ public static class HealthCheckExtensions
 
 		// https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-6.0
 
-		IEndpointRouteBuilder builder = application;
-
-		builder.MapHealthChecks(basePath);
-		builder.MapHealthChecks($"{basePath}live", new()
+		application.MapHealthChecks(basePath);
+		application.MapHealthChecks($"{basePath}live", new()
 		{
 			Predicate = _ => false
 		});
-		builder.MapHealthChecks($"{basePath}ready", new()
+		application.MapHealthChecks($"{basePath}ready", new()
 		{
 			Predicate = p => p.Tags.Contains("ready")
 		});
-		builder.MapHealthChecks($"{basePath}details", new()
+		application.MapHealthChecks($"{basePath}details", new()
 		{
 			ResponseWriter = ResponseWriter
 		});
@@ -232,7 +230,7 @@ public static class HealthCheckExtensions
 
 	private static bool HealthCheckMapped { get; set; }
 
-	private static Task ResponseWriter(
+	private static async Task ResponseWriter(
 		HttpContext context, HealthReport report)
 	{
 		context.Response.ContentType = "application/json; charset=utf-8";
@@ -246,8 +244,12 @@ public static class HealthCheckExtensions
 		Write(report);
 		writer.WriteEndObject();
 
-		return context.Response.WriteAsync(
-			Encoding.UTF8.GetString(stream.ToArray()));
+		CancellationTokenSource source = new();
+		source.CancelAfter(TimeSpan.FromSeconds(2));
+
+		await writer.FlushAsync(source.Token);
+		await context.Response.WriteAsync(
+			Encoding.UTF8.GetString(stream.ToArray()), source.Token);
 
 		void Write(HealthReport report)
 		{
@@ -257,18 +259,19 @@ public static class HealthCheckExtensions
 			if (!report.Entries.Any())
 				return;
 
-			writer.WriteStartObject("results");
+			writer.WriteStartArray("results");
 			foreach (var entry in report.Entries)
 			{
-				writer.WriteStartObject(entry.Key);
-				WriteEntry(entry.Value);
+				writer.WriteStartObject();
+				WriteEntry(entry.Key, entry.Value);
 				writer.WriteEndObject();
 			}
-			writer.WriteEndObject();
+			writer.WriteEndArray();
 		}
 
-		void WriteEntry(HealthReportEntry entry)
+		void WriteEntry(string name, HealthReportEntry entry)
 		{
+			writer.WriteString("name", name);
 			writer.WriteString("status", entry.Status.ToString());
 			writer.WriteString("description", entry.Description);
 			writer.WriteString("duration", entry.Duration.ToString("G"));
