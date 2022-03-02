@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 
@@ -202,19 +203,21 @@ public static class HealthCheckExtensions
 		string basePath = "/heartbeat/")
 	{
 		basePath = $"/{basePath}/".Replace("//", "/");
-		
+
 		// https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-6.0
 
-		application.MapHealthChecks(basePath);
-		application.MapHealthChecks($"/{basePath}live", new()
+		IEndpointRouteBuilder builder = application;
+
+		builder.MapHealthChecks(basePath);
+		builder.MapHealthChecks($"/{basePath}live", new()
 		{
 			Predicate = _ => false
 		});
-		application.MapHealthChecks($"{basePath}ready", new()
+		builder.MapHealthChecks($"{basePath}ready", new()
 		{
 			Predicate = p => p.Tags.Contains("ready")
 		});
-		application.MapHealthChecks($"{basePath}details", new()
+		builder.MapHealthChecks($"{basePath}details", new()
 		{
 			ResponseWriter = ResponseWriter
 		});
