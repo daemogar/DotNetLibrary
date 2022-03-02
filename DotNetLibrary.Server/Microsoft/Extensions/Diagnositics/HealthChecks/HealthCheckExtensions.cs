@@ -96,7 +96,7 @@ public static class HealthCheckExtensions
 				healthCheck.Tags, healthCheck.Timeout);
 
 			Log.Logger.Information(
-				"Added Health Check {Health Check Name} {Health Check}",
+				"Added Health Check {HealthCheckName} {HealthCheck}",
 				healthCheck.Name, healthCheck);
 		}
 
@@ -202,6 +202,11 @@ public static class HealthCheckExtensions
 		this WebApplication application,
 		string basePath = "/heartbeat/")
 	{
+		if (HealthCheckMapped)
+			return;
+
+		HealthCheckMapped = true;
+
 		basePath = $"/{basePath}/".Replace("//", "/");
 
 		// https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-6.0
@@ -221,7 +226,11 @@ public static class HealthCheckExtensions
 		{
 			ResponseWriter = ResponseWriter
 		});
+
+		Log.Logger.Information("Health Check Endpoints Mapped {Path}", basePath);
 	}
+
+	private static bool HealthCheckMapped { get; set; }
 
 	private static Task ResponseWriter(
 		HttpContext context, HealthReport report)
