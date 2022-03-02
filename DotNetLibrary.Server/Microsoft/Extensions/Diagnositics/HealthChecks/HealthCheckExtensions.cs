@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+
 using Serilog;
 
 using System.Reflection;
@@ -56,7 +57,7 @@ public static class HealthCheckExtensions
 
 		services.AddHostedService<ApplicationStartedBackgroundService>();
 		services.AddSingleton<ApplicationStartedHealthCheck>();
-		
+
 		Builder = services
 			.AddHealthChecks()
 			.AddCheck<ApplicationStartedHealthCheck>(
@@ -185,21 +186,25 @@ public static class HealthCheckExtensions
 	/// </list>
 	/// </summary>
 	/// <param name="application">The <seealso cref="WebApplication"/>.</param>
+	/// <param name="basePath">The root or base path for health check endpoints.</param>
 	public static void MapHealthChecks(
-		this WebApplication application)
+		this WebApplication application,
+		string basePath = "/heartbeat/")
 	{
+		basePath = $"/{basePath}/".Replace("//", "/");
+		
 		// https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-6.0
 
-		application.MapHealthChecks("/heartbeat");
-		application.MapHealthChecks("/heartbeat/live", new()
+		application.MapHealthChecks(basePath);
+		application.MapHealthChecks($"/{basePath}live", new()
 		{
 			Predicate = _ => false
 		});
-		application.MapHealthChecks("/heartbeat/ready", new()
+		application.MapHealthChecks($"{basePath}ready", new()
 		{
 			Predicate = p => p.Tags.Contains("ready")
 		});
-		application.MapHealthChecks("/heartbeat/details", new()
+		application.MapHealthChecks($"{basePath}details", new()
 		{
 			ResponseWriter = ResponseWriter
 		});
@@ -209,7 +214,7 @@ public static class HealthCheckExtensions
 		HttpContext context, HealthReport report)
 	{
 		context.Response.ContentType = "application/json; charset=utf-8";
-		
+
 		var options = new JsonWriterOptions { Indented = true };
 
 		using var stream = new MemoryStream();
@@ -218,7 +223,7 @@ public static class HealthCheckExtensions
 		writer.WriteStartObject();
 		Write(report);
 		writer.WriteEndObject();
-		
+
 		return context.Response.WriteAsync(
 			Encoding.UTF8.GetString(stream.ToArray()));
 
@@ -269,7 +274,7 @@ public static class HealthCheckExtensions
 				return;
 
 			writer.WriteStartArray("tags");
-			foreach(var tag in tags)
+			foreach (var tag in tags)
 				writer.WriteStringValue(tag);
 			writer.WriteEndArray();
 		}
