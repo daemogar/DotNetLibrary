@@ -31,9 +31,24 @@ namespace Microsoft.Extensions.Diagnostics.HealthChecks
 		/// </summary>
 		/// <typeparam name="T">A type in an assembly to search.</typeparam>
 		public void AddAssemblyReferenceType<T>()
+			=> AddAssemblyReferences(typeof(T).Assembly);
+
+		/// <summary>
+		/// Add assemblies to search for health checks.
+		/// </summary>
+		/// <param name="assemblies">Additional assemblies to search for health checks.</param>
+		public void AddAssemblyReferences(params Assembly[] assemblies)
 		{
-			var assembly = typeof(T).Assembly;
-			
+			foreach (var assembly in assemblies)
+				AddAssemblyReferences(assembly);
+		}
+
+		/// <summary>
+		/// Add an assembly to search for health checks.
+		/// </summary>
+		/// <param name="assembly">An additional assembly to search for health checks.</param>
+		public void AddAssemblyReferences(Assembly assembly)
+		{
 			if (HealthCheckAssemblyReferenceTypes.Contains(assembly))
 				return;
 
