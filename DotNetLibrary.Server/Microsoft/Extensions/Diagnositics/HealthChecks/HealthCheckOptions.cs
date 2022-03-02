@@ -52,7 +52,7 @@ namespace Microsoft.Extensions.Diagnostics.HealthChecks
 			if (HealthCheckAssemblyReferenceTypes.Contains(assembly))
 				return;
 
-			Log.Logger.Verbose("Adding Health Check {Assembly}", assembly.FullName);
+			Log.Logger.Verbose("Adding Health Check Assembly {Assembly}", assembly.FullName);
 			HealthCheckAssemblyReferenceTypes.Add(assembly);
 		}
 
@@ -63,6 +63,12 @@ namespace Microsoft.Extensions.Diagnostics.HealthChecks
 		/// <param name="builder"><seealso cref="IHealthChecksBuilder"/></param>
 		public void InvokeHealthChecks(
 			IHealthChecksBuilder builder)
-			=> HealthChecks?.Invoke(builder);
+		{
+			HealthChecks?.Invoke(builder);
+
+			Log.Logger.Information(
+				"Invoking Health Check Builders {Count}",
+				HealthCheckCount());
+		}
 	}
 }

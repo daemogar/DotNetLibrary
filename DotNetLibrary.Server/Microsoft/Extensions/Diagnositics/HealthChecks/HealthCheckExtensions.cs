@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
@@ -55,16 +56,15 @@ public static class HealthCheckExtensions
 		if (Builder is not null)
 			return Builder;
 
-		services.AddHostedService<ApplicationStartedBackgroundService>();
-		services.AddSingleton<ApplicationStartedHealthCheck>();
+		var provider = services.BuildServiceProvider();
+		ApplicationStartedHealthCheck healthCheck = new(
+			provider.GetRequiredService<IWebHostEnvironment>());
 
-		Builder = services
-			.AddHealthChecks()
-			.AddCheck<ApplicationStartedHealthCheck>(
-				"Application Started",
-				HealthStatus.Unhealthy,
-				new[] { "ready" },
-				TimeSpan.FromMinutes(2));
+		services.AddHostedService<ApplicationStartedBackgroundService>();
+		services.AddSingleton(healthCheck);
+
+		Builder = services.AddHealthChecks();
+		AddHealthCheck(healthCheck);
 
 		var types = GetTypes();
 
@@ -73,7 +73,6 @@ public static class HealthCheckExtensions
 		else
 			options.InvokeHealthChecks(Builder);
 
-		var provider = services.BuildServiceProvider();
 		foreach (var type in types)
 			CreateHealthCheck(type);
 
@@ -85,10 +84,19 @@ public static class HealthCheckExtensions
 			healthCheck.Name
 				??= type.Name.Replace("HealthCheck", "").ToTitleCase();
 
+			AddHealthCheck(healthCheck);
+		}
+
+		void AddHealthCheck(BasicHealthCheck check)
+		{
 			Builder!.AddCheck(
 				healthCheck.Name, healthCheck,
 				healthCheck.FailureStatus,
 				healthCheck.Tags, healthCheck.Timeout);
+
+			Log.Logger.Information(
+				"Added Health Check {Health Check Name} {Health Check}",
+				healthCheck.Name, healthCheck);
 		}
 
 		void NoHealthChecksConfigured(IHealthChecksBuilder builder)
@@ -98,6 +106,8 @@ public static class HealthCheckExtensions
 					"Application does not have any health checks setup. " +
 					"The state of the application cannot be determined " +
 					"successfully."));
+
+			Log.Logger.Warning("No Health Checks Added");
 		}
 
 		List<Type> GetTypes()
