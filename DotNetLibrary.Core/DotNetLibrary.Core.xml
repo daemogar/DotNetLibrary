@@ -200,9 +200,6 @@
             </summary>
             <typeparam name="T">A type that implments <seealso cref="T:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1"/>.</typeparam>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.ExecuteAsync(System.Threading.CancellationToken)">
-            <inheritdoc cref="M:Microsoft.Extensions.Hosting.BackgroundService.ExecuteAsync(System.Threading.CancellationToken)" />
-        </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             <inheritdoc /> Base implementation just addes the <typeparamref name="T"/>
@@ -212,14 +209,17 @@
             <param name="services"><inheritdoc /></param>
             <param name="configuration"><inheritdoc /></param>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.ConfigureAsBackgroundService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
-            <summary>
-            <inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableService.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)" />
-            This will call <see cref="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionHostedServiceExtensions.AddHostedService``1(Microsoft.Extensions.DependencyInjection.IServiceCollection)"/>
-            </summary>
-            before any addtional configuration.
-            <param name="services"><inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)" path="/param[@name='services']" /></param>
-            <param name="configuration"><inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)" path="/param[@name='configuration']" /></param>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.ExecuteAsync(System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Microsoft.Extensions.Hosting.BackgroundService.ExecuteAsync(System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.StartAsync(System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Microsoft.Extensions.Hosting.BackgroundService.StartAsync(System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.StopAsync(System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Microsoft.Extensions.Hosting.BackgroundService.StopAsync(System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.Dispose">
+            <inheritdoc cref="M:Microsoft.Extensions.Hosting.BackgroundService.Dispose"/>
         </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.DiscoverableService">
             <summary>
@@ -234,16 +234,6 @@
             negative. Zero is the default order and order of registration is not
             garenteed if the order matches another services order number.
             </summary>
-        </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableService.ExecuteAsync(System.Threading.CancellationToken)">
-            <summary>
-            Override this method if this discoverable service is to be used
-            as a background service.
-            <inheritdoc />
-            </summary>
-            <param name="stoppingToken"><inheritdoc /></param>
-            <returns><inheritdoc /></returns>
-            <exception cref="T:System.NotImplementedException"><inheritdoc /></exception>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableService.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
@@ -350,6 +340,11 @@
             A schedule for when a task should be trigger.
             </summary>
         </member>
+        <member name="P:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule.Identification">
+            <summary>
+            Task ID for use 
+            </summary>
+        </member>
         <member name="P:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule.Type">
             <summary>
             The schedule type for this task schedule.
@@ -381,6 +376,13 @@
             <param name="lastRun">The date and time of the last run.</param>
             <param name="stoppingToken">A token handling cancelling the task if it should be stopped early.</param>
             <returns>An awaitable delay task.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule.NextScheduledTime(System.DateTime)">
+            <summary>
+            Get the next date and time for when the scheduled task should be run given a previous run time.
+            </summary>
+            <param name="lastRun">The date and time of the last run.</param>
+            <returns>The date and time of the next run.</returns>
         </member>
         <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule.CreateDisabledTask">
             <summary>
@@ -437,6 +439,63 @@
             <param name="minute">The minute of the hour to run the task.</param>
             <returns>A task schedule configured for a monthly running task.</returns>
         </member>
+        <member name="T:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleID">
+            <summary>
+            Get and set a task id.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleID.SetTaskID(System.String)">
+            <summary>
+            Set the task id as a string.
+            </summary>
+            <param name="identifier"><inheritdoc cref="M:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleID.SetTaskID``1(``0)" /></param>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleID.SetTaskID(System.Int32)">
+            <summary>
+            Set the task id as an integer.
+            </summary>
+            <param name="id"><inheritdoc cref="M:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleID.SetTaskID``1(``0)"/></param>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleID.SetTaskID(System.Guid)">
+            <summary>
+            Set the task id as an guid.
+            </summary>
+            <param name="guid"><inheritdoc cref="M:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleID.SetTaskID``1(``0)"/></param>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleID.SetTaskID``1(``0)">
+            <summary>
+            Set the Task ID to a custom type.
+            </summary>
+            <typeparam name="T">The user defined type for use as a task id handler.</typeparam>
+            <param name="taskID">The identifier of the task.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleID.GetTaskID``1">
+            <summary>
+            Get the task id.
+            </summary>
+            <typeparam name="T">The type of the ID.</typeparam>
+            <returns>The value of the task id.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown if the task id has not been set.</exception>
+            <exception cref="T:System.InvalidCastException">Thrown if trying to get the task id as a different type then when it was set.</exception>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleID.GetStringTaskID">
+            <summary>
+            Get the task id as a string.
+            </summary>
+            <returns>The string task id.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleID.GetIntTaskID">
+            <summary>
+            Get the task id as an integer.
+            </summary>
+            <returns>The integer task id.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleID.GetGuidTaskID">
+            <summary>
+            Get the task id as a guid.
+            </summary>
+            <returns>The guid task id.</returns>
+        </member>
         <member name="T:Microsoft.Extensions.Hosting.DiscoverableTaskScheduleType">
             <summary>
             How frequently should a task be run.
@@ -484,6 +543,111 @@
             day and time.
             </summary>
         </member>
+        <member name="T:Microsoft.JSInterop.SessionStorageFactoryService">
+            <summary>
+            Factory for creating session storage services. Use this to create
+            an object to get and set data reliably with session storage.
+            </summary>
+        </member>
+        <member name="M:Microsoft.JSInterop.SessionStorageFactoryService.#ctor(Microsoft.JSInterop.IJSRuntime)">
+            <summary>
+            Create a service factory getting 
+            </summary>
+            <param name="runtime"></param>
+        </member>
+        <member name="M:Microsoft.JSInterop.SessionStorageFactoryService.Create``1(System.String)">
+            <summary>
+            Create a session storage state for the supplied <paramref name="key"/>.
+            </summary>
+            <typeparam name="T">Data type of the data stored in </typeparam>
+            <param name="key">The key value for storing session data.</param>
+            <returns>A session storage state object for the given <paramref name="key"/>.</returns>
+        </member>
+        <member name="M:Microsoft.JSInterop.SessionStorageFactoryService.GetAsync``1(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Get data from session storage using <paramref name="key"/>
+            with the JSON.parse(data).
+            </summary>
+            <typeparam name="T">The type of the data to be saved to session storage.</typeparam>
+            <param name="key">The key value for storing session data.</param>
+            <param name="cancellationToken"><inheritdoc cref="T:System.Threading.CancellationToken"/></param>
+            <returns>A task representing the status of the request to delete a session storage data.</returns>
+        </member>
+        <member name="M:Microsoft.JSInterop.SessionStorageFactoryService.GetAsync``1(System.String,``0,System.Threading.CancellationToken)">
+            <summary>
+            Get data from session storage using <paramref name="key"/> 
+            with the JSON.parse(data ?? <paramref name="defaultValue"/>).
+            </summary>
+            <typeparam name="T">The type of the data to be saved to session storage.</typeparam>
+            <param name="key">The key value for storing session data.</param>
+            <param name="defaultValue">A default value to return if nothing stored in session storage.</param>
+            <param name="cancellationToken"><inheritdoc cref="T:System.Threading.CancellationToken"/></param>
+            <returns>A task representing the status of the request to add or update session storage data.</returns>
+        </member>
+        <member name="M:Microsoft.JSInterop.SessionStorageFactoryService.SetAsync``1(System.String,``0,System.Threading.CancellationToken)">
+            <summary>
+            Set or update data in session storage using <paramref name="key"/> 
+            with the JSON.stringify(<paramref name="data"/>).
+            </summary>
+            <typeparam name="T">The type of the data to be saved to session storage.</typeparam>
+            <param name="key">The key value for storing session data.</param>
+            <param name="data">The object of data to be stored. This data will be JSON.stringify(<paramref name="data"/>).</param>
+            <param name="cancellationToken"><inheritdoc cref="T:System.Threading.CancellationToken"/></param>
+            <returns>A task representing the status of the request to add or update session storage data.</returns>
+        </member>
+        <member name="M:Microsoft.JSInterop.SessionStorageFactoryService.DeleteAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Delete pair from session storage using <paramref name="key"/>.
+            </summary>
+            <param name="key">The key value for storing session data.</param>
+            <param name="cancellationToken"><inheritdoc cref="T:System.Threading.CancellationToken"/></param>
+            <returns>A task representing the status of the request to delete a session storage data.</returns>
+        </member>
+        <member name="M:Microsoft.JSInterop.SessionStorageFactoryService.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <inheritdoc/>
+        </member>
+        <member name="T:Microsoft.JSInterop.SessionStorageState`1">
+            <summary>
+            Session storage stage object for managing gettin, adding, updating, and 
+            deleting data from session storage.
+            </summary>
+            <typeparam name="T">The type of data stored in session storage.</typeparam>
+        </member>
+        <member name="P:Microsoft.JSInterop.SessionStorageState`1.Key">
+            <summary>
+            The key used for this session storage state.
+            </summary>
+        </member>
+        <member name="M:Microsoft.JSInterop.SessionStorageState`1.#ctor(Microsoft.JSInterop.SessionStorageFactoryService,System.String)">
+            <summary>
+            Create a session storage state for a specific <paramref name="key"/> and 
+            using the <paramref name="service"/> factory.
+            </summary>
+            <param name="service">Factory for manageing the session storage operations.</param>
+            <param name="key">The key used in session storage.</param>
+        </member>
+        <member name="M:Microsoft.JSInterop.SessionStorageState`1.GetAsync(System.Threading.CancellationToken)">
+            <summary>
+            Get data from session storage.
+            </summary>
+            <param name="cancellationToken"><seealso cref="T:System.Threading.CancellationToken"/></param>
+            <returns>A task getting the session storage and returning the data.</returns>
+        </member>
+        <member name="M:Microsoft.JSInterop.SessionStorageState`1.SetAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Add or update data from session storage.
+            </summary>
+            <param name="data">Data to be stored in session storage.</param>
+            <param name="cancellationToken"><seealso cref="T:System.Threading.CancellationToken"/></param>
+            <returns>A task adding or updating the session storage data.</returns>
+        </member>
+        <member name="M:Microsoft.JSInterop.SessionStorageState`1.DeleteAsync(System.Threading.CancellationToken)">
+            <summary>
+            Delete data from session storage.
+            </summary>
+            <param name="cancellationToken"><seealso cref="T:System.Threading.CancellationToken"/></param>
+            <returns>A task deleting the session storage data.</returns>
+        </member>
         <member name="T:Serilog.LogStackTrace">
             <summary>
             Extension methods for logging stack traces not 
@@ -525,7 +689,7 @@
             </summary>
             <typeparam name="TEnum">The type of the target enum to search for an attribute on.</typeparam>
             <param name="enumerationValue">The target enum to search for an attribute on.</param>
-            <returns>The string description stored along with the enum value or the string representation of the enum value if not <seealso cref="T:System.ComponentModel.DescriptionAttribute"/> is attached.</returns>
+            <returns>A string value for the description associated with the enum or the string value.</returns>
         </member>
         <member name="M:System.ComponentModel.EnumExtensions.GetAttribute``3(``0,System.Func{System.String,``1,``2})">
             <summary>
@@ -539,6 +703,74 @@
             <returns>The results of the <paramref name="callback"/>.</returns>
             <exception cref="T:System.ArgumentException">If <paramref name="enumerationValue"/> is not an enum.</exception>
             <exception cref="T:System.InvalidOperationException">If <paramref name="enumerationValue"/> does not return a string value.</exception>
+        </member>
+        <member name="T:System.IO.EmbeddedResource">
+            <summary>
+            Helper to get Embedded resources by filename.
+            </summary>
+        </member>
+        <member name="M:System.IO.EmbeddedResource.ReadAsync``1(System.String,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.EmbeddedResource.ReadAsync``1(System.String,System.Text.Json.JsonSerializerOptions,System.Reflection.Assembly,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:System.IO.EmbeddedResource.ReadAsync``1(System.String,System.Reflection.Assembly,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.EmbeddedResource.ReadAsync``1(System.String,System.Text.Json.JsonSerializerOptions,System.Reflection.Assembly,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:System.IO.EmbeddedResource.ReadAsync``1(System.String,System.Text.Json.JsonSerializerOptions,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.EmbeddedResource.ReadAsync``1(System.String,System.Text.Json.JsonSerializerOptions,System.Reflection.Assembly,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:System.IO.EmbeddedResource.ReadAsync``1(System.String,System.Text.Json.JsonSerializerOptions,System.Reflection.Assembly,System.Threading.CancellationToken)">
+            <inheritdoc cref = "M:System.IO.EmbeddedResource.ReadAsync``1(System.String,System.Text.Json.JsonSerializerOptions,System.Collections.Generic.IEnumerable{System.Reflection.Assembly},System.Threading.CancellationToken)" />
+            <param name="filename"><inheritdoc cref="M:System.IO.EmbeddedResource.ReadAsync``1(System.String,System.Text.Json.JsonSerializerOptions,System.Collections.Generic.IEnumerable{System.Reflection.Assembly},System.Threading.CancellationToken)"/></param>
+            <param name="options"><inheritdoc cref="M:System.IO.EmbeddedResource.ReadAsync``1(System.String,System.Text.Json.JsonSerializerOptions,System.Collections.Generic.IEnumerable{System.Reflection.Assembly},System.Threading.CancellationToken)"/></param>
+            <param name="assembly"><inheritdoc cref="M:System.IO.EmbeddedResource.ReadAsync``1(System.String,System.Text.Json.JsonSerializerOptions,System.Collections.Generic.IEnumerable{System.Reflection.Assembly},System.Threading.CancellationToken)"/></param>
+            <param name="cancellationToken"><inheritdoc cref="M:System.IO.EmbeddedResource.ReadAsync``1(System.String,System.Text.Json.JsonSerializerOptions,System.Collections.Generic.IEnumerable{System.Reflection.Assembly},System.Threading.CancellationToken)"/></param>
+        </member>
+        <member name="M:System.IO.EmbeddedResource.ReadAsync``1(System.String,System.Collections.Generic.IEnumerable{System.Reflection.Assembly},System.Threading.CancellationToken)">
+            <inheritdoc cref="M:System.IO.EmbeddedResource.ReadAsync``1(System.String,System.Text.Json.JsonSerializerOptions,System.Collections.Generic.IEnumerable{System.Reflection.Assembly},System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:System.IO.EmbeddedResource.ReadAsync``1(System.String,System.Text.Json.JsonSerializerOptions,System.Collections.Generic.IEnumerable{System.Reflection.Assembly},System.Threading.CancellationToken)">
+            <summary>
+            Read content from a file into a json object and deserialize it into an object of type
+            <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The type of object to be returned.</typeparam>
+            <param name="filename"><inheritdoc cref="M:System.IO.EmbeddedResource.ReadAllTextAsync(System.String,System.Reflection.Assembly)"/></param>
+            <param name="options">Options for the json deserialization process.</param>
+            <param name="assemblies">Additional assemblies to search first before the default locations.</param>
+            <param name="cancellationToken">A token for cancelling the async process early.</param>
+            <returns>The embedded resource as a C# object.</returns>
+        </member>
+        <member name="M:System.IO.EmbeddedResource.ReadAllTextAsync(System.String,System.Reflection.Assembly)">
+            <summary>
+            Read all the text from an embedded resource.
+            </summary>
+            <param name="filename">The name of the file as it exists on disk. This does not need to be namespaced unless there are duplicate files in seperate assemblies.</param>
+            <param name="assembly">An assembly to search first before the default locations.</param>
+            <returns>The embedded resource contents as a string or null if no content was found.</returns>
+        </member>
+        <member name="M:System.IO.EmbeddedResource.ReadAllTextAsync(System.String,System.Collections.Generic.IEnumerable{System.Reflection.Assembly})">
+            <summary>
+            <inheritdoc cref="M:System.IO.EmbeddedResource.ReadAllTextAsync(System.String,System.Reflection.Assembly)"/>
+            </summary>
+            <param name="filename"><inheritdoc cref="M:System.IO.EmbeddedResource.ReadAllTextAsync(System.String,System.Reflection.Assembly)"/></param>
+            <param name="assemblies">Additional assemblies to search first before the default locations.</param>
+            <returns><inheritdoc cref="M:System.IO.EmbeddedResource.ReadAllTextAsync(System.String,System.Reflection.Assembly)"/></returns>
+        </member>
+        <member name="M:System.IO.EmbeddedResource.ReadStreamAsync(System.String,System.Reflection.Assembly)">
+            <summary>
+            Get a stream reader for the given embedded resource filename.
+            </summary>
+            <param name="filename"><inheritdoc cref="M:System.IO.EmbeddedResource.ReadAllTextAsync(System.String,System.Reflection.Assembly)"/></param>
+            <param name="assembly"><inheritdoc cref="M:System.IO.EmbeddedResource.ReadAllTextAsync(System.String,System.Reflection.Assembly)"/></param>
+            <returns><inheritdoc cref="M:System.IO.EmbeddedResource.ReadAllTextAsync(System.String,System.Reflection.Assembly)"/></returns>
+        </member>
+        <member name="M:System.IO.EmbeddedResource.ReadStreamAsync(System.String,System.Collections.Generic.IEnumerable{System.Reflection.Assembly})">
+            <summary>
+            <inheritdoc cref="M:System.IO.EmbeddedResource.ReadStreamAsync(System.String,System.Reflection.Assembly)"/>
+            </summary>
+            <param name="filename"><inheritdoc cref="M:System.IO.EmbeddedResource.ReadStreamAsync(System.String,System.Reflection.Assembly)"/></param>
+            <param name="assemblies">Additional assemblies to search first before the default locations.</param>
+            <returns><inheritdoc cref="M:System.IO.EmbeddedResource.ReadStreamAsync(System.String,System.Reflection.Assembly)"/></returns>
         </member>
         <member name="T:System.Linq.LinqExtensions">
             <summary>
@@ -747,12 +979,27 @@
             <param name="json">UTF32 byte encoded string to be decoded.</param>
             <returns>An object decoded from the UTF32 byte encoded string.</returns>
         </member>
-        <member name="T:System.Text.Json.JsonExtensions">
+        <member name="T:System.Text.Json.JsonSerializerDotNetLibrary">
             <summary>
             Json serialization and deserialization helper extension methods.
             </summary>
         </member>
-        <member name="M:System.Text.Json.JsonExtensions.ToJsonString``1(``0)">
+        <member name="M:System.Text.Json.JsonSerializerDotNetLibrary.DefaultOptions">
+            <summary>
+            Get the default options configuration object used for calls that 
+            do not supply an options object or option callback method.
+            </summary>
+            <returns>The default configuration.</returns>
+        </member>
+        <member name="M:System.Text.Json.JsonSerializerDotNetLibrary.DefaultOptions(System.Action{System.Text.Json.JsonSerializerOptions})">
+            <summary>
+            Get the default options configuration object and mutate it with
+            the <paramref name="optionsCallback"/>.
+            </summary>
+            <param name="optionsCallback">Callback to mutate the default options before passing it to the Serializer or Deserializer.</param>
+            <returns>The mutated default configuration.</returns>
+        </member>
+        <member name="M:System.Text.Json.JsonSerializerDotNetLibrary.ToJsonString``1(``0)">
             <summary>
             Convert target object into a JSON serialized string.
             </summary>
@@ -760,7 +1007,7 @@
             <param name="data">Object that should be serialized to a json string.</param>
             <returns>JSON string of the object.</returns>
         </member>
-        <member name="M:System.Text.Json.JsonExtensions.ToJsonString``1(``0,System.Boolean)">
+        <member name="M:System.Text.Json.JsonSerializerDotNetLibrary.ToJsonString``1(``0,System.Boolean)">
             <summary>
             Convert target object into a JSON serialized string.
             </summary>
@@ -769,7 +1016,7 @@
             <param name="writeIndented">Should it be formatted with tabs and returns.</param>
             <returns>JSON string of the object.</returns>
         </member>
-        <member name="M:System.Text.Json.JsonExtensions.ToJsonString``1(``0,System.Text.Json.JsonSerializerOptions)">
+        <member name="M:System.Text.Json.JsonSerializerDotNetLibrary.ToJsonString``1(``0,System.Text.Json.JsonSerializerOptions)">
             <summary>
             Convert target object into a JSON serialized string.
             </summary>
@@ -778,32 +1025,44 @@
             <param name="options">JsonSerializerOptions configuration for serializing the object into a string.</param>
             <returns>JSON string of the object.</returns>
         </member>
-        <member name="M:System.Text.Json.JsonExtensions.FromJsonString``1(System.String)">
+        <member name="M:System.Text.Json.JsonSerializerDotNetLibrary.ToJsonString``1(``0,System.Action{System.Text.Json.JsonSerializerOptions})">
+            <summary>
+            Convert target object into a JSON serialized string.
+            </summary>
+            <typeparam name="T">Any object type can be converted.</typeparam>
+            <param name="data">Object that should be serialized to a json string.</param>
+            <param name="optionsCallback">Callback to configure json serializer options.</param>
+            <returns>JSON string of the object.</returns>
+        </member>
+        <member name="M:System.Text.Json.JsonSerializerDotNetLibrary.FromJsonString``1(System.String,System.Text.Json.JsonSerializerOptions)">
             <summary>
             Convert a json string into an object.
             </summary>
             <typeparam name="T">Any object type can be converted.</typeparam>
             <param name="json">A string json representation to be converted into an object.</param>
+            <param name="options">Options for <seealso cref="M:System.Text.Json.JsonSerializer.Deserialize(System.String,System.Type,System.Text.Json.JsonSerializerOptions)"/>.</param>
             <returns>The object that is returned from deserializing the json string.</returns>
         </member>
-        <member name="M:System.Text.Json.JsonExtensions.FromJsonStringUsingModel``1(System.String,``0)">
+        <member name="M:System.Text.Json.JsonSerializerDotNetLibrary.FromJsonStringUsingModel``1(System.String,``0,System.Text.Json.JsonSerializerOptions)">
             <summary>
             Convert a json string into an object.
             </summary>
             <typeparam name="T">Any object type can be converted.</typeparam>
             <param name="json">A string json representation to be converted into an object.</param>
             <param name="model">A target type to convert the json string into.</param>
+            <param name="options"><inheritdoc cref="M:System.Text.Json.JsonSerializerDotNetLibrary.ToJsonString``1(``0)"/></param>
             <returns>The object that is returned from deserializing the json string.</returns>
         </member>
-        <member name="M:System.Text.Json.JsonExtensions.FromJsonStringUsingType(System.String,System.Type)">
+        <member name="M:System.Text.Json.JsonSerializerDotNetLibrary.FromJsonStringUsingType(System.String,System.Type,System.Text.Json.JsonSerializerOptions)">
             <summary>
             Convert a json string into an object.
             </summary>
             <param name="json">A string json representation to be converted into an object.</param>
             <param name="type">A target type to convert the json string into.</param>
+            <param name="options"><inheritdoc cref="M:System.Text.Json.JsonSerializerDotNetLibrary.ToJsonString``1(``0)"/></param>
             <returns>The object that is returned from deserializing the json string.</returns>
         </member>
-        <member name="M:System.Text.Json.JsonExtensions.FromJsonStreamAsync``1(System.Threading.Tasks.Task{System.IO.Stream},System.Threading.CancellationToken)">
+        <member name="M:System.Text.Json.JsonSerializerDotNetLibrary.FromJsonStreamAsync``1(System.Threading.Tasks.Task{System.IO.Stream},System.Threading.CancellationToken)">
             <summary>
             Convert a json string into an object.
             </summary>
@@ -813,7 +1072,7 @@
             <returns>The object that is returned from deserializing the json string.</returns>
             <exception cref="T:System.NullReferenceException">If allowNull is false and the json string deserializes into a null object, this exception is thrown.</exception>
         </member>
-        <member name="M:System.Text.Json.JsonExtensions.FromJsonStreamAsync``1(System.Threading.Tasks.Task{System.IO.Stream},System.Boolean,System.Threading.CancellationToken)">
+        <member name="M:System.Text.Json.JsonSerializerDotNetLibrary.FromJsonStreamAsync``1(System.Threading.Tasks.Task{System.IO.Stream},System.Boolean,System.Threading.CancellationToken)">
             <summary>
             Convert a json string into an object.
             </summary>
@@ -907,6 +1166,47 @@
             <param name="text">The string to convert to title case.</param>
             <param name="expandWords">By default spaces are added before capital letters unless false is passed and the text is used as passed in.</param>
             <returns>The specified string converted to title case.</returns>
+        </member>
+        <member name="M:System.Text.StringExtensions.Mask(System.String,System.String,System.Char)">
+            <summary>
+            Mask a portion of the <paramref name="text"/> given a <paramref name="filter"/>.
+            </summary>
+            <param name="text">The string that should have the <paramref name="filter"/> applied to it.</param>
+            <param name="filter">The string that should be masked out.</param>
+            <param name="mask">The char to be used for masking out the <paramref name="filter"/> from the <paramref name="text"/>.</param>
+            <returns>The <paramref name="text"/> with the <paramref name="filter"/> having been masked out with the <paramref name="mask"/> character.</returns>
+        </member>
+        <member name="M:System.Text.StringExtensions.Mask(System.String,System.String,System.Int32,System.Char)">
+            <summary>
+            <inheritdoc cref="M:System.Text.StringExtensions.Mask(System.String,System.String,System.Char)"/> Mask will be
+            replaced by <paramref name="size"/> number of <paramref name="mask"/>.
+            </summary>
+            <param name="text"><inheritdoc cref="M:System.Text.StringExtensions.Mask(System.String,System.String,System.Char)"/></param>
+            <param name="filter"><inheritdoc cref="M:System.Text.StringExtensions.Mask(System.String,System.String,System.Char)"/></param>
+            <param name="mask"><inheritdoc cref="M:System.Text.StringExtensions.Mask(System.String,System.String,System.Char)"/></param>
+            <param name="size">The number of characters that should replace the <paramref name="filter"/>.</param>
+            <returns><inheritdoc/> Mask will only be <paramref name="size"/> characters.</returns>
+        </member>
+        <member name="M:System.Text.StringExtensions.Repeat(System.Char,System.Int32)">
+            <summary>
+            Take a <paramref name="character"/> and <paramref name="repeat"/> it a 
+            specified number of times.<br/>
+            <br/>
+            ie: '*'.Repeat(5) == "*****"
+            </summary>
+            <param name="character">The character to be <paramref name="repeat"/>ed.</param>
+            <param name="repeat">The number of times to repeat the <paramref name="character"/>.</param>
+            <returns>The full string of <paramref name="character"/>'s that have been <paramref name="repeat"/>ed.</returns>
+        </member>
+        <member name="M:System.Text.StringExtensions.IndentLeft(System.String,System.Int32,System.Char,System.Int32)">
+            <summary>
+            Add a number of <paramref name="character"/>s to the left side of <paramref name="text"/>.
+            </summary>
+            <param name="text">The text to be indented.</param>
+            <param name="indentLevel">The number of times <paramref name="indentSize"/> should be used for indention.</param>
+            <param name="character">The character to use for indention.</param>
+            <param name="indentSize">How many <paramref name="character"/> to use for each <paramref name="indentLevel"/>.</param>
+            <returns>The <paramref name="text"/> with <paramref name="character"/>s prepended.</returns>
         </member>
     </members>
 </doc>
