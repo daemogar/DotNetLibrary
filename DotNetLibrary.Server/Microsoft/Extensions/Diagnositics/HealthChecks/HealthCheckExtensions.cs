@@ -209,7 +209,7 @@ public static class HealthCheckExtensions
 		IEndpointRouteBuilder builder = application;
 
 		builder.MapHealthChecks(basePath);
-		builder.MapHealthChecks($"/{basePath}live", new()
+		builder.MapHealthChecks($"{basePath}live", new()
 		{
 			Predicate = _ => false
 		});
@@ -252,13 +252,13 @@ public static class HealthCheckExtensions
 			foreach (var entry in report.Entries)
 			{
 				writer.WriteStartObject(entry.Key);
-				NewMethod(entry.Key, entry.Value);
+				WriteEntry(entry.Value);
 				writer.WriteEndObject();
 			}
 			writer.WriteEndObject();
 		}
 
-		void NewMethod(string key, HealthReportEntry entry)
+		void WriteEntry(HealthReportEntry entry)
 		{
 			writer.WriteString("status", entry.Status.ToString());
 			writer.WriteString("description", entry.Description);
