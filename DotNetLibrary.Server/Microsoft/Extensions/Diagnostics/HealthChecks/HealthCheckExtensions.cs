@@ -70,9 +70,9 @@ public static class HealthCheckExtensions
 		var types = GetTypes();
 
 		if (options.HealthCheckCount() == 0 && !types.Any())
-			options.HealthChecks += NoHealthChecksConfigured;
-		else
-			options.InvokeHealthChecks(Builder);
+			NoHealthChecksConfigured();
+
+		options.InvokeHealthChecks(Builder);
 
 		foreach (var type in types)
 			CreateHealthCheck(type);
@@ -100,15 +100,15 @@ public static class HealthCheckExtensions
 				healthCheck.Name, healthCheck);
 		}
 
-		void NoHealthChecksConfigured(IHealthChecksBuilder builder)
+		void NoHealthChecksConfigured()
 		{
-			builder.AddCheck("Health Check Setup",
+			Builder!.AddCheck("Health Check Setup",
 				() => HealthCheckResult.Degraded(
 					"Application does not have any health checks setup. " +
 					"The state of the application cannot be determined " +
 					"successfully."));
 
-			Log.Logger.Warning("No Health Checks Added");
+			Log.Logger.Warning("No Health Checks Setup");
 		}
 
 		List<Type> GetTypes()
