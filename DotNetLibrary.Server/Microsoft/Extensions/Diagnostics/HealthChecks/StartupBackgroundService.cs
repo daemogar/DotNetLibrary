@@ -17,11 +17,12 @@ internal class ApplicationStartedBackgroundService : BackgroundService
 			nameof(ApplicationStartedBackgroundService));
 	}
 
-	protected override async Task ExecuteAsync(
+	protected override Task ExecuteAsync(
 		CancellationToken stoppingToken)
 	{
 		Log.Logger.Information("Background Service Executed {Name}",
 			nameof(ApplicationStartedBackgroundService));
 		_healthCheck.ApplicationLoaded();
+		return Task.CompletedTask;
 	}
 }
