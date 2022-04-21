@@ -65,7 +65,7 @@ public static class EmbeddedResource
 	/// <param name="filename">The name of the file as it exists on disk. This does not need to be namespaced unless there are duplicate files in seperate assemblies.</param>
 	/// <param name="assembly">An assembly to search first before the default locations.</param>
 	/// <returns>The embedded resource contents as a string or null if no content was found.</returns>
-	public static async Task<string?> ReadAllTextAsync(string filename, Assembly? assembly = null)
+	public static async Task<string?> ReadAllTextAsync(string filename, Assembly? assembly = default)
 		=> await ReadAllTextAsync(filename, ToArray(assembly));
 
 	/// <summary>
@@ -98,6 +98,30 @@ public static class EmbeddedResource
 	public static async Task<StreamReader?> ReadStreamAsync(string filename, IEnumerable<Assembly> assemblies)
 		=> await UseStreamAsync<StreamReader>(filename, assemblies, stream => new(stream), false);
 
+	/// <summary>
+	/// Get all assembly manifest resource names. This is using
+	/// <seealso cref="Assembly.GetManifestResourceNames"/> to retrieve
+	/// all the names.
+	/// </summary>
+	/// <param name="assembly">An assembly to get manifest resource names from.</param>
+	/// <returns>A list of manifest resource names.</returns>
+	public static string[] GetAllFilenames(Assembly? assembly = default)
+		=> GetAllFilenames(
+			assembly is not null
+				? new[] { assembly }
+				: Array.Empty<Assembly>());
+
+	/// <summary>
+	/// <inheritdoc cref="GetAllFilenames(Assembly?)"/>
+	/// </summary>
+	/// <param name="assemblies">List of assemblies to get manifest resource names from.</param>
+	/// <returns><inheritdoc cref="GetAllFilenames(Assembly?)"/></returns>
+	public static string[] GetAllFilenames(
+		IEnumerable<Assembly> assemblies)
+		=> GetManifestResourceNames(assemblies, (_, p) => p)
+			.SelectMany(p => p.Search)
+			.ToArray();
+
 	private static async Task<T?> UseStreamAsync<T>(
 		string filename,
 		IEnumerable<Assembly> assemblies,
@@ -122,27 +146,32 @@ public static class EmbeddedResource
 	private static Assembly? Find(ref string filename, IEnumerable<Assembly> assemblies)
 	{
 		var name = filename;
-		var resource = assemblies
+		var resource = GetManifestResourceNames(assemblies,
+			(_, p) => p?.FirstOrDefault(q => q.Contains(name)))
+			.FirstOrDefault(p => p.Search is not null);
+
+		if (resource.Search is null)
+			return null;
+
+		filename = resource.Search;
+		return resource.Assembly;
+	}
+
+	private static IEnumerable<(Assembly Assembly, T Search)>
+		GetManifestResourceNames<T>(IEnumerable<Assembly> assemblies,
+		Func<Assembly, string[], T> callback)
+		=> assemblies
 			.Union(new[]
 			{
 				Assembly.GetEntryAssembly(),
 				Assembly.GetCallingAssembly(),
 				Assembly.GetExecutingAssembly()
 			})
-			.Select(p => (
-				Assembly: p!,
-				Filename: p
-					?.GetManifestResourceNames()
-					.FirstOrDefault(p => p.Contains(name))
-			))
-			.FirstOrDefault(p => p.Filename is not null);
-
-		if (resource.Filename is null)
-			return null;
-
-		filename = resource.Filename;
-		return resource.Assembly;
-	}
+			.Where(p => p is not null)
+			.Select(p => (p!,
+				callback(p, p?.GetManifestResourceNames()
+					?? Array.Empty<string>())
+			));
 
 	private static IEnumerable<Assembly> ToArray(Assembly? assembly = null)
 		=> assembly is null ? Array.Empty<Assembly>() : new[] { assembly };
