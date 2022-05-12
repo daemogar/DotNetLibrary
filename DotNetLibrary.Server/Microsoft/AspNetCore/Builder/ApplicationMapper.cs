@@ -90,4 +90,10 @@ public class ApplicationMapper
 	public IEndpointConventionBuilder Map(
 		RoutePattern pattern, RequestDelegate requestDelegate)
 		=> Builder.Map(pattern, requestDelegate);
+
+	/// <summary>
+	/// Pass an <seealso cref="Action"/> that takes a single parameter. Use the <seealso cref="IEndpointRouteBuilder"/> to construct raw mappings.
+	/// </summary>
+	/// <param name="action"><seealso cref="Action"/> that takes a single parameter <seealso cref="IEndpointRouteBuilder"/>.</param>
+	public void Map(Action<IEndpointRouteBuilder> action) => action(Builder);
 }
