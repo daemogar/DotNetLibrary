@@ -30,7 +30,7 @@ public abstract class DiscoverableTask<T> : DiscoverableBackgroundService<T>
 	{
 		LastRun = lastRun;
 		TaskSchedule = schedule;
-		OnLastRunUpdated += async p => { await Task.CompletedTask; };
+		OnLastRunUpdated += p => Task.CompletedTask;
 	}
 
 	/// <summary>

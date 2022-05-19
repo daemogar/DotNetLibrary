@@ -26,13 +26,22 @@ public abstract class DiscoverableBackgroundService<T> : DiscoverableService, IH
 		IServiceCollection services, IConfiguration configuration)
 		=> services.AddHostedService<T>();
 
+	/// <summary>
+	/// This method is called once on startup.
+	/// </summary>
+	/// <param name="stoppingToken">Trigger when <seealso cref="IHostedService.StopAsync(CancellationToken)"/> is called.</param>
+	/// <returns>Returns a Task of a long running operation.</returns>
+	protected abstract Task InitializeAsync(CancellationToken stoppingToken);
+
 	/// <inheritdoc cref="BackgroundService.ExecuteAsync(CancellationToken)"/>
 	protected abstract Task ExecuteAsync(CancellationToken stoppingToken);
 
 	/// <inheritdoc cref="BackgroundService.StartAsync(CancellationToken)"/>
 	public virtual Task StartAsync(CancellationToken cancellationToken)
 	{
-		Task = ExecuteAsync(Source.Token);
+		Task = InitializeAsync(cancellationToken)
+			.ContinueWith(_ => ExecuteAsync(Source.Token));
+
 		return Task.IsCompleted ? Task : Task.CompletedTask;
 	}
 
