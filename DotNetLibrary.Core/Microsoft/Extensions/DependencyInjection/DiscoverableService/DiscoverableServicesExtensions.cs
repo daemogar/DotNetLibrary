@@ -23,13 +23,23 @@ public static class DiscoverableServicesExtensions
 	/// </summary>
 	/// <param name="services">The service collection used for registering application dependencies.</param>
 	/// <param name="configuration">The application configuration.</param>
+	/// <param name="excludeLibraryAssemblies">Only include the current assembly for searching.</param>
 	/// <returns>For chainging calls to the services collection, it is returned.</returns>
 	public static IServiceCollection AddDiscoverableServices(
 		this IServiceCollection services,
-		IConfiguration configuration)
+		IConfiguration configuration,
+			bool excludeLibraryAssemblies = false)
 		=> services.AddDiscoverableServices(
 			configuration,
+			excludeLibraryAssemblies,
 			Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly());
+
+	/// <inheritdoc cref="AddDiscoverableServices(IServiceCollection, IConfiguration, bool, Assembly[])"/>
+	public static IServiceCollection AddDiscoverableServices(
+		this IServiceCollection services,
+		IConfiguration configuration,
+		params Assembly[] assembliesToSearch)
+		=> services.AddDiscoverableServices(configuration, false, assembliesToSearch);
 
 	/// <summary>
 	/// Discovering all services and registering them with the 
@@ -38,16 +48,17 @@ public static class DiscoverableServicesExtensions
 	/// <param name="services">The service collection used for registering application dependencies.</param>
 	/// <param name="assembliesToSearch">List assembly that should be searched for references to the <seealso cref="DiscoverableService"/> interface implmentation.</param>
 	/// <param name="configuration">The application configuration.</param>
-	/// <returns>For chainging calls to the services collection, it is returned.</returns>
+	/// <param name="excludeLibraryAssemblies">Only include the provided assemblies for searching.</param>	/// <returns>For chainging calls to the services collection, it is returned.</returns>
 	public static IServiceCollection AddDiscoverableServices(
 		this IServiceCollection services,
 		IConfiguration configuration,
+		bool excludeLibraryAssemblies,
 		params Assembly[] assembliesToSearch)
 	{
 		var discoverableType = typeof(DiscoverableService);
 
 		assembliesToSearch
-			.Union(discoverableType.Assembly)
+			.UnionIf(() => !excludeLibraryAssemblies, discoverableType.Assembly)
 			.SelectMany(p => p
 			.DefinedTypes
 			.Where(IsDiscoverableType)
