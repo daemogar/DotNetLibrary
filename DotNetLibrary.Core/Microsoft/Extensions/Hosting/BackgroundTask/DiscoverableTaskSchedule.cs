@@ -56,7 +56,7 @@ public class DiscoverableTaskSchedule
 	/// <param name="lastRun">The date and time of the last run.</param>
 	/// <param name="stoppingToken">A token handling cancelling the task if it should be stopped early.</param>
 	/// <returns>An awaitable delay task.</returns>
-	public async Task DelayUntilNextEventAsync(DateTime lastRun, CancellationToken stoppingToken)
+	public virtual async Task DelayUntilNextEventAsync(DateTime lastRun, CancellationToken stoppingToken)
 	{
 		var next = NextScheduledTime(lastRun);
 		await Task.Delay(next < DateTime.Now
@@ -69,7 +69,7 @@ public class DiscoverableTaskSchedule
 	/// </summary>
 	/// <param name="lastRun">The date and time of the last run.</param>
 	/// <returns>The date and time of the next run.</returns>
-	public DateTime NextScheduledTime(DateTime lastRun)
+	public virtual DateTime NextScheduledTime(DateTime lastRun)
 		=> Type switch
 		{
 			DiscoverableTaskScheduleType.Continuously => DateTime.Now,
