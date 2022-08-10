@@ -27,11 +27,14 @@ public abstract class DiscoverableBackgroundService<T> : DiscoverableService, IH
 		=> services.AddHostedService<T>();
 
 	/// <summary>
-	/// This method is called once on startup.
+	/// This method is called once on startup. The return value should be if the 
+	/// initialization was successful or not. If the return is true, then the 
+	/// <seealso cref="ExecuteAsync(CancellationToken)"/> method is called. If the
+	/// return is false, then it is not called.
 	/// </summary>
 	/// <param name="stoppingToken">Trigger when <seealso cref="IHostedService.StopAsync(CancellationToken)"/> is called.</param>
-	/// <returns>Returns a Task of a long running operation.</returns>
-	protected abstract Task InitializeAsync(CancellationToken stoppingToken);
+	/// <returns>Returns a Task of a long running operation. If the task completes with true, then the <seealso cref="ExecuteAsync(CancellationToken)"/> method is called. If the task completes with false, then it is not called.</returns>
+	protected abstract Task<bool> InitializeAsync(CancellationToken stoppingToken);
 
 	/// <inheritdoc cref="BackgroundService.ExecuteAsync(CancellationToken)"/>
 	protected abstract Task ExecuteAsync(CancellationToken stoppingToken);
@@ -40,7 +43,11 @@ public abstract class DiscoverableBackgroundService<T> : DiscoverableService, IH
 	public virtual Task StartAsync(CancellationToken cancellationToken)
 	{
 		Task = InitializeAsync(cancellationToken)
-			.ContinueWith(_ => ExecuteAsync(Source.Token));
+			.ContinueWith(async p =>
+			{
+				if(await p)
+					await ExecuteAsync(Source.Token);
+			});
 
 		return Task.IsCompleted ? Task : Task.CompletedTask;
 	}
