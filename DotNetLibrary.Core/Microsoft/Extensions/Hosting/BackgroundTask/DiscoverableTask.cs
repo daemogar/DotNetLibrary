@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Hosting;
 
-using Serilog;
-
 using System.Diagnostics;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -10,11 +8,62 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// <inheritdoc /> This task is for configuring and setting scheduled 
 /// events.
 /// </summary>
-/// <typeparam name="T"><inheritdoc /></typeparam>
-public abstract class DiscoverableTask<T>
-	: DiscoverableBackgroundService<T>, IDisposable
-	where T : DiscoverableTask<T>
+/// <typeparam name="TTask">A type that implements <seealso cref="DiscoverableTask{TTask, TSchedule}" />.</typeparam>
+/// <typeparam name="TSchedule">A type that implements <seealso cref="DiscoverableTaskSchedule"/>.</typeparam>
+public abstract class DiscoverableTask<TTask, TSchedule>
+	: DiscoverableBackgroundService<TTask>, IDisposable
+	where TTask : DiscoverableTask<TTask, TSchedule>
+	where TSchedule : DiscoverableTaskSchedule
 {
+	/// <summary>
+	/// Response from the <seealso cref="ExecuteTaskAsync(CancellationToken)"/>.
+	/// Use the static helper methods <seealso cref="Success(string)"/>,
+	/// <seealso cref="Failure(Exception)"/>, and <seealso cref="Critical(Exception)"/>
+	/// for ideal return values for this class record.<br />
+	/// <br/>
+	/// <seealso cref="Success(string)"/> -- Returns 
+	/// </summary>
+	/// <param name="IsSuccessful">Did the <seealso cref="ExecuteTaskAsync(CancellationToken)"/> complete successfully. Note the task could have failed, but still completed. Use <seealso cref="Success(string)"/></param>
+	/// <param name="ShouldUpdate"></param>
+	/// <param name="Message"></param>
+	/// <param name="Exception"></param>
+	public record Response(
+		bool IsSuccessful,
+		bool ShouldUpdate,
+		string Message,
+		Exception Exception);
+
+	/// <summary>
+	/// Create and return a success response.
+	/// </summary>
+	/// <param name="message">Optional message to be returned.</param>
+	/// <returns>Successful response object.</returns>
+	public static Response Success(string message = null!)
+		=> new(true, true, string.IsNullOrWhiteSpace(message)
+			? message
+			: "Task Completed Successfully!", default!);
+
+	/// <summary>
+	/// Create and return a failure response. Used to handle basic
+	/// errors. If it should be a full system failure, use
+	/// <seealso cref="Critical(Exception)"/>.
+	/// </summary>
+	/// <param name="exception">The exception for the failure.</param>
+	/// <returns>Failure response with associated exception.</returns>
+	public static Response Failure(Exception exception)
+		=> new(false, true, exception.Message, exception);
+
+	/// <summary>
+	/// Create and return a critical response. Used to signify that
+	/// the failure was catastrophic. If the issue is a recoverable or 
+	/// able to be ignored, then consider returning a 
+	/// <seealso cref="Failure(Exception)"/>.
+	/// </summary>
+	/// <param name="exception"></param>
+	/// <returns></returns>
+	public static Response Critical(Exception exception)
+		=> new(false, false, exception.Message, exception);
+
 	/// <summary>
 	/// Used for debuging and tagging the error messages.
 	/// </summary>
@@ -79,7 +128,7 @@ public abstract class DiscoverableTask<T>
 	/// The schedule and frequency the <seealso cref="ExecuteTaskAsync(CancellationToken)"/>
 	/// method should be triggered.
 	/// </summary>
-	protected DiscoverableTaskSchedule TaskSchedule { get; }
+	protected TSchedule TaskSchedule { get; }
 
 	/// <summary>
 	/// The default value of the last run or initial value.
@@ -91,7 +140,7 @@ public abstract class DiscoverableTask<T>
 	/// The default or initial task schedule.
 	/// </summary>
 	/// <returns>The initial task schedule used for setting up the task.</returns>
-	protected abstract DiscoverableTaskSchedule InitializeTaskSchedule();
+	protected abstract TSchedule InitializeTaskSchedule();
 
 	private ThrottleState Throttle { get; }
 
@@ -108,7 +157,6 @@ public abstract class DiscoverableTask<T>
 		Throttle = new(maxThrottleInMinutes);
 		LastRun = InitializeLastRun();
 		TaskSchedule = InitializeTaskSchedule();
-		OnLastRunUpdated += p => Task.CompletedTask;
 	}
 
 	/// <summary>
@@ -117,12 +165,29 @@ public abstract class DiscoverableTask<T>
 	/// </summary>
 	/// <param name="stoppingToken"></param>
 	/// <returns>If the execution was successful or not. If false, then the throttle is increased and the last run is not updated. If true, then the throttle is reset and the last run is updated with the current datetime.</returns>
-	protected abstract Task<bool> ExecuteTaskAsync(CancellationToken stoppingToken);
+	protected abstract Task<Response> ExecuteTaskAsync(CancellationToken stoppingToken);
 
 	/// <summary>
-	/// Notify any process that want to know that the last run date has been updated.
+	/// Override this method to be notified when the last run date has been 
+	/// updated.
 	/// </summary>
-	protected event Func<DateTime, Task> OnLastRunUpdated;
+	/// <returns>An asynchronous task operation.</returns>
+	protected virtual Task UpdateLastRunAsync() => Task.CompletedTask;
+
+	/// <summary>
+	/// Override this method to be notified when a task completes successfully.
+	/// </summary>
+	/// <param name="message">The message returned doing the task execution.</param>
+	/// <returns>An asynchronous task operation.</returns>
+	protected virtual Task TaskCompletedAsync(string message) => Task.CompletedTask;
+
+	/// <summary>
+	/// Override this method to be notified when a task fails to complete 
+	/// successfully.
+	/// </summary>
+	/// <param name="exception">The exception thrown during task execution.</param>
+	/// <returns>An asynchronous task operation.</returns>
+	protected virtual Task TaskFailedAsync(Exception exception) => Task.CompletedTask;
 
 	/// <inheritdoc />
 	protected sealed override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -135,15 +200,42 @@ public abstract class DiscoverableTask<T>
 			await TaskSchedule.DelayUntilNextEventAsync(LastRun, stoppingToken);
 			await Throttle.WaitForNextTickAsync(stoppingToken);
 
-			if (!await ExecuteTaskAsync(stoppingToken))
-			{
-				Throttle.AddDelay();
-				continue;
-			}
-			Throttle.Reset();
+			DiscoverableTask<TTask, TSchedule>.Response response;
 
-			LastRun = DateTime.Now;
-			await OnLastRunUpdated.Invoke(LastRun);
+			StartTiming();
+			try
+			{
+				response = await ExecuteTaskAsync(stoppingToken);
+			}
+			catch (Exception e)
+			{
+				response = Critical(e);
+			}
+			StopTiming();
+
+			try
+			{
+				if (response.IsSuccessful)
+				{
+					await TaskCompletedAsync(response.Message);
+					Throttle.Reset();
+				}
+				else
+				{
+					Throttle.AddDelay();
+					await TaskFailedAsync(response.Exception);
+				}
+			}
+			catch (Exception e)
+			{
+				response = Critical(e);
+			}
+
+			if (response.ShouldUpdate)
+			{
+				LastRun = DateTime.Now;
+				await UpdateLastRunAsync();
+			}
 		}
 	}
 
