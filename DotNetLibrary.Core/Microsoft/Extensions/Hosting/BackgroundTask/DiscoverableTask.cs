@@ -203,8 +203,16 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 		if (TaskSchedule.Type == DiscoverableTaskScheduleType.Disabled)
 			return;
 
-		if (!await SetupTaskAsync(stoppingToken))
+		try
+		{
+			if (!await SetupTaskAsync(stoppingToken))
+				return;
+		}
+		catch(Exception e)
+		{
+			Critical(e);
 			return;
+		}
 
 		while (!stoppingToken.IsCancellationRequested)
 		{
