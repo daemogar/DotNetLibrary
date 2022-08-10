@@ -125,7 +125,7 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 	public DateTime LastRun { get; private set; }
 
 	/// <summary>
-	/// The schedule and frequency the <seealso cref="ExecuteTaskAsync(CancellationToken)"/>
+	/// The schedule and frequency the <seealso cref="ExecuteTaskAsync(CancellationToken)" />
 	/// method should be triggered.
 	/// </summary>
 	protected TSchedule TaskSchedule { get; }
@@ -160,10 +160,18 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 	}
 
 	/// <summary>
-	/// This method is called every time the 
+	/// Initially called first time when the task is started.
+	/// </summary>
+	/// <param name="stoppingToken"><inheritdoc cref="ExecuteTaskAsync(CancellationToken)" /></param>
+	/// <returns>If the execution was successful or not. If false, then <seealso cref="ExecuteTaskAsync(CancellationToken)" /> will not be executed.</returns>
+	protected abstract Task<bool> SetupTaskAsync(CancellationToken stoppingToken);
+
+	/// <summary>
+	/// If <seealso cref="SetupTaskAsync(CancellationToken)" /> returns true, then
+	/// this method is called repeated by 
 	/// <inheritdoc cref="DiscoverableBackgroundService{T}.ExecuteAsync(CancellationToken)" />
 	/// </summary>
-	/// <param name="stoppingToken"></param>
+	/// <param name="stoppingToken"><inheritdoc cref="ExecuteTaskAsync(CancellationToken)" /></param>
 	/// <returns>If the execution was successful or not. If false, then the throttle is increased and the last run is not updated. If true, then the throttle is reset and the last run is updated with the current datetime.</returns>
 	protected abstract Task<Response> ExecuteTaskAsync(CancellationToken stoppingToken);
 
@@ -193,6 +201,9 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 	protected sealed override async Task ExecuteAsync(CancellationToken stoppingToken)
 	{
 		if (TaskSchedule.Type == DiscoverableTaskScheduleType.Disabled)
+			return;
+
+		if (!await SetupTaskAsync(stoppingToken))
 			return;
 
 		while (!stoppingToken.IsCancellationRequested)
