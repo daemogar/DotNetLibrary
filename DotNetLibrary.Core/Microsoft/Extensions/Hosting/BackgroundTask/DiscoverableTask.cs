@@ -239,13 +239,13 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 			{
 				if (response.IsSuccessful)
 				{
-					await TaskCompletedAsync(response.Message);
+					await TaskCompletedAsync(response.Message, stoppingToken);
 					Throttle.Reset();
 				}
 				else
 				{
 					Throttle.AddDelay();
-					await TaskFailedAsync(response.Exception);
+					await TaskFailedAsync(response.Exception, stoppingToken);
 				}
 			}
 			catch (Exception e)
@@ -256,7 +256,7 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 			if (response.ShouldUpdate)
 			{
 				LastRun = DateTime.Now;
-				await UpdateLastRunAsync();
+				await UpdateLastRunAsync(stoppingToken);
 			}
 		}
 	}
