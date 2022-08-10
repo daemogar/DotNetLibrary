@@ -122,25 +122,27 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 	/// <summary>
 	/// The date and time of the last run.
 	/// </summary>
-	public DateTime LastRun { get; private set; }
+	public DateTime LastRun { get; private set; } = default!;
 
 	/// <summary>
 	/// The schedule and frequency the <seealso cref="ExecuteTaskAsync(CancellationToken)" />
 	/// method should be triggered.
 	/// </summary>
-	protected TSchedule TaskSchedule { get; }
+	protected TSchedule TaskSchedule { get; private set; } = default!;
 
 	/// <summary>
 	/// The default value of the last run or initial value.
 	/// </summary>
+	/// <param name="stoppingToken"><inheritdoc cref="CancellationToken" /></param>
 	/// <returns>The last run datetime.</returns>
-	protected abstract DateTime InitializeLastRun();
+	protected abstract Task<DateTime> InitializeLastRunAsync(CancellationToken stoppingToken);
 
 	/// <summary>
 	/// The default or initial task schedule.
 	/// </summary>
+	/// <param name="stoppingToken"><inheritdoc cref="CancellationToken" /></param>
 	/// <returns>The initial task schedule used for setting up the task.</returns>
-	protected abstract TSchedule InitializeTaskSchedule();
+	protected abstract Task<TSchedule> InitializeTaskScheduleAsync(CancellationToken stoppingToken);
 
 	private ThrottleState Throttle { get; }
 
@@ -155,8 +157,6 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 		Tag = $"{GetType().Name}: ";
 		Stopwatch = Stopwatch.StartNew();
 		Throttle = new(maxThrottleInMinutes);
-		LastRun = InitializeLastRun();
-		TaskSchedule = InitializeTaskSchedule();
 	}
 
 	/// <summary>
@@ -203,15 +203,16 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 	/// <inheritdoc />
 	protected sealed override async Task ExecuteAsync(CancellationToken stoppingToken)
 	{
-		if (TaskSchedule.Type == DiscoverableTaskScheduleType.Disabled)
-			return;
-
 		try
 		{
-			if (!await SetupTaskAsync(stoppingToken))
+			LastRun = await InitializeLastRunAsync(stoppingToken);
+			TaskSchedule = await InitializeTaskScheduleAsync(stoppingToken);
+
+			if (TaskSchedule.Type == DiscoverableTaskScheduleType.Disabled
+				|| !await SetupTaskAsync(stoppingToken))
 				return;
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
 			Critical(e);
 			return;
