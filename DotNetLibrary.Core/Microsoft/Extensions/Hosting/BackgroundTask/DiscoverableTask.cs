@@ -31,38 +31,39 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 		bool IsSuccessful,
 		bool ShouldUpdate,
 		string Message,
-		Exception Exception);
+		Exception Exception)
+	{
+		/// <summary>
+		/// Create and return a success response.
+		/// </summary>
+		/// <param name="message">Optional message to be returned.</param>
+		/// <returns>Successful response object.</returns>
+		public static Response Success(string message = null!)
+			=> new(true, true, string.IsNullOrWhiteSpace(message)
+				? message
+				: "Task Completed Successfully!", default!);
 
-	/// <summary>
-	/// Create and return a success response.
-	/// </summary>
-	/// <param name="message">Optional message to be returned.</param>
-	/// <returns>Successful response object.</returns>
-	public static Response Success(string message = null!)
-		=> new(true, true, string.IsNullOrWhiteSpace(message)
-			? message
-			: "Task Completed Successfully!", default!);
+		/// <summary>
+		/// Create and return a failure response. Used to handle basic
+		/// errors. If an exception is thrown, then 
+		/// <seealso cref="Critical(Exception)"/> should be called.
+		/// </summary>
+		/// <param name="message">The failure message.</param>
+		/// <returns>Failure response with message.</returns>
+		public static Response Failure(string message)
+			=> new(false, true, message, default!);
 
-	/// <summary>
-	/// Create and return a failure response. Used to handle basic
-	/// errors. If it should be a full system failure, use
-	/// <seealso cref="Critical(Exception)"/>.
-	/// </summary>
-	/// <param name="exception">The exception for the failure.</param>
-	/// <returns>Failure response with associated exception.</returns>
-	public static Response Failure(Exception exception)
-		=> new(false, true, exception.Message, exception);
-
-	/// <summary>
-	/// Create and return a critical response. Used to signify that
-	/// the failure was catastrophic. If the issue is a recoverable or 
-	/// able to be ignored, then consider returning a 
-	/// <seealso cref="Failure(Exception)"/>.
-	/// </summary>
-	/// <param name="exception"></param>
-	/// <returns></returns>
-	public static Response Critical(Exception exception)
-		=> new(false, false, exception.Message, exception);
+		/// <summary>
+		/// Create and return a critical response. Used to signify that
+		/// the failure was catastrophic. If the issue is a recoverable or 
+		/// able to be ignored, then consider returning a 
+		/// <seealso cref="Failure(string)"/>.
+		/// </summary>
+		/// <param name="exception"></param>
+		/// <returns>Critical reseponse with associated exception.</returns>
+		public static Response Critical(Exception exception)
+			=> new(false, false, exception.Message, exception);
+	}
 
 	/// <summary>
 	/// Used for debuging and tagging the error messages.
@@ -214,7 +215,7 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 		}
 		catch (Exception e)
 		{
-			Critical(e);
+			Response.Critical(e);
 			return;
 		}
 
@@ -232,7 +233,7 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 			}
 			catch (Exception e)
 			{
-				response = Critical(e);
+				response = Response.Critical(e);
 			}
 			StopTiming();
 
@@ -251,7 +252,7 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 			}
 			catch (Exception e)
 			{
-				response = Critical(e);
+				response = Response.Critical(e);
 			}
 
 			if (response.ShouldUpdate)
