@@ -41,16 +41,12 @@ public abstract class DiscoverableBackgroundService<T> : DiscoverableService, IH
 
 	/// <inheritdoc cref="BackgroundService.StartAsync(CancellationToken)"/>
 	public virtual Task StartAsync(CancellationToken cancellationToken)
-	{
-		Task = InitializeAsync(cancellationToken)
+		=> InitializeAsync(cancellationToken)
 			.ContinueWith(async p =>
 			{
 				if(await p)
 					await ExecuteAsync(Source.Token);
 			});
-
-		return Task.IsCompleted ? Task : Task.CompletedTask;
-	}
 
 	/// <inheritdoc cref="BackgroundService.StopAsync(CancellationToken)"/>
 	public virtual async Task StopAsync(CancellationToken cancellationToken)

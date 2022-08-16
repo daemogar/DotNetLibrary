@@ -16,14 +16,14 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 	where TSchedule : DiscoverableTaskSchedule
 {
 	/// <summary>
-	/// Response from the <seealso cref="ExecuteTaskAsync(CancellationToken)"/>.
+	/// Response from the <seealso cref="RepeatTaskAsync(CancellationToken)"/>.
 	/// Use the static helper methods <seealso cref="Success(string)"/>,
 	/// <seealso cref="Failure(Exception)"/>, and <seealso cref="Critical(Exception)"/>
 	/// for ideal return values for this class record.<br />
 	/// <br/>
 	/// <seealso cref="Success(string)"/> -- Returns 
 	/// </summary>
-	/// <param name="IsSuccessful">Did the <seealso cref="ExecuteTaskAsync(CancellationToken)"/> complete successfully. Note the task could have failed, but still completed. Use <seealso cref="Success(string)"/></param>
+	/// <param name="IsSuccessful">Did the <seealso cref="RepeatTaskAsync(CancellationToken)"/> complete successfully. Note the task could have failed, but still completed. Use <seealso cref="Success(string)"/></param>
 	/// <param name="ShouldUpdate"></param>
 	/// <param name="Message"></param>
 	/// <param name="Exception"></param>
@@ -126,7 +126,7 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 	public DateTime LastRun { get; private set; } = default!;
 
 	/// <summary>
-	/// The schedule and frequency the <seealso cref="ExecuteTaskAsync(CancellationToken)" />
+	/// The schedule and frequency the <seealso cref="RepeatTaskAsync(CancellationToken)" />
 	/// method should be triggered.
 	/// </summary>
 	protected TSchedule TaskSchedule { get; private set; } = default!;
@@ -161,48 +161,16 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 	}
 
 	/// <summary>
-	/// Initially called first time when the task is started.
-	/// </summary>
-	/// <param name="stoppingToken"><inheritdoc cref="CancellationToken" /></param>
-	/// <returns>If the execution was successful or not. If false, then <seealso cref="ExecuteTaskAsync(CancellationToken)" /> will not be executed.</returns>
-	protected abstract Task<bool> SetupTaskAsync(CancellationToken stoppingToken);
-
-	/// <summary>
-	/// If <seealso cref="SetupTaskAsync(CancellationToken)" /> returns true, then
-	/// this method is called repeated by 
+	/// If <seealso cref="DiscoverableBackgroundService{T}.InitializeAsync(CancellationToken)" /> 
+	/// returns true, then this method is called repeated by 
 	/// <inheritdoc cref="DiscoverableBackgroundService{T}.ExecuteAsync(CancellationToken)" />
 	/// </summary>
 	/// <param name="stoppingToken"><inheritdoc cref="CancellationToken" /></param>
 	/// <returns>If the execution was successful or not. If false, then the throttle is increased and the last run is not updated. If true, then the throttle is reset and the last run is updated with the current datetime.</returns>
-	protected abstract Task<Response> ExecuteTaskAsync(CancellationToken stoppingToken);
-
-	/// <summary>
-	/// Override this method to be notified when the last run date has been 
-	/// updated.
-	/// </summary>
-	/// <param name="stoppingToken"><inheritdoc cref="CancellationToken" /></param>
-	/// <returns>An asynchronous task operation.</returns>
-	protected virtual Task UpdateLastRunAsync(CancellationToken stoppingToken) => Task.CompletedTask;
-
-	/// <summary>
-	/// Override this method to be notified when a task completes successfully.
-	/// </summary>
-	/// <param name="message">The message returned doing the task execution.</param>
-	/// <param name="stoppingToken"><inheritdoc cref="CancellationToken" /></param>
-	/// <returns>An asynchronous task operation.</returns>
-	protected virtual Task TaskCompletedAsync(string message, CancellationToken stoppingToken) => Task.CompletedTask;
-
-	/// <summary>
-	/// Override this method to be notified when a task fails to complete 
-	/// successfully.
-	/// </summary>
-	/// <param name="exception">The exception thrown during task execution.</param>
-	/// <param name="stoppingToken"><inheritdoc cref="CancellationToken" /></param>
-	/// <returns>An asynchronous task operation.</returns>
-	protected virtual Task TaskFailedAsync(Exception exception, CancellationToken stoppingToken) => Task.CompletedTask;
+	protected abstract Task<Response> RepeatTaskAsync(CancellationToken stoppingToken);
 
 	/// <inheritdoc />
-	protected sealed override async Task ExecuteAsync(CancellationToken stoppingToken)
+	public sealed override async Task StartAsync(CancellationToken stoppingToken)
 	{
 		try
 		{
@@ -210,7 +178,7 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 			TaskSchedule = await InitializeTaskScheduleAsync(stoppingToken);
 
 			if (TaskSchedule.Type == DiscoverableTaskScheduleType.Disabled
-				|| !await SetupTaskAsync(stoppingToken))
+				|| !await InitializeAsync(stoppingToken))
 				return;
 		}
 		catch (Exception e)
@@ -219,6 +187,12 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 			return;
 		}
 
+		await ExecuteAsync(stoppingToken);
+	}
+
+	/// <inheritdoc />
+	protected sealed override async Task ExecuteAsync(CancellationToken stoppingToken)
+	{
 		while (!stoppingToken.IsCancellationRequested)
 		{
 			await TaskSchedule.DelayUntilNextEventAsync(LastRun, stoppingToken);
@@ -229,7 +203,7 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 			StartTiming();
 			try
 			{
-				response = await ExecuteTaskAsync(stoppingToken);
+				response = await RepeatTaskAsync(stoppingToken);
 			}
 			catch (Exception e)
 			{
@@ -262,6 +236,35 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 			}
 		}
 	}
+
+	/// <inheritdoc />
+	public sealed override Task StopAsync(CancellationToken cancellationToken)
+		=> base.StopAsync(cancellationToken);
+
+	/// <summary>
+	/// Override this method to be notified when the last run date has been 
+	/// updated.
+	/// </summary>
+	/// <param name="stoppingToken"><inheritdoc cref="CancellationToken" /></param>
+	/// <returns>An asynchronous task operation.</returns>
+	protected virtual Task UpdateLastRunAsync(CancellationToken stoppingToken) => Task.CompletedTask;
+
+	/// <summary>
+	/// Override this method to be notified when a task completes successfully.
+	/// </summary>
+	/// <param name="message">The message returned doing the task execution.</param>
+	/// <param name="stoppingToken"><inheritdoc cref="CancellationToken" /></param>
+	/// <returns>An asynchronous task operation.</returns>
+	protected virtual Task TaskCompletedAsync(string message, CancellationToken stoppingToken) => Task.CompletedTask;
+
+	/// <summary>
+	/// Override this method to be notified when a task fails to complete 
+	/// successfully.
+	/// </summary>
+	/// <param name="exception">The exception thrown during task execution.</param>
+	/// <param name="stoppingToken"><inheritdoc cref="CancellationToken" /></param>
+	/// <returns>An asynchronous task operation.</returns>
+	protected virtual Task TaskFailedAsync(Exception exception, CancellationToken stoppingToken) => Task.CompletedTask;
 
 	/// <summary>
 	/// Get the elapsed millisconds from the last time the stopwatch was stopped.
