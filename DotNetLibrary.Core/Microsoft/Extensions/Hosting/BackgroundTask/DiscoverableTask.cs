@@ -180,14 +180,14 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 			if (TaskSchedule.Type == DiscoverableTaskScheduleType.Disabled
 				|| !await InitializeAsync(stoppingToken))
 				return;
+
+			await ExecuteAsync(stoppingToken);
 		}
 		catch (Exception e)
 		{
-			Response.Critical(e);
+			await UpdateTaskStatusAndLogAsync(Response.Critical(e), stoppingToken);
 			return;
 		}
-
-		await ExecuteAsync(stoppingToken);
 	}
 
 	/// <inheritdoc />
@@ -229,12 +229,22 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 				response = Response.Critical(e);
 			}
 
-			if (response.ShouldUpdate)
-			{
-				LastRun = DateTime.Now;
-				await UpdateLastRunAsync(stoppingToken);
-			}
+			await UpdateTaskStatusAndLogAsync(response, stoppingToken);
 		}
+	}
+
+	private async Task UpdateTaskStatusAndLogAsync(Response response, CancellationToken stoppingToken)
+	{
+		if (response.ShouldUpdate)
+		{
+			LastRun = DateTime.Now;
+			await UpdateLastRunAsync(stoppingToken);
+		}
+
+		if (response.IsSuccessful)
+			await TaskCompletedAsync(response.Message, stoppingToken);
+		else
+			await TaskFailedAsync(response.Exception, stoppingToken);
 	}
 
 	/// <inheritdoc />
