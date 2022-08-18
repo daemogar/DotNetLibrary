@@ -174,8 +174,8 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 	{
 		try
 		{
-			LastRun = await InitializeLastRunAsync(stoppingToken);
 			TaskSchedule = await InitializeTaskScheduleAsync(stoppingToken);
+			LastRun = await InitializeLastRunAsync(stoppingToken);
 
 			if (TaskSchedule.Type == DiscoverableTaskScheduleType.Disabled
 				|| !await InitializeAsync(stoppingToken))
