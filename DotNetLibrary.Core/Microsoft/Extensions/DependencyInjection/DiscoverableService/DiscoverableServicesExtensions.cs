@@ -55,7 +55,7 @@ public static class DiscoverableServicesExtensions
 		bool excludeLibraryAssemblies,
 		params Assembly[] assembliesToSearch)
 	{
-		var discoverableType = typeof(DiscoverableService);
+		var discoverableType = typeof(IDiscoverable);
 
 		assembliesToSearch
 			.UnionIf(() => !excludeLibraryAssemblies, discoverableType.Assembly)
@@ -76,7 +76,7 @@ public static class DiscoverableServicesExtensions
 
 	private static readonly List<string> RegisteredTypes = new();
 	private static void Register(
-		DiscoverableService service,
+		IDiscoverable service,
 		IServiceCollection services,
 		IConfiguration configuration)
 	{
@@ -113,7 +113,7 @@ public static class DiscoverableServicesExtensions
 		return services;
 	}
 
-	private static DiscoverableService Construct(Type type)
-		=> (DiscoverableService)FormatterServices
+	private static IDiscoverable Construct(Type type)
+		=> (IDiscoverable)FormatterServices
 			.GetUninitializedObject(type);
 }
