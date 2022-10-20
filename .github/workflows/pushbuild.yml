@@ -18,23 +18,27 @@ jobs:
     
     strategy:
       matrix:
-        project-name: [ Core, Client, Server ]        
+        project: [ Core, Client, Server ]
+        dotnet: [ 6.0.x, 7.0.x ]
         
     steps:
-    - uses: actions/checkout@v2
-    - run: git fetch --prune --unshallow
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Git Fetch
+      run: git fetch --prune --unshallow
     
-    - name: Setup .NET (6.0.x)
-      uses: actions/setup-dotnet@v1
+    - name: Setup .NET (${{ matrix.dotnet }})
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: ${{ matrix.dotnet }}
         include-prerelease: true
         
-    - name: Set Release Name
-      if: ${{ matrix.project-name != 'Core' }}
+    - name: Set Release Name ${{ matrix.project }}
+      if: ${{ matrix.project != 'Core' }}
       uses: allenevans/set-env@v2.0.0
       with:
-        RELEASE_NAME: ${{ env.PROJECT }}.${{ matrix.project-name }}
+        RELEASE_NAME: ${{ env.PROJECT }}.${{ matrix.project }}
         
     - name: Build (${{ env.RELEASE_NAME }})
       run: dotnet build -c Release
