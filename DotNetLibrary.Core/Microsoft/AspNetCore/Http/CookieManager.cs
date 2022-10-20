@@ -2,14 +2,10 @@
 
 using Serilog;
 
-using System;
-
 namespace Microsoft.AspNetCore.Http;
 
-/// <summary>
-/// Manager for getting, setting, and deleting cookies.
-/// </summary>
-public class CookieManager : ICookieManager
+/// <inheritdoc cref="IBasicCookieManager"/>
+public class CookieManager : IBasicCookieManager
 {
 	private ChunkingCookieManager BaseManager { get; }
 
@@ -32,44 +28,19 @@ public class CookieManager : ICookieManager
 		BaseManager = new();
 	}
 
-	/// <summary>
-	/// If the value is null:<br />
-	/// <inheritdoc cref="ChunkingCookieManager.DeleteCookie"/>
-	/// <br />
-	/// <br />
-	/// If value is not null:<br />
-	/// <inheritdoc cref="ChunkingCookieManager.AppendResponseCookie"/>
-	/// </summary>
-	/// <param name="key">The key of the cookie.</param>
-	/// <param name="value">The value to set the cookie to or delete if null.</param>
+	/// <inheritdoc cref="IBasicCookieManager.AppendResponseCookie(HttpContext, string, string, CookieOptions)"/>
 	public void AppendResponseCookie(string key, string? value)
 		=> AppendResponseCookie(GetContext(), key, value, new());
 
-	/// <summary>
-	/// <inheritdoc cref="AppendResponseCookie(string, string?)"/>
-	/// </summary>
-	/// <param name="key">The key of the cookie.</param>
-	/// <param name="value">The value to set the cookie to or delete if null.</param>
-	/// <param name="options">CookieOptions</param>
+	/// <inheritdoc cref="IBasicCookieManager.AppendResponseCookie(HttpContext, string, string, CookieOptions)"/>
 	public void AppendResponseCookie(string key, string? value, CookieOptions options)
 		=> AppendResponseCookie(GetContext(), key, value, options);
 
-	/// <summary>
-	/// <inheritdoc cref="AppendResponseCookie(string, string?)"/>
-	/// </summary>
-	/// <param name="context">HttpContext</param>
-	/// <param name="key">The key of the cookie.</param>
-	/// <param name="value">The value to set the cookie to or delete if null.</param>
+	/// <inheritdoc cref="IBasicCookieManager.AppendResponseCookie(HttpContext, string, string, CookieOptions)"/>
 	public void AppendResponseCookie(HttpContext context, string key, string? value)
 		=> AppendResponseCookie(context, key, value, new());
 
-	/// <summary>
-	/// <inheritdoc cref="AppendResponseCookie(string, string?)"/>
-	/// </summary>
-	/// <param name="context">HttpContext</param>
-	/// <param name="key">The key of the cookie.</param>
-	/// <param name="value">The value to set the cookie to or delete if null.</param>
-	/// <param name="options">CookieOptions</param>
+	/// <inheritdoc cref="IBasicCookieManager.AppendResponseCookie(HttpContext, string, string, CookieOptions)"/>
 	public void AppendResponseCookie(HttpContext context, string key, string? value, CookieOptions options)
 	{
 		if (context == null)
@@ -81,35 +52,19 @@ public class CookieManager : ICookieManager
 			BaseManager.AppendResponseCookie(context, key, value, options);
 	}
 
-	/// <summary>
-	/// <inheritdoc cref="ChunkingCookieManager.DeleteCookie"/>
-	/// </summary>
-	/// <param name="key">The key of the cookie.</param>
+	/// <inheritdoc cref="IBasicCookieManager.DeleteCookie(HttpContext, string, CookieOptions)"/>
 	public void DeleteCookie(string key)
 		=> DeleteCookie(GetContext(), key, new());
 
-	/// <summary>
-	/// <inheritdoc cref="DeleteCookie(string)"/>
-	/// </summary>
-	/// <param name="key">The key of the cookie.</param>
-	/// <param name="options">CookieOptions</param>
+	/// <inheritdoc cref="IBasicCookieManager.DeleteCookie(HttpContext, string, CookieOptions)"/>
 	public void DeleteCookie(string key, CookieOptions options)
 		=> DeleteCookie(GetContext(), key, options);
 
-	/// <summary>
-	/// <inheritdoc cref="DeleteCookie(string)"/>
-	/// </summary>
-	/// <param name="context">HttpContext</param>
-	/// <param name="key">The key of the cookie.</param>
+	/// <inheritdoc cref="IBasicCookieManager.DeleteCookie(HttpContext, string, CookieOptions)"/>
 	public void DeleteCookie(HttpContext context, string key)
 		=> DeleteCookie(context, key, new());
 
-	/// <summary>
-	/// <inheritdoc cref="DeleteCookie(string)"/>
-	/// </summary>
-	/// <param name="context">HttpContext</param>
-	/// <param name="key">The key of the cookie.</param>
-	/// <param name="options">CookieOptions</param>
+	/// <inheritdoc cref="IBasicCookieManager.DeleteCookie(HttpContext, string, CookieOptions)"/>
 	public void DeleteCookie(HttpContext context, string key, CookieOptions options)
 	{
 		if (context == null)
@@ -118,41 +73,19 @@ public class CookieManager : ICookieManager
 		BaseManager.DeleteCookie(context, key, options);
 	}
 
-	/// <summary>
-	/// <inheritdoc cref="ChunkingCookieManager.GetRequestCookie(HttpContext, string)"/>
-	/// </summary>
-	/// <param name="key">The key of the cookie.</param>
-	/// <returns>String value of cookie or null.</returns>
+	/// <inheritdoc cref="IBasicCookieManager.GetRequestCookie(HttpContext, string, bool)"/>
 	public string? GetRequestCookie(string key)
 		=> GetRequestCookie(GetContext(), key, true);
 
-	/// <summary>
-	/// <inheritdoc cref="ChunkingCookieManager.GetRequestCookie(HttpContext, string)"/>
-	/// </summary>
-	/// <param name="key">The key of the cookie.</param>
-	/// <param name="allowNull">Return null if true or throw <seealso cref="NullCookieValueException"/> if false.</param>
-	/// <returns>String value of cookie or null</returns>
-	/// <exception cref="NullCookieValueException" />
+	/// <inheritdoc cref="IBasicCookieManager.GetRequestCookie(HttpContext, string, bool)"/>
 	public string GetRequestCookie(string key, bool allowNull)
 		=> GetRequestCookie(GetContext(), key, allowNull)!;
 
-	/// <summary>
-	/// <inheritdoc cref="ChunkingCookieManager.GetRequestCookie(HttpContext, string)"/>
-	/// </summary>
-	/// <param name="context">HttpContext</param>
-	/// <param name="key">The key of the cookie.</param>
-	/// <returns>String value of cookie or null</returns>
+	/// <inheritdoc cref="IBasicCookieManager.GetRequestCookie(HttpContext, string, bool)"/>
 	public string? GetRequestCookie(HttpContext context, string key)
 		=> GetRequestCookie(context, key, true);
 
-	/// <summary>
-	/// <inheritdoc cref="ChunkingCookieManager.GetRequestCookie(HttpContext, string)"/>
-	/// </summary>
-	/// <param name="context">HttpContext</param>
-	/// <param name="key">The key of the cookie.</param>
-	/// <param name="allowNull">Return null if true or throw <seealso cref="NullCookieValueException"/> if false.</param>
-	/// <returns>String value of cookie or null</returns>
-	/// <exception cref="NullCookieValueException"></exception>
+	/// <inheritdoc cref="IBasicCookieManager.GetRequestCookie(HttpContext, string, bool)"/>
 	public string? GetRequestCookie(HttpContext context, string key, bool allowNull)
 	{
 		if (context == null)

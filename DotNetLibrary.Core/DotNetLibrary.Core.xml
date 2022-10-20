@@ -4,6 +4,132 @@
         <name>DotNetLibrary.Core</name>
     </assembly>
     <members>
+        <member name="T:Microsoft.AspNetCore.Components.IUpdateNotifier">
+            <summary>
+            Interface defining a property for triggering user defined 
+            events before the <see cref="M:Microsoft.AspNetCore.Components.ComponentBase.StateHasChanged"/>
+            method.
+            </summary>
+        </member>
+        <member name="E:Microsoft.AspNetCore.Components.IUpdateNotifier.OnUpdate">
+            <summary>
+            Custom events called before 
+            <see cref="M:Microsoft.AspNetCore.Components.ComponentBase.StateHasChanged"/>
+            has been called.
+            </summary>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Components.IUpdateNotifier`1">
+            <inheritdoc cref="T:Microsoft.AspNetCore.Components.IUpdateNotifier"/>
+            <typeparam name="TIn">User defined value passed in during updates.</typeparam>
+        </member>
+        <member name="E:Microsoft.AspNetCore.Components.IUpdateNotifier`1.OnUpdate">
+            <inheritdoc cref="T:Microsoft.AspNetCore.Components.IUpdateNotifier"/>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Components.IUpdateNotifier`2">
+            <inheritdoc cref="T:Microsoft.AspNetCore.Components.IUpdateNotifier"/>
+            <typeparam name="TIn">User defined value passed in during updates.</typeparam>
+            <typeparam name="TOut">User defined type returned from updates.</typeparam>
+        </member>
+        <member name="E:Microsoft.AspNetCore.Components.IUpdateNotifier`2.OnUpdate">
+            <inheritdoc cref="T:Microsoft.AspNetCore.Components.IUpdateNotifier"/>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Components.UpdateComponent`1">
+            <summary>
+            Update component base. This can be used to replace the
+            <see cref="T:Microsoft.AspNetCore.Components.ComponentBase"/> of a razor file. When using
+            <code>@inhert <see cref="T:Microsoft.AspNetCore.Components.UpdateComponent`1"/></code>
+            in a razor file, the <typeparamref name="TComponent"/> 
+            will be injected into the component and using the 
+            <see cref="M:Microsoft.AspNetCore.Components.ComponentBase.OnInitialized"/> method, hook
+            into the event Action callback of the component.
+            When disposed, the hook will be removed by calling the 
+            <see cref="M:System.IDisposable.Dispose"/> method.
+            </summary>
+            <typeparam name="TComponent">An injectable service that implments the <seealso cref="T:Microsoft.AspNetCore.Components.IUpdateNotifier"/>.</typeparam>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Components.UpdateComponent`1.Component">
+            <summary>
+            The component associate with the razor file. This
+            is likley a state object used between multiple 
+            razor components and handles changes made to the state.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Components.UpdateComponent`1.OnInitialized">
+            <seealso cref="M:Microsoft.AspNetCore.Components.ComponentBase.OnInitialized"/>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Components.UpdateComponent`1.Update">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Components.UpdateComponent`3.Update(`1)"/>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Components.UpdateComponent`1.Dispose">
+            <seealso cref="M:System.IDisposable.Dispose"/>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Components.UpdateComponent`2">
+            <summary>
+            Update component base. This can be used to replace the
+            <see cref="T:Microsoft.AspNetCore.Components.ComponentBase"/> of a razor file. When using
+            <code>@inhert <see cref="T:Microsoft.AspNetCore.Components.UpdateComponent`2"/></code>
+            in a razor file, the <typeparamref name="TComponent"/> 
+            will be injected into the component and using the 
+            <see cref="M:Microsoft.AspNetCore.Components.ComponentBase.OnInitialized"/> method, hook
+            into the event Action callback of the component.
+            When disposed, the hook will be removed by calling the 
+            <see cref="M:System.IDisposable.Dispose"/> method.
+            </summary>
+            <typeparam name="TComponent">An injectable service that implments the <seealso cref="T:Microsoft.AspNetCore.Components.IUpdateNotifier`1"/>.</typeparam>
+            <typeparam name="TIn">The user defined type passed into the <see cref="M:Microsoft.AspNetCore.Components.UpdateComponent`2.Update(`1)"/> method.</typeparam>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Components.UpdateComponent`2.Component">
+            <summary>
+            The component associate with the razor file. This
+            is likley a state object used between multiple 
+            razor components and handles changes made to the state.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Components.UpdateComponent`2.OnInitialized">
+            <seealso cref="M:Microsoft.AspNetCore.Components.ComponentBase.OnInitialized"/>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Components.UpdateComponent`2.Update(`1)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Components.UpdateComponent`3.Update(`1)"/>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Components.UpdateComponent`2.Dispose">
+            <seealso cref="M:System.IDisposable.Dispose"/>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Components.UpdateComponent`3">
+            <summary>
+            Update component base. This can be used to replace the
+            <see cref="T:Microsoft.AspNetCore.Components.ComponentBase"/> of a razor file. When using
+            <code>@inhert <see cref="T:Microsoft.AspNetCore.Components.UpdateComponent`3"/></code>
+            in a razor file, the <typeparamref name="TComponent"/> 
+            will be injected into the component and using the 
+            <see cref="M:Microsoft.AspNetCore.Components.ComponentBase.OnInitialized"/> method, hook
+            into the event Action callback of the component.
+            When disposed, the hook will be removed by calling the 
+            <see cref="M:System.IDisposable.Dispose"/> method.
+            </summary>
+            <typeparam name="TComponent">An injectable service that implments the <seealso cref="T:Microsoft.AspNetCore.Components.IUpdateNotifier`1"/>.</typeparam>
+            <typeparam name="TIn">The user defined type passed into the <see cref="M:Microsoft.AspNetCore.Components.UpdateComponent`3.Update(`1)"/> method.</typeparam>
+            <typeparam name="TOut">The user defined type returned back from a call to the <see cref="M:Microsoft.AspNetCore.Components.UpdateComponent`3.Update(`1)"/> method.</typeparam>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Components.UpdateComponent`3.Component">
+            <summary>
+            The component associate with the razor file. This
+            is likley a state object used between multiple 
+            razor components and handles changes made to the state.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Components.UpdateComponent`3.OnInitialized">
+            <seealso cref="M:Microsoft.AspNetCore.Components.ComponentBase.OnInitialized"/>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Components.UpdateComponent`3.Update(`1)">
+            <summary>
+            Method triggered when an update event happens.
+            </summary>
+            <param name="value">User defined response value.</param>
+            <returns>User defined response object.</returns>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Components.UpdateComponent`3.Dispose">
+            <seealso cref="M:System.IDisposable.Dispose"/>
+        </member>
         <member name="T:Microsoft.AspNetCore.Http.BasicCookie">
             <summary>
             Basic cookie accessor.
@@ -14,7 +140,7 @@
             Cookie key name.
             </summary>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.BasicCookie.#ctor(Microsoft.AspNetCore.Http.CookieManager,System.String)">
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookie.#ctor(Microsoft.AspNetCore.Http.IBasicCookieManager,System.String)">
             <summary>
             Constructor that takes a manager and cookie key.
             </summary>
@@ -56,7 +182,7 @@
             A factory for creating individual cookies.
             </summary>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieFactory.#ctor(Microsoft.AspNetCore.Http.CookieManager)">
+        <member name="M:Microsoft.AspNetCore.Http.CookieFactory.#ctor(Microsoft.AspNetCore.Http.IBasicCookieManager)">
             <summary>
             Constructor for cookie factory
             </summary>
@@ -70,9 +196,7 @@
             <returns>A basic cookie for getting, setting, and deleting cookie values.</returns>
         </member>
         <member name="T:Microsoft.AspNetCore.Http.CookieManager">
-            <summary>
-            Manager for getting, setting, and deleting cookies.
-            </summary>
+            <inheritdoc cref="T:Microsoft.AspNetCore.Http.IBasicCookieManager"/>
         </member>
         <member name="M:Microsoft.AspNetCore.Http.CookieManager.#ctor(Serilog.ILogger,Microsoft.AspNetCore.Http.IHttpContextAccessor)">
             <summary>
@@ -82,6 +206,47 @@
             <param name="context">IHttpContextAccessor</param>
         </member>
         <member name="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(System.String,System.String)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(System.String)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.GetRequestCookie(System.String)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Boolean)"/>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.GetRequestCookie(System.String,System.Boolean)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Boolean)"/>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Boolean)"/>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.CookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Boolean)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Boolean)"/>
+        </member>
+        <member name="T:Microsoft.AspNetCore.Http.IBasicCookieManager">
+            <summary>
+            Manager for getting, setting, and deleting cookies.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(System.String,System.String)">
             <summary>
             If the value is null:<br />
             <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
@@ -93,67 +258,67 @@
             <param name="key">The key of the cookie.</param>
             <param name="value">The value to set the cookie to or delete if null.</param>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
             <summary>
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(System.String,System.String)"/>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(System.String,System.String)"/>
             </summary>
             <param name="key">The key of the cookie.</param>
             <param name="value">The value to set the cookie to or delete if null.</param>
             <param name="options">CookieOptions</param>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String)">
+        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(System.String,System.String)"/>
             <summary>
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(System.String,System.String)"/>
             </summary>
             <param name="context">HttpContext</param>
             <param name="key">The key of the cookie.</param>
             <param name="value">The value to set the cookie to or delete if null.</param>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
             <summary>
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(System.String,System.String)"/>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(System.String,System.String)"/>
             </summary>
             <param name="context">HttpContext</param>
             <param name="key">The key of the cookie.</param>
             <param name="value">The value to set the cookie to or delete if null.</param>
             <param name="options">CookieOptions</param>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(System.String)">
+        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(System.String)">
             <summary>
             <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
             </summary>
             <param name="key">The key of the cookie.</param>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(System.String,Microsoft.AspNetCore.Http.CookieOptions)">
             <summary>
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(System.String)"/>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(System.String)"/>
             </summary>
             <param name="key">The key of the cookie.</param>
             <param name="options">CookieOptions</param>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)">
             <summary>
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(System.String)"/>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(System.String)"/>
             </summary>
             <param name="context">HttpContext</param>
             <param name="key">The key of the cookie.</param>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
             <summary>
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(System.String)"/>
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(System.String)"/>
             </summary>
             <param name="context">HttpContext</param>
             <param name="key">The key of the cookie.</param>
             <param name="options">CookieOptions</param>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.GetRequestCookie(System.String)">
+        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.GetRequestCookie(System.String)">
             <summary>
             <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)"/>
             </summary>
             <param name="key">The key of the cookie.</param>
             <returns>String value of cookie or null.</returns>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.GetRequestCookie(System.String,System.Boolean)">
+        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.GetRequestCookie(System.String,System.Boolean)">
             <summary>
             <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)"/>
             </summary>
@@ -162,7 +327,7 @@
             <returns>String value of cookie or null</returns>
             <exception cref="T:Microsoft.AspNetCore.Http.NullCookieValueException" />
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)">
+        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)">
             <summary>
             <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)"/>
             </summary>
@@ -170,7 +335,7 @@
             <param name="key">The key of the cookie.</param>
             <returns>String value of cookie or null</returns>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Boolean)">
+        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Boolean)">
             <summary>
             <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)"/>
             </summary>
@@ -187,7 +352,7 @@
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.CookieExtensions.AddCookies(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
             <summary>
-            Extension method for adding <seealso cref="T:Microsoft.AspNetCore.Http.CookieManager"/> and <seealso cref="T:Microsoft.AspNetCore.Http.CookieFactory"/> to the services.
+            Extension method for adding <seealso cref="T:Microsoft.AspNetCore.Http.IBasicCookieManager"/> and <seealso cref="T:Microsoft.AspNetCore.Http.CookieFactory"/> to the services.
             collection.
             </summary>
             <param name="services"><inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddTransient``1(Microsoft.Extensions.DependencyInjection.IServiceCollection)"/></param>
@@ -771,6 +936,22 @@
             <param name="filename"><inheritdoc cref="M:System.IO.EmbeddedResource.ReadStreamAsync(System.String,System.Reflection.Assembly)"/></param>
             <param name="assemblies">Additional assemblies to search first before the default locations.</param>
             <returns><inheritdoc cref="M:System.IO.EmbeddedResource.ReadStreamAsync(System.String,System.Reflection.Assembly)"/></returns>
+        </member>
+        <member name="M:System.IO.EmbeddedResource.GetAllFilenames(System.Reflection.Assembly)">
+            <summary>
+            Get all assembly manifest resource names. This is using
+            <seealso cref="M:System.Reflection.Assembly.GetManifestResourceNames"/> to retrieve
+            all the names.
+            </summary>
+            <param name="assembly">An assembly to get manifest resource names from.</param>
+            <returns>A list of manifest resource names.</returns>
+        </member>
+        <member name="M:System.IO.EmbeddedResource.GetAllFilenames(System.Collections.Generic.IEnumerable{System.Reflection.Assembly})">
+            <summary>
+            <inheritdoc cref="M:System.IO.EmbeddedResource.GetAllFilenames(System.Reflection.Assembly)"/>
+            </summary>
+            <param name="assemblies">List of assemblies to get manifest resource names from.</param>
+            <returns><inheritdoc cref="M:System.IO.EmbeddedResource.GetAllFilenames(System.Reflection.Assembly)"/></returns>
         </member>
         <member name="T:System.Linq.LinqExtensions">
             <summary>

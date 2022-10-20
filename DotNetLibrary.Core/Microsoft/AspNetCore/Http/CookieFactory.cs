@@ -5,13 +5,13 @@
 /// </summary>
 public class CookieFactory
 {
-	private CookieManager Manager { get; }
+	private IBasicCookieManager Manager { get; }
 
 	/// <summary>
 	/// Constructor for cookie factory
 	/// </summary>
 	/// <param name="manager">CookieManager</param>
-	public CookieFactory(CookieManager manager)
+	public CookieFactory(IBasicCookieManager manager)
 	{
 		Manager = manager;
 	}

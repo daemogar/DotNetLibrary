@@ -1,11 +1,15 @@
-﻿namespace Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+
+using System.Diagnostics;
+
+namespace Microsoft.AspNetCore.Http;
 
 /// <summary>
 /// Basic cookie accessor.
 /// </summary>
 public record class BasicCookie
 {
-	private CookieManager Manager { get; }
+	private IBasicCookieManager Manager { get; }
 
 	/// <summary>
 	/// Cookie key name.
@@ -17,10 +21,13 @@ public record class BasicCookie
 	/// </summary>
 	/// <param name="manager">A cookie manager for accessing the underlying cookies.</param>
 	/// <param name="cookieKey">The key of the cookie.</param>
-	public BasicCookie(CookieManager manager, string cookieKey)
+	public BasicCookie(IBasicCookieManager manager, string cookieKey)
 	{
+		Debug.Assert(manager is not null);
+		Debug.Assert(cookieKey is not null);
+
 		Manager = manager;
-		CookieKey = cookieKey;
+		CookieKey = cookieKey!;
 	}
 
 	/// <summary>
