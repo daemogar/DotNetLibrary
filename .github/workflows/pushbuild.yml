@@ -41,5 +41,5 @@ jobs:
       with:
         RELEASE_NAME: ${{ env.PROJECT }}.${{ matrix.project }}
         
-    - name: Build (${{ env.RELEASE_NAME }})
+    - name: Build ${{ env.RELEASE_NAME }}
       run: dotnet build -c Release

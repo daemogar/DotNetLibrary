@@ -25,6 +25,7 @@ jobs:
       run: git fetch --prune --unshallow
        
     - name: Setup .NET
+      id: dotnet
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: |
@@ -37,35 +38,40 @@ jobs:
       uses: allenevans/set-env@v2.0.0
       with:
         RELEASE_NAME: ${{ env.PROJECT }}.${{ matrix.project }}
+
+    #- name: Set Working Directory
+    #  uses: allenevans/set-env@v2.0.0
+    #  with:
+    #    WORKING_DIRECTORY: ./${{ env.PROJECT }}.${{ matrix.project }}
         
     - name: NuGet Package (${{ env.RELEASE_NAME }})
       env:
         RELEASE_NOTE: https://github.com/daemogar/${{ env.PROJECT }}/releases/tag/${{ env.VERSION }}
-      run: dotnet pack -c Release --include-symbols /p:Version=${{ env.VERSION }} /p:PackageReleaseNotes="See ${{ env.RELEASE_NOTE }}"
+      run: dotnet pack -c Release --include-symbols -p:SymbolPackageFormat=snupkg /p:Version=${{ env.VERSION }} /p:PackageReleaseNotes="See ${{ env.RELEASE_NOTE }}"
       working-directory: ./${{ env.PROJECT }}.${{ matrix.project }}
    
-    - name: Set Package Name
-      uses: allenevans/set-env@v2.0.0
-      with:
-        PACKAGE_NAME: ${{ env.RELEASE_NAME }}.${{ env.VERSION }}
-        
-    - name: Set Release Path
-      uses: allenevans/set-env@v2.0.0
-      with:
-        RELEASE_PATH: ./${{ env.PROJECT }}.${{ matrix.project }}/bin/Release/net${{ matrix.dotnet }}${{ env.PACKAGE_NAME }}
-    
-    - name: Archive Artifacts (NUPKG)
-      uses: actions/upload-artifact@v1
-      with:
-        name: ${{ env.PROJECT }}
-        path: ${{ env.RELEASE_PATH }}.nupkg
-   
-    - name: Archive Artifacts (SNUPKG)
-      uses: actions/upload-artifact@v1
-      with:
-        name: ${{ env.PROJECT }}
-        path: ${{ env.RELEASE_PATH }}.snupkg
+    #- name: Set Package Name
+    #  uses: allenevans/set-env@v2.0.0
+    #  with:
+    #    PACKAGE_NAME: ${{ env.RELEASE_NAME }}.${{ env.VERSION }}
+    #    
+    #- name: Set Release Path
+    #  uses: allenevans/set-env@v2.0.0
+    #  with:
+    #    RELEASE_PATH: ./${{ WORKING_DIRECTORY }}/bin/Release/${{ env.PACKAGE_NAME }}
+    #
+    #- name: Archive Artifacts (NUPKG)
+    #  uses: actions/upload-artifact@v3
+    #  with:
+    #    name: ${{ env.PROJECT }}
+    #    path: ${{ env.RELEASE_PATH }}.nupkg
+    #
+    #- name: Archive Artifacts (SNUPKG)
+    #  uses: actions/upload-artifact@v3
+    #  with:
+    #    name: ${{ env.PROJECT }}
+    #    path: ${{ env.RELEASE_PATH }}.snupkg
     
     - name: Publish NuGet Package
-      run: dotnet nuget push **/*.nupkg -k ${{ secrets.NUGETPACKAGEAPIKEY }} -s https://api.nuget.org/v3/index.json
+      run: dotnet nuget push **/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGETPACKAGEAPIKEY }}
     
