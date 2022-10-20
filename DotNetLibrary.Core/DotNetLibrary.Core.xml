@@ -374,6 +374,16 @@
             <param name="services"><inheritdoc /></param>
             <param name="configuration"><inheritdoc /></param>
         </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.InitializeAsync(System.Threading.CancellationToken)">
+            <summary>
+            This method is called once on startup. The return value should be if the 
+            initialization was successful or not. If the return is true, then the 
+            <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.ExecuteAsync(System.Threading.CancellationToken)"/> method is called. If the
+            return is false, then it is not called.
+            </summary>
+            <param name="stoppingToken">Trigger when <seealso cref="M:Microsoft.Extensions.Hosting.IHostedService.StopAsync(System.Threading.CancellationToken)"/> is called.</param>
+            <returns>Returns a Task of a long running operation. If the task completes with true, then the <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.ExecuteAsync(System.Threading.CancellationToken)"/> method is called. If the task completes with false, then it is not called.</returns>
+        </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.ExecuteAsync(System.Threading.CancellationToken)">
             <inheritdoc cref="M:Microsoft.Extensions.Hosting.BackgroundService.ExecuteAsync(System.Threading.CancellationToken)"/>
         </member>
@@ -388,25 +398,15 @@
         </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.DiscoverableService">
             <summary>
-            Abstract implimentation of the discoverable service. Override
-            this class by class that should be provided as a application service.
+            Abstract implimentation of the discoverable service. Overriding
+            this class should be provided as a application service.
             </summary>
         </member>
         <member name="P:Microsoft.Extensions.DependencyInjection.DiscoverableService.Order">
-            <summary>
-            The order in which the service should be registered. Lower order 
-            numbers will be registered before higher order numbers. Orders can be 
-            negative. Zero is the default order and order of registration is not
-            garenteed if the order matches another services order number.
-            </summary>
+            <inheritdoc cref="P:Microsoft.Extensions.DependencyInjection.IDiscoverable.Order" />
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableService.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
-            <summary>
-            Method called on the object to run the objects registration with
-            the dependency injection system.
-            </summary>
-            <param name="services">The service collection used for registering application dependencies.</param>
-            <param name="configuration">The application configuration.</param>
+            <inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.IDiscoverable.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)" />
         </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.DiscoverableServicesExtensions">
             <summary>
@@ -414,36 +414,62 @@
             with the dependency injection system.
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableServicesExtensions.AddDiscoverableServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableServicesExtensions.AddDiscoverableServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,System.Boolean)">
             <summary>
             Discovering all services and registering them with the 
-            dependency injection services collection. This method will try to
-            find all references classes the override the abstract class
-            <seealso cref="T:Microsoft.Extensions.DependencyInjection.DiscoverableService"/>.
+            dependency injection services collection. This method will
+            try to find all references classes implmenting interface
+            <seealso cref="T:Microsoft.Extensions.DependencyInjection.IDiscoverable"/>.
             </summary>
             <param name="services">The service collection used for registering application dependencies.</param>
             <param name="configuration">The application configuration.</param>
+            <param name="excludeLibraryAssemblies">Only include the current assembly for searching.</param>
             <returns>For chainging calls to the services collection, it is returned.</returns>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableServicesExtensions.AddDiscoverableServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,System.Reflection.Assembly[])">
+            <inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableServicesExtensions.AddDiscoverableServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,System.Boolean,System.Reflection.Assembly[])"/>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableServicesExtensions.AddDiscoverableServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration,System.Boolean,System.Reflection.Assembly[])">
             <summary>
             Discovering all services and registering them with the 
             dependency injection services collection.
             </summary>
             <param name="services">The service collection used for registering application dependencies.</param>
-            <param name="assembliesToSearch">List assembly that should be searched for references to the <seealso cref="T:Microsoft.Extensions.DependencyInjection.DiscoverableService"/> interface implmentation.</param>
+            <param name="assembliesToSearch">List assembly that should be searched for references to classes implementing the interface <seealso cref="T:Microsoft.Extensions.DependencyInjection.IDiscoverable"/>.</param>
             <param name="configuration">The application configuration.</param>
-            <returns>For chainging calls to the services collection, it is returned.</returns>
+            <param name="excludeLibraryAssemblies">Only include the provided assemblies for searching.</param>	/// <returns>For chainging calls to the services collection, it is returned.</returns>
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableServicesExtensions.AddDiscoverableService``1(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
             <summary>
             Register the type as a service using its registration method defined by
-            the <seealso cref="T:Microsoft.Extensions.DependencyInjection.DiscoverableService"/> interface.
+            the interface <seealso cref="T:Microsoft.Extensions.DependencyInjection.IDiscoverable"/>.
             </summary>
             <typeparam name="TDiscoverableService">The object type that should be registerd with the dependency injection services collection.</typeparam>
             <param name="services">The service collection used for registering application dependencies.</param>
             <param name="configuration">The application configuration.</param>
             <returns>For chainging calls to the services collection, it is returned.</returns>
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.IDiscoverable">
+            <summary>
+            Override this interface to implement the order and add a configure services
+            method for adding DI components.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.DependencyInjection.IDiscoverable.Order">
+            <summary>
+            The order in which the service should be registered. Lower order 
+            numbers will be registered before higher order numbers. Orders can be 
+            negative. Zero is the default order and order of registration is not
+            garenteed if the order matches another services order number.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.IDiscoverable.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Method called on the object to run the objects registration with
+            the dependency injection system.
+            </summary>
+            <param name="services">The service collection used for registering application dependencies.</param>
+            <param name="configuration">The application configuration.</param>
         </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.HttpContextExtensions">
             <summary>
@@ -459,46 +485,178 @@
             <returns><seealso cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/></returns>
             <exception cref="T:System.NullReferenceException"></exception>
         </member>
-        <member name="T:Microsoft.Extensions.DependencyInjection.DiscoverableTask`1">
+        <member name="T:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2">
             <summary>
             <inheritdoc /> This task is for configuring and setting scheduled 
             events.
             </summary>
-            <typeparam name="T"><inheritdoc /></typeparam>
+            <typeparam name="TTask">A type that implements <seealso cref="T:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2" />.</typeparam>
+            <typeparam name="TSchedule">A type that implements <seealso cref="T:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule"/>.</typeparam>
         </member>
-        <member name="P:Microsoft.Extensions.DependencyInjection.DiscoverableTask`1.LastRun">
+        <member name="T:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response">
+            <summary>
+            Response from the <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.RepeatTaskAsync(System.Threading.CancellationToken)"/>.
+            Use the static helper methods <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Success(System.String)"/>,
+            <seealso cref="!:Failure(Exception)"/>, and <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Critical(System.Exception)"/>
+            for ideal return values for this class record.<br />
+            <br/>
+            <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Success(System.String)"/> -- Returns 
+            </summary>
+            <param name="IsSuccessful">Did the <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.RepeatTaskAsync(System.Threading.CancellationToken)"/> complete successfully. Note the task could have failed, but still completed. Use <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Success(System.String)"/></param>
+            <param name="ShouldUpdate"></param>
+            <param name="Message"></param>
+            <param name="Exception"></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.#ctor(System.Boolean,System.Boolean,System.String,System.Exception)">
+            <summary>
+            Response from the <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.RepeatTaskAsync(System.Threading.CancellationToken)"/>.
+            Use the static helper methods <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Success(System.String)"/>,
+            <seealso cref="!:Failure(Exception)"/>, and <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Critical(System.Exception)"/>
+            for ideal return values for this class record.<br />
+            <br/>
+            <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Success(System.String)"/> -- Returns 
+            </summary>
+            <param name="IsSuccessful">Did the <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.RepeatTaskAsync(System.Threading.CancellationToken)"/> complete successfully. Note the task could have failed, but still completed. Use <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Success(System.String)"/></param>
+            <param name="ShouldUpdate"></param>
+            <param name="Message"></param>
+            <param name="Exception"></param>
+        </member>
+        <member name="P:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.IsSuccessful">
+            <summary>Did the <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.RepeatTaskAsync(System.Threading.CancellationToken)"/> complete successfully. Note the task could have failed, but still completed. Use <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Success(System.String)"/></summary>
+        </member>
+        <member name="P:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.ShouldUpdate">
+            <summary></summary>
+        </member>
+        <member name="P:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Message">
+            <summary></summary>
+        </member>
+        <member name="P:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Exception">
+            <summary></summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Success(System.String)">
+            <summary>
+            Create and return a success response.
+            </summary>
+            <param name="message">Optional message to be returned.</param>
+            <returns>Successful response object.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Failure(System.String)">
+            <summary>
+            Create and return a failure response. Used to handle basic
+            errors. If an exception is thrown, then 
+            <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Critical(System.Exception)"/> should be called.
+            </summary>
+            <param name="message">The failure message.</param>
+            <returns>Failure response with message.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Critical(System.Exception)">
+            <summary>
+            Create and return a critical response. Used to signify that
+            the failure was catastrophic. If the issue is a recoverable or 
+            able to be ignored, then consider returning a 
+            <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Failure(System.String)"/>.
+            </summary>
+            <param name="exception"></param>
+            <returns>Critical reseponse with associated exception.</returns>
+        </member>
+        <member name="P:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Tag">
+            <summary>
+            Used for debuging and tagging the error messages.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.LastRun">
             <summary>
             The date and time of the last run.
             </summary>
         </member>
-        <member name="P:Microsoft.Extensions.DependencyInjection.DiscoverableTask`1.TaskSchedule">
+        <member name="P:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.TaskSchedule">
             <summary>
-            The schedule and frequency the <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`1.ExecuteTaskAsync(System.Threading.CancellationToken)"/>
+            The schedule and frequency the <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.RepeatTaskAsync(System.Threading.CancellationToken)" />
             method should be triggered.
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`1.#ctor(System.DateTime,Microsoft.Extensions.Hosting.DiscoverableTaskSchedule)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.InitializeLastRunAsync(System.Threading.CancellationToken)">
+            <summary>
+            The default value of the last run or initial value.
+            </summary>
+            <param name="stoppingToken"><inheritdoc cref="T:System.Threading.CancellationToken" /></param>
+            <returns>The last run datetime.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.InitializeTaskScheduleAsync(System.Threading.CancellationToken)">
+            <summary>
+            The default or initial task schedule.
+            </summary>
+            <param name="stoppingToken"><inheritdoc cref="T:System.Threading.CancellationToken" /></param>
+            <returns>The initial task schedule used for setting up the task.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.#ctor(System.Int32)">
             <summary>
             A discoverable task that can be scheduled.
             </summary>
-            <param name="lastRun">The date and time of the last run. If this task has never run this this should be set to <seealso cref="F:System.DateTime.MinValue"/>.</param>
-            <param name="schedule">A schedule describing how often this task should be run.</param>
+            <param name="maxThrottleInMinutes">The when a task is failing, what is the maximum time to wait between trys.</param>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`1.ExecuteTaskAsync(System.Threading.CancellationToken)">
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.RepeatTaskAsync(System.Threading.CancellationToken)">
             <summary>
-            This method is called every time the 
+            If <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.InitializeAsync(System.Threading.CancellationToken)" /> 
+            returns true, then this method is called repeated by 
             <inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1.ExecuteAsync(System.Threading.CancellationToken)" />
             </summary>
-            <param name="stoppingToken"></param>
-            <returns></returns>
+            <param name="stoppingToken"><inheritdoc cref="T:System.Threading.CancellationToken" /></param>
+            <returns>If the execution was successful or not. If false, then the throttle is increased and the last run is not updated. If true, then the throttle is reset and the last run is updated with the current datetime.</returns>
         </member>
-        <member name="E:Microsoft.Extensions.DependencyInjection.DiscoverableTask`1.OnLastRunUpdated">
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.StartAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.ExecuteAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.StopAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.UpdateLastRunAsync(System.Threading.CancellationToken)">
             <summary>
-            Notify any process that want to know that the last run date has been updated.
+            Override this method to be notified when the last run date has been 
+            updated.
+            </summary>
+            <param name="stoppingToken"><inheritdoc cref="T:System.Threading.CancellationToken" /></param>
+            <returns>An asynchronous task operation.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.TaskCompletedAsync(System.String,System.Threading.CancellationToken)">
+            <summary>
+            Override this method to be notified when a task completes successfully.
+            </summary>
+            <param name="message">The message returned doing the task execution.</param>
+            <param name="stoppingToken"><inheritdoc cref="T:System.Threading.CancellationToken" /></param>
+            <returns>An asynchronous task operation.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.TaskFailedAsync(System.Exception,System.Threading.CancellationToken)">
+            <summary>
+            Override this method to be notified when a task fails to complete 
+            successfully.
+            </summary>
+            <param name="exception">The exception thrown during task execution.</param>
+            <param name="stoppingToken"><inheritdoc cref="T:System.Threading.CancellationToken" /></param>
+            <returns>An asynchronous task operation.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.ElapsedMillisecondsLastRun">
+            <summary>
+            Get the elapsed millisconds from the last time the stopwatch was stopped.
+            </summary>
+            <returns>The total time the stopwatch ran for the last time it was stopped.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.StopTiming">
+            <summary>
+            Stop the task timer so the ellapsed time can be retrieved for how long in seconds the task took to complete.
+            </summary>
+            <returns>The total time the stopwatch ran for, either by stopping the clock or what the value was the last time it was stopped.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.StartTiming">
+            <summary>
+            Start the task timer so the time ellapsed to run the process can be recorded.
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`1.ExecuteAsync(System.Threading.CancellationToken)">
-            <inheritdoc />
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Dispose">
+            <inheritdoc/>
         </member>
         <member name="T:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule">
             <summary>
@@ -1015,6 +1173,28 @@
             <param name="seperator">The string seperater to place between each item.</param>
             <param name="predicate">A method to convert an each item in list to a string.</param>
             <returns>String converted of <paramref name="list"/> and joined by <paramref name="seperator"/>.</returns>
+        </member>
+        <member name="M:System.Linq.LinqExtensions.UnionIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{System.Boolean},``0)">
+            <summary>
+            Linq extension to conditionally join a object to a list of similar 
+            objects.
+            </summary>
+            <typeparam name="T">Generic type list of objects to add a single item to.</typeparam>
+            <param name="list">List of items to have single item added to.</param>
+            <param name="conditional">Callback to determine if <paramref name="item"/> should be added to the list or not.</param>
+            <param name="item">The item to add to the list.</param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Linq.LinqExtensions.UnionIf``1(System.Collections.Generic.IEnumerable{``0},System.Func{System.Boolean},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Linq extension to conditionally join a list of objects to another list 
+            of similar objects.
+            </summary>
+            <typeparam name="T">Generic type list of objects to add a single item to.</typeparam>
+            <param name="list">List of items to have single item added to.</param>
+            <param name="conditional">Callback to determine if <paramref name="items"/> should be added to the list or not.</param>
+            <param name="items">The list of items to add to the list.</param>
+            <returns></returns>
         </member>
         <member name="M:System.Linq.LinqExtensions.Union``1(System.Collections.Generic.IEnumerable{``0},``0)">
             <summary>
