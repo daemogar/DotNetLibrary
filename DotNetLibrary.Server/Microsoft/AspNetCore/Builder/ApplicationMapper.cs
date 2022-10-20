@@ -31,6 +31,14 @@ public class ApplicationMapper
 		=> Builder.MapGet(pattern, requestDelegate);
 
 	/// <summary>
+	/// <inheritdoc cref="EndpointRouteBuilderExtensions.MapGet(IEndpointRouteBuilder, string, Delegate)"/>	/// </summary>
+	/// <param name="pattern">The route pattern.</param>
+	/// <param name="requestDelegate">The delegate executed when the endpoint is matched.</param>
+	/// <returns>A Microsoft.AspNetCore.Builder.IEndpointConventionBuilder that can be used to further customize the endpoint.</returns>
+	public IEndpointConventionBuilder MapGet(string pattern, Delegate requestDelegate)
+		=> Builder.MapGet(pattern, requestDelegate);
+
+	/// <summary>
 	/// <inheritdoc cref="EndpointRouteBuilderExtensions.MapPost(IEndpointRouteBuilder, string, RequestDelegate)"/>
 	/// </summary>
 	/// <param name="pattern">The route pattern.</param>
@@ -38,6 +46,16 @@ public class ApplicationMapper
 	/// <returns>A Microsoft.AspNetCore.Builder.IEndpointConventionBuilder that can be used to further customize the endpoint.</returns>
 	public IEndpointConventionBuilder MapPost(
 		string pattern, RequestDelegate requestDelegate)
+		=> Builder.MapPost(pattern, requestDelegate);
+
+	/// <summary>
+	/// <inheritdoc cref="EndpointRouteBuilderExtensions.MapPost(IEndpointRouteBuilder, string, Delegate)"/>
+	/// </summary>
+	/// <param name="pattern">The route pattern.</param>
+	/// <param name="requestDelegate">The delegate executed when the endpoint is matched.</param>
+	/// <returns>A Microsoft.AspNetCore.Builder.IEndpointConventionBuilder that can be used to further customize the endpoint.</returns>
+	public IEndpointConventionBuilder MapPost(
+		string pattern, Delegate requestDelegate)
 		=> Builder.MapPost(pattern, requestDelegate);
 
 	/// <summary>
@@ -51,6 +69,16 @@ public class ApplicationMapper
 		=> Builder.MapPut(pattern, requestDelegate);
 
 	/// <summary>
+	/// <inheritdoc cref="EndpointRouteBuilderExtensions.MapPut(IEndpointRouteBuilder, string, Delegate)"/>
+	/// </summary>
+	/// <param name="pattern">The route pattern.</param>
+	/// <param name="requestDelegate">The delegate executed when the endpoint is matched.</param>
+	/// <returns>A Microsoft.AspNetCore.Builder.IEndpointConventionBuilder that can be used to further customize the endpoint.</returns>
+	public IEndpointConventionBuilder MapPut(
+		string pattern, Delegate requestDelegate)
+		=> Builder.MapPut(pattern, requestDelegate);
+
+	/// <summary>
 	/// <inheritdoc cref="EndpointRouteBuilderExtensions.MapDelete(IEndpointRouteBuilder, string, RequestDelegate)"/>
 	/// </summary>
 	/// <param name="pattern">The route pattern.</param>
@@ -58,6 +86,16 @@ public class ApplicationMapper
 	/// <returns>A Microsoft.AspNetCore.Builder.IEndpointConventionBuilder that can be used to further customize the endpoint.</returns>
 	public IEndpointConventionBuilder MapDelete(
 		string pattern, RequestDelegate requestDelegate)
+		=> Builder.MapDelete(pattern, requestDelegate);
+
+	/// <summary>
+	/// <inheritdoc cref="EndpointRouteBuilderExtensions.MapDelete(IEndpointRouteBuilder, string, Delegate)"/>
+	/// </summary>
+	/// <param name="pattern">The route pattern.</param>
+	/// <param name="requestDelegate">The delegate executed when the endpoint is matched.</param>
+	/// <returns>A Microsoft.AspNetCore.Builder.IEndpointConventionBuilder that can be used to further customize the endpoint.</returns>
+	public IEndpointConventionBuilder MapDelete(
+		string pattern, Delegate requestDelegate)
 		=> Builder.MapDelete(pattern, requestDelegate);
 
 	/// <summary>
@@ -72,6 +110,17 @@ public class ApplicationMapper
 		=> Builder.MapMethods(pattern, httpMethods, requestDelegate);
 
 	/// <summary>
+	/// <inheritdoc cref="EndpointRouteBuilderExtensions.MapMethods(IEndpointRouteBuilder, string, IEnumerable{string}, Delegate)"/>
+	/// </summary>
+	/// <param name="pattern">The route pattern.</param>
+	/// <param name="httpMethods">HTTP methods that the endpoint will match.</param>
+	/// <param name="requestDelegate">The delegate executed when the endpoint is matched.</param>
+	/// <returns>A Microsoft.AspNetCore.Builder.IEndpointConventionBuilder that can be used to further customize the endpoint.</returns>
+	public IEndpointConventionBuilder MapMethods(
+		string pattern, IEnumerable<string> httpMethods, Delegate requestDelegate)
+		=> Builder.MapMethods(pattern, httpMethods, requestDelegate);
+
+	/// <summary>
 	/// <inheritdoc cref="EndpointRouteBuilderExtensions.Map(IEndpointRouteBuilder, string, RequestDelegate)"/>
 	/// </summary>
 	/// <param name="pattern">The route pattern.</param>
@@ -79,6 +128,16 @@ public class ApplicationMapper
 	/// <returns>A Microsoft.AspNetCore.Builder.IEndpointConventionBuilder that can be used to further customize the endpoint.</returns>
 	public IEndpointConventionBuilder Map(
 		string pattern, RequestDelegate requestDelegate)
+		=> Builder.Map(pattern, requestDelegate);
+
+	/// <summary>
+	/// <inheritdoc cref="EndpointRouteBuilderExtensions.Map(IEndpointRouteBuilder, string, Delegate)"/>
+	/// </summary>
+	/// <param name="pattern">The route pattern.</param>
+	/// <param name="requestDelegate">The delegate executed when the endpoint is matched.</param>
+	/// <returns>A Microsoft.AspNetCore.Builder.IEndpointConventionBuilder that can be used to further customize the endpoint.</returns>
+	public IEndpointConventionBuilder Map(
+		string pattern, Delegate requestDelegate)
 		=> Builder.Map(pattern, requestDelegate);
 
 	/// <summary>
@@ -90,4 +149,20 @@ public class ApplicationMapper
 	public IEndpointConventionBuilder Map(
 		RoutePattern pattern, RequestDelegate requestDelegate)
 		=> Builder.Map(pattern, requestDelegate);
+
+	/// <summary>
+	/// <inheritdoc cref="EndpointRouteBuilderExtensions.Map(IEndpointRouteBuilder, RoutePattern, Delegate)"/>
+	/// </summary>
+	/// <param name="pattern">The route pattern.</param>
+	/// <param name="requestDelegate">The delegate executed when the endpoint is matched.</param>
+	/// <returns>A Microsoft.AspNetCore.Builder.IEndpointConventionBuilder that can be used to further customize the endpoint.</returns>
+	public IEndpointConventionBuilder Map(
+		RoutePattern pattern, Delegate requestDelegate)
+		=> Builder.Map(pattern, requestDelegate);
+
+	/// <summary>
+	/// Pass an <seealso cref="Action"/> that takes a single parameter. Use the <seealso cref="IEndpointRouteBuilder"/> to construct raw mappings.
+	/// </summary>
+	/// <param name="action"><seealso cref="Action"/> that takes a single parameter <seealso cref="IEndpointRouteBuilder"/>.</param>
+	public void Map(Action<IEndpointRouteBuilder> action) => action(Builder);
 }

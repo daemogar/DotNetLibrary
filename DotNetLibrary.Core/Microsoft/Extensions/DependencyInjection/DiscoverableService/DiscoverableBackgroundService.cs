@@ -26,15 +26,27 @@ public abstract class DiscoverableBackgroundService<T> : DiscoverableService, IH
 		IServiceCollection services, IConfiguration configuration)
 		=> services.AddHostedService<T>();
 
+	/// <summary>
+	/// This method is called once on startup. The return value should be if the 
+	/// initialization was successful or not. If the return is true, then the 
+	/// <seealso cref="ExecuteAsync(CancellationToken)"/> method is called. If the
+	/// return is false, then it is not called.
+	/// </summary>
+	/// <param name="stoppingToken">Trigger when <seealso cref="IHostedService.StopAsync(CancellationToken)"/> is called.</param>
+	/// <returns>Returns a Task of a long running operation. If the task completes with true, then the <seealso cref="ExecuteAsync(CancellationToken)"/> method is called. If the task completes with false, then it is not called.</returns>
+	protected abstract Task<bool> InitializeAsync(CancellationToken stoppingToken);
+
 	/// <inheritdoc cref="BackgroundService.ExecuteAsync(CancellationToken)"/>
 	protected abstract Task ExecuteAsync(CancellationToken stoppingToken);
 
 	/// <inheritdoc cref="BackgroundService.StartAsync(CancellationToken)"/>
 	public virtual Task StartAsync(CancellationToken cancellationToken)
-	{
-		Task = ExecuteAsync(Source.Token);
-		return Task.IsCompleted ? Task : Task.CompletedTask;
-	}
+		=> InitializeAsync(cancellationToken)
+			.ContinueWith(async p =>
+			{
+				if(await p)
+					await ExecuteAsync(Source.Token);
+			});
 
 	/// <inheritdoc cref="BackgroundService.StopAsync(CancellationToken)"/>
 	public virtual async Task StopAsync(CancellationToken cancellationToken)

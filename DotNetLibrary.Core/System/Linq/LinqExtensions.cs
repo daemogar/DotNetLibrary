@@ -79,6 +79,36 @@ public static class LinqExtensions
 		=> string.Join(seperator, list.Select(p => predicate(p)));
 
 	/// <summary>
+	/// Linq extension to conditionally join a object to a list of similar 
+	/// objects.
+	/// </summary>
+	/// <typeparam name="T">Generic type list of objects to add a single item to.</typeparam>
+	/// <param name="list">List of items to have single item added to.</param>
+	/// <param name="conditional">Callback to determine if <paramref name="item"/> should be added to the list or not.</param>
+	/// <param name="item">The item to add to the list.</param>
+	/// <returns></returns>
+	public static IEnumerable<T> UnionIf<T>(
+		this IEnumerable<T> list,
+		Func<bool> conditional,
+		T item)
+		=> list.UnionIf(conditional, new[] { item });
+
+	/// <summary>
+	/// Linq extension to conditionally join a list of objects to another list 
+	/// of similar objects.
+	/// </summary>
+	/// <typeparam name="T">Generic type list of objects to add a single item to.</typeparam>
+	/// <param name="list">List of items to have single item added to.</param>
+	/// <param name="conditional">Callback to determine if <paramref name="items"/> should be added to the list or not.</param>
+	/// <param name="items">The list of items to add to the list.</param>
+	/// <returns></returns>
+	public static IEnumerable<T> UnionIf<T>(
+		this IEnumerable<T> list,
+		Func<bool> conditional,
+		IEnumerable<T> items)
+		=> conditional() ? list.Union(items) : list;
+
+	/// <summary>
 	/// Linq extension to union/join an object to a list.
 	/// </summary>
 	/// <typeparam name="T">Generic type list of objects to add a single item to.</typeparam>
