@@ -16,7 +16,6 @@ jobs:
     strategy:
       matrix:
         project: [ Core, Client, Server ]
-        dotnet: [ 6.0.x, 7.0.x ]
         
     steps:
     - name: Checkout Repository
@@ -25,11 +24,13 @@ jobs:
     - name: Git Fetch
       run: git fetch --prune --unshallow
        
-    - name: Setup .NET (${{ matrix.dotnet }})
+    - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: ${{ matrix.dotnet }}
-        include-prerelease: true
+        dotnet-version: |
+          6.0.x
+          7.0.x
+        dotnet-quality: preview
             
     - name: Set Release Name
       if: ${{ matrix.project != 'Core' }}
