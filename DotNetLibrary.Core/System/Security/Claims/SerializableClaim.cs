@@ -60,4 +60,17 @@ public class SerializableClaim
 	/// </summary>
 	/// <returns><seealso cref="Claim"/> of simple type.</returns>
 	public Claim AsClaim() => new(Type, Value, Issuer);
+
+	/// <summary>
+	/// Checks to see if one <seealso cref="SerializableClaim" /> has
+	/// the same <see cref="Type" /> and <see cref="Value" /> as another 
+	/// <seealso cref="SerializableClaim" />.
+	/// </summary>
+	/// <param name="obj">The other <seealso cref="SerializableClaim" /> to compare with.</param>
+	/// <returns>Returns true if the <see cref="Type" /> and <see cref="Value" /> from both <seealso cref="SerializableClaim" /> objects are the the same.</returns>
+	public override bool Equals(object? obj)
+		=> obj is SerializableClaim claim && claim.Type is not null
+			&& Type.Equals(claim.Type) && (
+				(Value is null && claim.Value is null)
+				|| Value?.Equals(claim.Value) == true);
 }
