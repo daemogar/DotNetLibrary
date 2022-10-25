@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Microsoft.AspNetCore.Http;
 
@@ -9,7 +7,10 @@ namespace Microsoft.AspNetCore.Http;
 /// </summary>
 public record class BasicCookie
 {
-	private IBasicCookieManager Manager { get; }
+	/// <summary>
+	/// The underlying Cookie Manager.
+	/// </summary>
+	protected IBasicCookieManager Manager { get; }
 
 	/// <summary>
 	/// Cookie key name.

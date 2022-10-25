@@ -15,9 +15,12 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <returns><inheritdoc cref="ServiceCollectionServiceExtensions.AddTransient{TService}(IServiceCollection)"/></returns>
 		public static IServiceCollection AddCookies(this IServiceCollection services)
 		{
-			services.AddTransient<CookieManager>();
-			services.AddTransient<IBasicCookieManager, CookieManager>(
-				p => p.GetRequiredService<CookieManager>());
+			services.AddLogging();
+			services.AddHttpContextAccessor();
+
+			//services.AddTransient<CookieManager>();
+			services.AddTransient<IBasicCookieManager, CookieManager>();
+			//	p => p.GetRequiredService<CookieManager>());
 			services.AddTransient<CookieFactory>();
 
 			return services;

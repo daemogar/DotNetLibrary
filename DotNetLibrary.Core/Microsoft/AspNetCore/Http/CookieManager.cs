@@ -90,21 +90,24 @@ public class CookieManager : IBasicCookieManager
 	{
 		if (context == null)
 			return GetValue(key, null, allowNull);
+		
+		string value;
 
 		try
 		{
 			Logger.Verbose("Looking Up Cookie: {Key}", key);
-			var value = BaseManager.GetRequestCookie(context, key);
-			string? cookie = GetValue(key, value, allowNull);
-			Logger.Debug("Retrieve Cookie: {Key} = {Value}", key, cookie);
-			return cookie;
+			value = BaseManager.GetRequestCookie(context, key);
 		}
 		catch (Exception e)
 		{
 			Logger.Error(e,
-				"What is going on? Where is this getting eatin?");
+				"What is going on? Where is the {Cookie} getting eatin?", key);
 			throw;
 		}
+
+		string? cookie = GetValue(key, value, allowNull);
+		Logger.Debug("Retrieve Cookie: {Key} = {Value}", key, cookie);
+		return cookie;
 
 		static string? GetValue(
 			string key, string? value, bool allowNull)
