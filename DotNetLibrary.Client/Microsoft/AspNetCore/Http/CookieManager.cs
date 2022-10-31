@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 
 using Serilog;
 
 using System.Runtime.CompilerServices;
 
-namespace DotNetLibrary.Microsoft.AspNetCore.Http;
+namespace Microsoft.AspNetCore.Http;
 
 /// <inheritdoc cref="IBasicCookieManager{IJSRuntime}"/>
 public class CookieManager : IBasicCookieManager

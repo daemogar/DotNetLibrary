@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
 
 using Serilog;
 
-namespace DotNetLibrary.Microsoft.AspNetCore.Http;
+namespace Microsoft.AspNetCore.Http;
 
 /// <inheritdoc cref="IBasicCookieManager{HttpContext}"/>
 public class CookieManager : IBasicCookieManager

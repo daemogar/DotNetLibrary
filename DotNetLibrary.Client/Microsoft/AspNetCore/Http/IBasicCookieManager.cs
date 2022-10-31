@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 
-namespace DotNetLibrary.Microsoft.AspNetCore.Http;
+namespace Microsoft.AspNetCore.Http;
 
 public interface IBasicCookieManager : IBasicCookieManager<IJSRuntime> { }

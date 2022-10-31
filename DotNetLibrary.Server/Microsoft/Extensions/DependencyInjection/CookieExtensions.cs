@@ -1,5 +1,4 @@
-﻿using DotNetLibrary.Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

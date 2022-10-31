@@ -1,11 +1,7 @@
 ﻿using DotNetLibrary.Cookie.Internal;
-using DotNetLibrary.Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.JSInterop;
-
-using Serilog;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
