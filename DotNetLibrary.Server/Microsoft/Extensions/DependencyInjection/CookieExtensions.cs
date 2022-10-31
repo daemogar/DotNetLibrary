@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DotNetLibrary.Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-	/// <summary>
-	/// Extensions for managing cookies.
-	/// </summary>
-	public static class CookieExtensions
+    /// <summary>
+    /// Extensions for managing cookies.
+    /// </summary>
+    public static class CookieExtensions
 	{
 		/// <summary>
 		/// Extension method for adding <seealso cref="IBasicCookieManager"/> and <seealso cref="CookieFactory"/> to the services.
@@ -18,10 +19,8 @@ namespace Microsoft.Extensions.DependencyInjection
 			services.AddLogging();
 			services.AddHttpContextAccessor();
 
-			//services.AddTransient<CookieManager>();
 			services.AddTransient<IBasicCookieManager, CookieManager>();
-			//	p => p.GetRequiredService<CookieManager>());
-			services.AddTransient<CookieFactory>();
+			services.AddTransient<ICookieFactory, CookieFactory>();
 
 			return services;
 		}

@@ -1,8 +1,6 @@
-﻿using System;
+﻿namespace Microsoft.AspNetCore.Http;
 
-namespace Microsoft.AspNetCore.Http;
-
-class NullCookieValueException : Exception
+public class NullCookieValueException : Exception
 {
 	public string CookieKey { get; }
 

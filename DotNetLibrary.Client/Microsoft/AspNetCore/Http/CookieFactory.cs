@@ -1,9 +1,13 @@
-﻿namespace Microsoft.AspNetCore.Http;
+﻿using DotNetLibrary.Microsoft.AspNetCore.Http;
+
+using Microsoft.JSInterop;
+
+namespace Microsoft.AspNetCore.Http;
 
 /// <summary>
 /// A factory for creating individual cookies.
 /// </summary>
-public class CookieFactory
+public class CookieFactory : ICookieFactory
 {
 	private IBasicCookieManager Manager { get; }
 
@@ -21,6 +25,6 @@ public class CookieFactory
 	/// </summary>
 	/// <param name="cookieKey">The cookie key.</param>
 	/// <returns>A basic cookie for getting, setting, and deleting cookie values.</returns>
-	public BasicCookie GetCookie(string cookieKey)
-		=> new(Manager, cookieKey);
+	public IBasicCookie GetCookie(string cookieKey)
+		=> new BasicCookie<IJSRuntime>(Manager, cookieKey);
 }

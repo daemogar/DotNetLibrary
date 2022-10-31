@@ -1,108 +1,95 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.JSInterop;
 
 namespace Microsoft.AspNetCore.Http;
 
 /// <summary>
 /// Manager for getting, setting, and deleting cookies.
 /// </summary>
-public interface IBasicCookieManager : ICookieManager
+public interface IBasicCookieManager<T>
 {
 	/// <summary>
-	/// If the value is null:<br />
-	/// <inheritdoc cref="ChunkingCookieManager.DeleteCookie"/>
-	/// <br />
-	/// <br />
-	/// If value is not null:<br />
-	/// <inheritdoc cref="ChunkingCookieManager.AppendResponseCookie"/>
+	/// <seealso cref="IJSRuntime"/> on client and <seealso cref="HttpContext"/> on server.
+	/// This value is supplied when none is provided by the caller.
 	/// </summary>
+	protected T RuntimeContext { get; }
+
+	/// <summary>
+	/// Create a cookie.
+	/// </summary>
+	/// <param name="runtimeContext"><seealso cref="IJSRuntime"/> on client and <seealso cref="HttpContext"/> on server.</param>
 	/// <param name="key">The key of the cookie.</param>
 	/// <param name="value">The value to set the cookie to or delete if null.</param>
-	public void AppendResponseCookie(string key, string value);
+	/// <param name="options"><inheritdoc cref="CookieOptions"/></param>
+	public Task AppendResponseCookieAsync(T runtimeContext, string key, string value, CookieOptions options);
+
+	/// <inheritdoc cref="AppendResponseCookieAsync(T, string, string, CookieOptions)" />
+	public async Task AppendResponseCookieAsync(T runtimeContext, string key, string value)
+		=> await AppendResponseCookieAsync(runtimeContext, key, value, new());
+
+	/// <inheritdoc cref="AppendResponseCookieAsync(T, string, string, CookieOptions)" />
+	public async Task AppendResponseCookieAsync(string key, string value)
+		=> await AppendResponseCookieAsync(RuntimeContext, key, value, new());
+
+	/// <inheritdoc cref="AppendResponseCookieAsync(T, string, string, CookieOptions)" />
+	public async Task AppendResponseCookieAsync(string key, string value, CookieOptions options)
+		=> await AppendResponseCookieAsync(RuntimeContext, key, value, options);
 
 	/// <summary>
-	/// <inheritdoc cref="AppendResponseCookie(string, string?)"/>
+	/// Delete a cookie.
 	/// </summary>
+	/// <param name="runtimeContext"><seealso cref="IJSRuntime"/> on client and <seealso cref="HttpContext"/> on server.</param>
 	/// <param name="key">The key of the cookie.</param>
-	/// <param name="value">The value to set the cookie to or delete if null.</param>
-	/// <param name="options">CookieOptions</param>
-	public void AppendResponseCookie(string key, string value, CookieOptions options);
+	/// <param name="options"><inheritdoc cref="CookieOptions"/></param>
+	/// <returns></returns>
+	public Task DeleteCookieAsync(T runtimeContext, string key, CookieOptions options);
 
-	/// <inheritdoc cref="AppendResponseCookie(string, string?)"/>
-	/// <summary>
-	/// </summary>
-	/// <param name="context">HttpContext</param>
-	/// <param name="key">The key of the cookie.</param>
-	/// <param name="value">The value to set the cookie to or delete if null.</param>
-	public void AppendResponseCookie(HttpContext context, string key, string? value);
+	/// <inheritdoc cref="DeleteCookieAsync(T, string, CookieOptions)" />
+	public async Task DeleteCookieAsync(T runtime, string key)
+		=> await DeleteCookieAsync(runtime, key, new());
 
-	/// <summary>
-	/// <inheritdoc cref="AppendResponseCookie(string, string?)"/>
-	/// </summary>
-	/// <param name="context">HttpContext</param>
-	/// <param name="key">The key of the cookie.</param>
-	/// <param name="value">The value to set the cookie to or delete if null.</param>
-	/// <param name="options">CookieOptions</param>
-	public new void AppendResponseCookie(HttpContext context, string key, string? value, CookieOptions options);
+	/// <inheritdoc cref="DeleteCookieAsync(T, string, CookieOptions)" />
+	public async Task DeleteCookieAsync(string key)
+		=> await DeleteCookieAsync(RuntimeContext, key, new());
+
+	/// <inheritdoc cref="DeleteCookieAsync(T, string, CookieOptions)" />
+	public async Task DeleteCookieAsync(string key, CookieOptions options)
+		=> await DeleteCookieAsync(RuntimeContext, key, options);
 
 	/// <summary>
-	/// <inheritdoc cref="ChunkingCookieManager.DeleteCookie"/>
+	/// Get a cookie value.
 	/// </summary>
+	/// <param name="runtimeContext"><seealso cref="IJSRuntime"/> on client and <seealso cref="HttpContext"/> on server.</param>
 	/// <param name="key">The key of the cookie.</param>
-	public void DeleteCookie(string key);
+	/// <param name="allowNull">If false then will throw an exception when the value is null. The default should be false.</param>
+	/// <param name="options"><inheritdoc cref="CookieOptions"/></param>
+	/// <returns>The value of a cookie specified by </returns>
+	public Task<string> GetRequestCookieAsync(T runtimeContext, string key, bool allowNull, CookieOptions options);
 
-	/// <summary>
-	/// <inheritdoc cref="DeleteCookie(string)"/>
-	/// </summary>
-	/// <param name="key">The key of the cookie.</param>
-	/// <param name="options">CookieOptions</param>
-	public void DeleteCookie(string key, CookieOptions options);
+	/// <inheritdoc cref="GetRequestCookieAsync(T, string, bool, CookieOptions)" />
+	public async Task<string> GetRequestCookieAsync(T runtimeContext, string key, bool allowNull)
+		=> await GetRequestCookieAsync(runtimeContext, key, allowNull, new());
 
-	/// <summary>
-	/// <inheritdoc cref="DeleteCookie(string)"/>
-	/// </summary>
-	/// <param name="context">HttpContext</param>
-	/// <param name="key">The key of the cookie.</param>
-	public void DeleteCookie(HttpContext context, string key);
+	/// <inheritdoc cref="GetRequestCookieAsync(T, string, bool, CookieOptions)" />
+	public async Task<string> GetRequestCookieAsync(T runtimeContext, string key, CookieOptions options)
+		=> await GetRequestCookieAsync(runtimeContext, key, false, options);
 
-	/// <summary>
-	/// <inheritdoc cref="DeleteCookie(string)"/>
-	/// </summary>
-	/// <param name="context">HttpContext</param>
-	/// <param name="key">The key of the cookie.</param>
-	/// <param name="options">CookieOptions</param>
-	public new void DeleteCookie(HttpContext context, string key, CookieOptions options);
+	/// <inheritdoc cref="GetRequestCookieAsync(T, string, bool, CookieOptions)" />
+	public async Task<string> GetRequestCookieAsync(T runtimeContext, string key)
+		=> await GetRequestCookieAsync(runtimeContext, key, false, new());
 
-	/// <summary>
-	/// <inheritdoc cref="ChunkingCookieManager.GetRequestCookie(HttpContext, string)"/>
-	/// </summary>
-	/// <param name="key">The key of the cookie.</param>
-	/// <returns>String value of cookie or null.</returns>
-	public string? GetRequestCookie(string key);
+	/// <inheritdoc cref="GetRequestCookieAsync(T, string, bool, CookieOptions)" />
+	public async Task<string> GetRequestCookieAsync(string key, bool allowNull, CookieOptions options)
+		=> await GetRequestCookieAsync(RuntimeContext, key, allowNull, options);
 
-	/// <summary>
-	/// <inheritdoc cref="ChunkingCookieManager.GetRequestCookie(HttpContext, string)"/>
-	/// </summary>
-	/// <param name="key">The key of the cookie.</param>
-	/// <param name="allowNull">Return null if true or throw <seealso cref="NullCookieValueException"/> if false.</param>
-	/// <returns>String value of cookie or null</returns>
-	/// <exception cref="NullCookieValueException" />
-	public string GetRequestCookie(string key, bool allowNull);
+	/// <inheritdoc cref="GetRequestCookieAsync(T, string, bool, CookieOptions)" />
+	public async Task<string> GetRequestCookieAsync(string key, bool allowNull)
+		=> await GetRequestCookieAsync(RuntimeContext, key, allowNull, new());
 
-	/// <summary>
-	/// <inheritdoc cref="ChunkingCookieManager.GetRequestCookie(HttpContext, string)"/>
-	/// </summary>
-	/// <param name="context">HttpContext</param>
-	/// <param name="key">The key of the cookie.</param>
-	/// <returns>String value of cookie or null</returns>
-	public new string? GetRequestCookie(HttpContext context, string key);
+	/// <inheritdoc cref="GetRequestCookieAsync(T, string, bool, CookieOptions)" />
+	public async Task<string> GetRequestCookieAsync(string key, CookieOptions options)
+		=> await GetRequestCookieAsync(RuntimeContext, key, false, options);
 
-	/// <summary>
-	/// <inheritdoc cref="ChunkingCookieManager.GetRequestCookie(HttpContext, string)"/>
-	/// </summary>
-	/// <param name="context">HttpContext</param>
-	/// <param name="key">The key of the cookie.</param>
-	/// <param name="allowNull">Return null if true or throw <seealso cref="NullCookieValueException"/> if false.</param>
-	/// <returns>String value of cookie or null</returns>
-	/// <exception cref="NullCookieValueException"></exception>
-	public string? GetRequestCookie(HttpContext context, string key, bool allowNull);
+	/// <inheritdoc cref="GetRequestCookieAsync(T, string, bool, CookieOptions)" />
+	public async Task<string> GetRequestCookieAsync(string key)
+		=> await GetRequestCookieAsync(RuntimeContext, key, false, new());
 }

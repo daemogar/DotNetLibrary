@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Http;
 
 using Moq;
 
+using System.Threading.Tasks;
+
 using Xunit;
 
 namespace DotNetLibrary.Tests;
@@ -19,27 +21,31 @@ public class BasicCookieTests
 	[InlineData("test")]
 	public void CreateReturnsCookieKey(string key)
 	{
-		BasicCookie cookie = new(Manager.Object, key);
+		BasicCookie<HttpContext> cookie = new(Manager.Object, key);
 		Assert.Equal(key, cookie.CookieKey);
 	}
 
 	[Theory]
 	[InlineData("test", "value")]
-	public void CreateThrowsCookieKeyError(string key, string expected)
-	{
-		Manager.Setup(p => p.GetRequestCookie(key)).Returns(expected);
-		BasicCookie cookie = new(Manager.Object, key);
-		var actual = cookie.Get();
+	public async Task CreateThrowsCookieKeyError(string key, string expected)
+	{		
+		Manager.Setup(p => p.GetRequestCookieAsync(key))
+			.Returns(Task.FromResult(expected));
+
+		BasicCookie<HttpContext> cookie = new(Manager.Object, key);
+		var actual = await cookie.GetAsync();
 		Assert.Equal(expected, actual);
 	}
 
 	[Theory]
 	[InlineData("test", "value")]
-	public void GetCookieIs(string key, string expected)
+	public async Task GetCookieIs(string key, string expected)
 	{
-		Manager.Setup(p => p.GetRequestCookie(key)).Returns(expected);
-		BasicCookie cookie = new(Manager.Object, key);
-		var actual = cookie.Get();
+		Manager.Setup(p => p.GetRequestCookieAsync(key))
+			.Returns(Task.FromResult(expected));
+
+		BasicCookie<HttpContext> cookie = new(Manager.Object, key);
+		var actual = await cookie.GetAsync();
 		Assert.Equal(expected, actual);
 	}
 }
