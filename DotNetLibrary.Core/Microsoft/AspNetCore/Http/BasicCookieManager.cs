@@ -51,13 +51,13 @@ public class CookieManager : IBasicCookieManager
 	{
 		if (Context is not null)
 			await AppendResponseCookieAsync(Context, key, value, options);
-
+		else
 		if (Runtime is not null)
 			await AppendResponseCookieAsync(Runtime, key, value, options);
-
-		throw new NullReferenceException(
-			$"The RuntimeContext does not match either the " +
-			$"{nameof(Runtime)} or {nameof(Context)} and cannot be null.");
+		else
+			throw new NullReferenceException(
+				$"The RuntimeContext does not match either the " +
+				$"{nameof(Runtime)} or {nameof(Context)} and cannot be null.");
 	}
 
 	/// <inheritdoc cref="AppendResponseCookieAsync(string, string, CookieOptions)" />
@@ -123,13 +123,13 @@ public class CookieManager : IBasicCookieManager
 	{
 		if (Context is not null)
 			await DeleteCookieAsync(Context, key, options);
-
+		else
 		if (Runtime is not null)
 			await DeleteCookieAsync(Runtime, key, options);
-
-		throw new NullReferenceException(
-			$"The RuntimeContext does not match either the " +
-			$"{nameof(Runtime)} or {nameof(Context)} and cannot be null.");
+		else
+			throw new NullReferenceException(
+				$"The RuntimeContext does not match either the " +
+				$"{nameof(Runtime)} or {nameof(Context)} and cannot be null.");
 	}
 
 	/// <inheritdoc cref="DeleteCookieAsync(string, CookieOptions)" />
@@ -154,10 +154,10 @@ public class CookieManager : IBasicCookieManager
 		string key, bool allowNull = false, CookieOptions options = default!)
 	{
 		if (Context is not null)
-			await GetRequestCookieAsync(Context, key, allowNull, options);
+			return await GetRequestCookieAsync(Context, key, allowNull, options);
 
 		if (Runtime is not null)
-			await GetRequestCookieAsync(Runtime, key, allowNull, options);
+			return await GetRequestCookieAsync(Runtime, key, allowNull, options);
 
 		throw new NullReferenceException(
 			$"The RuntimeContext does not match either the " +
