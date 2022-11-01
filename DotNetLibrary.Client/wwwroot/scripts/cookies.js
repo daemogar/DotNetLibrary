@@ -1,9 +1,9 @@
 ﻿window.DotNetLibrary = window["DotNetLibrary"] || {};
 window.DotNetLibrary["Cookies"] = {
-	Set = (cookie) => {
+	Set: (cookie) => {
 		document.cookie = cookie;
 	},
-	Get = (cookie) => {
+	Get: (cookie) => {
 		var cookies = document.cookie.split(';');
 
 		for (var i = 0; i < cookies.length; i++) {
