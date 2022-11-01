@@ -9,7 +9,7 @@ public record class BasicCookie<T>: IBasicCookie
 	/// <summary>
 	/// The underlying Cookie Manager.
 	/// </summary>
-	protected IBasicCookieManager<T> Manager { get; }
+	protected IBasicCookieManager Manager { get; }
 
 	/// <summary>
 	/// Cookie key name.
@@ -21,7 +21,7 @@ public record class BasicCookie<T>: IBasicCookie
 	/// </summary>
 	/// <param name="manager">A cookie manager for accessing the underlying cookies.</param>
 	/// <param name="cookieKey">The key of the cookie.</param>
-	public BasicCookie(IBasicCookieManager<T> manager, string cookieKey)
+	public BasicCookie(IBasicCookieManager manager, string cookieKey)
 	{
 		Debug.Assert(manager is not null);
 		Debug.Assert(cookieKey is not null);

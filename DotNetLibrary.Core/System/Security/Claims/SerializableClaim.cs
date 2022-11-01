@@ -73,4 +73,8 @@ public class SerializableClaim
 			&& Type.Equals(claim.Type) && (
 				(Value is null && claim.Value is null)
 				|| Value?.Equals(claim.Value) == true);
+
+	/// <inheritdoc cref="Type.GetHashCode" />
+	public override int GetHashCode()
+		=> Type.GetHashCode() ^ Value.GetHashCode();
 }

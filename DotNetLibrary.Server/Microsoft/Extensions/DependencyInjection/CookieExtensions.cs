@@ -1,27 +1,34 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Microsoft.Extensions.DependencyInjection
+using Serilog;
+
+namespace Microsoft.Extensions.DependencyInjection;
+
+/// <summary>
+/// Extensions for managing cookies.
+/// </summary>
+public static class CookieExtensions
 {
-    /// <summary>
-    /// Extensions for managing cookies.
-    /// </summary>
-    public static class CookieExtensions
+	/// <summary>
+	/// Extension method for adding <seealso cref="IBasicCookieManager"/> and <seealso cref="CookieFactory"/> to the services.
+	/// collection.
+	/// </summary>
+	/// <param name="services"><inheritdoc cref="ServiceCollectionServiceExtensions.AddTransient{TService}(IServiceCollection)"/></param>
+	/// <returns><inheritdoc cref="ServiceCollectionServiceExtensions.AddTransient{TService}(IServiceCollection)"/></returns>
+	public static IServiceCollection AddCookies(this IServiceCollection services)
 	{
-		/// <summary>
-		/// Extension method for adding <seealso cref="IBasicCookieManager"/> and <seealso cref="CookieFactory"/> to the services.
-		/// collection.
-		/// </summary>
-		/// <param name="services"><inheritdoc cref="ServiceCollectionServiceExtensions.AddTransient{TService}(IServiceCollection)"/></param>
-		/// <returns><inheritdoc cref="ServiceCollectionServiceExtensions.AddTransient{TService}(IServiceCollection)"/></returns>
-		public static IServiceCollection AddCookies(this IServiceCollection services)
+		services.AddLogging();
+		services.AddHttpContextAccessor();
+
+		services.AddTransient<ICookieFactory, CookieFactory>();
+		services.AddTransient<IBasicCookieManager>(p =>
 		{
-			services.AddLogging();
-			services.AddHttpContextAccessor();
+			var logger = p.GetRequiredService<ILogger>();
+			var context = p.GetRequiredService<HttpContext>();
 
-			services.AddTransient<IBasicCookieManager, CookieManager>();
-			services.AddTransient<ICookieFactory, CookieFactory>();
+			return new CookieManager(logger, context);
+		});
 
-			return services;
-		}
+		return services;
 	}
 }

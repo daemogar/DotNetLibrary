@@ -24,12 +24,6 @@
 	</PropertyGroup>
 	
 	<!-- remove this and do not deploy it -->
-	<ItemGroup>
-	  <Compile Remove="Microsoft\AspNetCore\Http\JSRuntimeCookieCollection.cs" />
-	  <Compile Remove="Microsoft\AspNetCore\Http\NullHttpContext.cs" />
-	  <Compile Remove="Microsoft\AspNetCore\Http\NullHttpRequest.cs" />
-	  <Compile Remove="Microsoft\AspNetCore\Http\NullHttpResponse.cs" />
-	</ItemGroup>
 	
 	<ItemGroup>
 		<SupportedPlatform Include="browser" />

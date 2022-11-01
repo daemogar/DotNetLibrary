@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http;
 
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Serilog;
+using Microsoft.JSInterop;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -24,8 +26,14 @@ public static class CookieExtensions
 		services.AddLogging();
 		services.AddHttpContextAccessor();
 
-		services.AddTransient<IBasicCookieManager, CookieManager>();
 		services.AddTransient<ICookieFactory, CookieFactory>();
+		services.AddTransient<IBasicCookieManager>(p =>
+		{
+			var logger = p.GetRequiredService<ILogger>();
+			var runtime = p.GetRequiredService<IJSRuntime>();
+
+			return new CookieManager(logger, runtime);
+		});
 
 		return services;
 	}

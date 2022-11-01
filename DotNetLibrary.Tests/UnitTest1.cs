@@ -29,7 +29,7 @@ public class BasicCookieTests
 	[InlineData("test", "value")]
 	public async Task CreateThrowsCookieKeyError(string key, string expected)
 	{		
-		Manager.Setup(p => p.GetRequestCookieAsync(key))
+		Manager.Setup(p => p.GetRequestCookieAsync(key, false, default!))
 			.Returns(Task.FromResult(expected));
 
 		BasicCookie<HttpContext> cookie = new(Manager.Object, key);
@@ -41,7 +41,7 @@ public class BasicCookieTests
 	[InlineData("test", "value")]
 	public async Task GetCookieIs(string key, string expected)
 	{
-		Manager.Setup(p => p.GetRequestCookieAsync(key))
+		Manager.Setup(p => p.GetRequestCookieAsync(key, false, default!))
 			.Returns(Task.FromResult(expected));
 
 		BasicCookie<HttpContext> cookie = new(Manager.Object, key);
