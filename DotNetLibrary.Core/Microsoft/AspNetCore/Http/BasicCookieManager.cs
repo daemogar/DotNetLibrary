@@ -95,7 +95,7 @@ public abstract class BasicCookieManager
 			}
 			.Where(p => p is not null));
 
-		await runtime.InvokeVoidAsync(key, "DotNetLibrary.Cookies.Set", cookie);
+		await runtime.InvokeVoidAsync("DotNetLibrary.Cookies.Set", cookie);
 
 		string? CookieExpiration()
 			=> options.MaxAge is not null
@@ -147,7 +147,7 @@ public abstract class BasicCookieManager
 	public async Task DeleteCookieAsync(IJSRuntime runtime, string key, CookieOptions _ = default!)
 	{
 		var cookie = $"{key}=; Expires={DateTime.MinValue}";
-		await runtime.InvokeVoidAsync(key, "DotNetLibrary.Cookies.Set", cookie);
+		await runtime.InvokeVoidAsync("DotNetLibrary.Cookies.Set", cookie);
 	}
 
 	/// <inheritdoc cref="DeleteCookieAsync(string, CookieOptions)" />
@@ -179,7 +179,7 @@ public abstract class BasicCookieManager
 	public async Task<string> GetRequestCookieAsync(
 		IJSRuntime runtime, string key, bool allowNull = false, CookieOptions _ = default!)
 		=> await GetRequestCookieAsync(key, allowNull, async ()
-			=> await runtime.InvokeAsync<string>(key));
+			=> await runtime.InvokeAsync<string>("DotNetLibrary.Cookies.Get", key));
 
 	/// <inheritdoc cref="GetRequestCookieAsync(string, bool, CookieOptions)" />
 	public async Task<string> GetRequestCookieAsync(
