@@ -7,47 +7,58 @@ using System.Runtime.CompilerServices;
 
 namespace Microsoft.AspNetCore.Http;
 
-/// <inheritdoc cref="IBasicCookieManager" />
-public class CookieManager : IBasicCookieManager
+/// <summary>
+/// Manager for getting, setting, and deleting cookies.
+/// </summary>
+public abstract class BasicCookieManager
 {
 	private ChunkingCookieManager BaseManager { get; }
 
+	/// <inheritdoc cref="IJSRuntime" />
 	private IJSRuntime Runtime { get; } = default!;
 
+	/// <inheritdoc cref="HttpContext" />
 	private HttpContext Context { get; } = default!;
 
 	/// <inheritdoc cref="ILogger"/>
 	protected ILogger Logger { get; }
 
 	/// <summary>
-	/// Construct a cookie manager.
+	/// Returns the type of the underlying cookie management.
+	/// Either <seealso cref="IJSRuntime" /> 
+	/// or <seealso cref="HttpContext" /> 
+	/// and <seealso cref="ChunkingCookieManager" />.
+	/// </summary>
+	public string RuntimeContextType { get; }
+
+	/// <summary>
+	/// Create the underlying parent cookie manager.
 	/// </summary>
 	/// <param name="logger"><inheritdoc cref="ILogger"/>.</param>
+	/// <param name="type">The name of either <seealso cref="IJSRuntime" /> or <seealso cref="HttpContext" /></param>
 	/// <param name="runtime"><inheritdoc cref="IJSRuntime"/></param>
-	public CookieManager(ILogger logger, IJSRuntime runtime)
+	/// <param name="context"><inheritdoc cref="HttpContext"/></param>
+	/// <param name="manager"><inheritdoc cref="ChunkingCookieManager"/></param>
+	internal protected BasicCookieManager(
+		ILogger logger, string type,
+		IJSRuntime runtime,
+		HttpContext context, ChunkingCookieManager manager)
 	{
+		RuntimeContextType = type;
 		Logger = logger;
 		Runtime = runtime;
-		Context = default!;
-		BaseManager = default!;
+		Context = context;
+		BaseManager = manager;
 	}
 
 	/// <summary>
-	/// Construct a cookie manager.
+	/// Create a cookie.
 	/// </summary>
-	/// <param name="logger"><inheritdoc cref="ILogger"/>.</param>
-	/// <param name="context"><inheritdoc cref="HttpContext"/></param>
-	public CookieManager(ILogger logger, HttpContext context)
-	{
-		Logger = logger;
-		Runtime = default!;
-		Context = context;
-		BaseManager = new();
-	}
-
-	/// <inheritdoc cref="AppendResponseCookieAsync(string, string, CookieOptions)" />
+	/// <param name="key">The key of the cookie.</param>
+	/// <param name="value">The value to set the cookie to or delete if null.</param>
+	/// <param name="options"><inheritdoc cref="CookieOptions"/></param>
 	public async Task AppendResponseCookieAsync(
-		string key, string value, CookieOptions options = default!)
+	string key, string value, CookieOptions options = default!)
 	{
 		if (Context is not null)
 			await AppendResponseCookieAsync(Context, key, value, options);

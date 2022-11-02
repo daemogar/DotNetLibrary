@@ -1,20 +1,23 @@
 ﻿using System.Diagnostics;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Microsoft.AspNetCore.Http;
+
 /// <summary>
 /// Basic cookie accessor.
 /// </summary>
-public record class BasicCookie<T>: IBasicCookie
+public record class BasicCookie<T>
 {
-	/// <inheritdoc cref="IBasicCookieManager" />
-	protected IBasicCookieManager Manager { get; }
+	private CookieOptions? Options { get; }
+
+	/// <inheritdoc cref="BasicCookieManager" />
+	protected BasicCookieManager Manager { get; }
 
 	/// <summary>
 	/// Cookie key name.
 	/// </summary>
 	public string CookieKey { get; }
-
-	private CookieOptions? Options { get; }
 
 	/// <summary>
 	/// Constructor that takes a manager and cookie key.
@@ -23,7 +26,7 @@ public record class BasicCookie<T>: IBasicCookie
 	/// <param name="cookieKey">The key of the cookie.</param>
 	/// <param name="options"><seealso cref="CookieOptions" /></param>
 	public BasicCookie(
-		IBasicCookieManager manager,
+		BasicCookieManager manager,
 		string cookieKey,
 		CookieOptions? options = default!)
 	{
@@ -36,23 +39,28 @@ public record class BasicCookie<T>: IBasicCookie
 	}
 
 	/// <summary>
-	/// Get cookie from cookie manager using the constructor cookie key.
-	/// </summary>
-	/// <param name="allowNull">If a null value is allowed or not.</param>
-	/// <returns>The string value of the cookie.</returns>
-	public async Task<string> GetAsync(bool allowNull = false)
-		=> await Manager.GetRequestCookieAsync(CookieKey, allowNull, Options!);
-
-	/// <summary>
 	/// Set the cookie value using the manager and the constructor cookie key.
 	/// </summary>
 	/// <param name="value">Cookie value.</param>
-	public async Task SetAsync(string value)
-		=> await Manager.AppendResponseCookieAsync(CookieKey, value, Options!);
+	public async Task SetAsync(T value)
+		=> await Manager.AppendResponseCookieAsync(CookieKey,
+			JsonSerializer.Serialize(value, new JsonSerializerOptions
+			{
+				ReferenceHandler = ReferenceHandler.IgnoreCycles
+			}), Options!);
 
 	/// <summary>
 	/// Delete cookie using manager and using the constructor cookie key.
 	/// </summary>
 	public async Task DeleteAsync()
 		=> await Manager.DeleteCookieAsync(CookieKey, Options!);
+
+	/// <summary>
+	/// Get cookie from cookie manager using the constructor cookie key.
+	/// </summary>
+	/// <param name="allowNull">If a null value is allowed or not.</param>
+	/// <returns>The string value of the cookie.</returns>
+	public async Task<T> GetAsync(bool allowNull = false)
+		=> JsonSerializer.Deserialize<T>(
+			await Manager.GetRequestCookieAsync(CookieKey, allowNull, Options!))!;
 }

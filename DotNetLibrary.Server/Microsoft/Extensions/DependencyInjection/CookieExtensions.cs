@@ -20,15 +20,20 @@ public static class CookieExtensions
 		services.AddLogging();
 		services.AddHttpContextAccessor();
 
-		services.AddTransient<ICookieFactory, CookieFactory>();
-		services.AddTransient<IBasicCookieManager>(p =>
-		{
-			var logger = p.GetRequiredService<ILogger>();
-			var context = p.GetRequiredService<HttpContext>();
-
-			return new CookieManager(logger, context);
-		});
+		services.AddTransient<CookieFactory>();
+		services.AddTransient<BasicCookieManager, BasicHttpContextCookieManager>();
 
 		return services;
+	}
+
+	internal class BasicHttpContextCookieManager : BasicCookieManager
+	{
+		/// <summary>
+		/// Construct a cookie manager.
+		/// </summary>
+		/// <param name="logger"><inheritdoc cref="ILogger"/>.</param>
+		/// <param name="context"><inheritdoc cref="HttpContext"/></param>
+		public BasicHttpContextCookieManager(ILogger logger, HttpContext context)
+			: base(logger, nameof(HttpContext), default!, context, new()) { }
 	}
 }

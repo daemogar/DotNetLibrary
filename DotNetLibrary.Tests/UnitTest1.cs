@@ -10,11 +10,11 @@ namespace DotNetLibrary.Tests;
 
 public class BasicCookieTests
 {
-	private Mock<IBasicCookieManager> Manager { get; }
+	private Mock<BasicCookieManager> Manager { get; }
 
 	public BasicCookieTests()
 	{
-		Manager = new Mock<IBasicCookieManager>();
+		Manager = new Mock<BasicCookieManager>();
 	}
 
 	[Theory]
@@ -32,7 +32,7 @@ public class BasicCookieTests
 		Manager.Setup(p => p.GetRequestCookieAsync(key, false, default!))
 			.Returns(Task.FromResult(expected));
 
-		BasicCookie<HttpContext> cookie = new(Manager.Object, key);
+		BasicCookie<string> cookie = new(Manager.Object, key);
 		var actual = await cookie.GetAsync();
 		Assert.Equal(expected, actual);
 	}
@@ -44,7 +44,7 @@ public class BasicCookieTests
 		Manager.Setup(p => p.GetRequestCookieAsync(key, false, default!))
 			.Returns(Task.FromResult(expected));
 
-		BasicCookie<HttpContext> cookie = new(Manager.Object, key);
+		BasicCookie<string> cookie = new(Manager.Object, key);
 		var actual = await cookie.GetAsync();
 		Assert.Equal(expected, actual);
 	}
