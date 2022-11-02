@@ -17,7 +17,7 @@ public static class JsonSerializerDotNetLibrary
 		DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
 		ReadCommentHandling = JsonCommentHandling.Skip,
-		ReferenceHandler = ReferenceHandler.Preserve
+		ReferenceHandler = ReferenceHandler.IgnoreCycles
 	};
 
 	/// <summary>
