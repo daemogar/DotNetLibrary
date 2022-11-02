@@ -7,7 +7,7 @@ window.DotNetLibrary["Cookies"] = {
 		var cookies = document.cookie.split(';');
 
 		for (var i = 0; i < cookies.length; i++) {
-			let [key, value] = e.split('=');
+			let [key, value] = cookies[i].split('=');
 			if (key === cookie)
 				return value;
 		}

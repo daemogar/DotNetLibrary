@@ -63,6 +63,13 @@ public record class BasicCookie<T>
 	public async Task<T> GetAsync(bool allowNull = false)
 	{
 		var value = await Manager.GetRequestCookieAsync(CookieKey, allowNull, Options!);
-		return value is null ? default! : JsonSerializer.Deserialize<T>(value)!;
+		try
+		{
+			return value is null ? default! : JsonSerializer.Deserialize<T>(value)!;
+		}
+		catch (JsonException e)
+		{
+			throw new NullReferenceException(value, e);
+		}
 	}
 }
