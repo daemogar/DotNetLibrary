@@ -44,7 +44,7 @@ public record class BasicCookie<T>
 	/// <param name="value">Cookie value.</param>
 	public async Task SetAsync(T value)
 		=> await Manager.AppendResponseCookieAsync(CookieKey,
-			JsonSerializer.Serialize(value, new JsonSerializerOptions
+			value is null ? null! : JsonSerializer.Serialize(value, new JsonSerializerOptions
 			{
 				ReferenceHandler = ReferenceHandler.IgnoreCycles
 			}), Options!);
@@ -61,6 +61,8 @@ public record class BasicCookie<T>
 	/// <param name="allowNull">If a null value is allowed or not.</param>
 	/// <returns>The string value of the cookie.</returns>
 	public async Task<T> GetAsync(bool allowNull = false)
-		=> JsonSerializer.Deserialize<T>(
-			await Manager.GetRequestCookieAsync(CookieKey, allowNull, Options!))!;
+	{
+		var value = await Manager.GetRequestCookieAsync(CookieKey, allowNull, Options!);
+		return value is null ? default! : JsonSerializer.Deserialize<T>(value)!;
+	}
 }
