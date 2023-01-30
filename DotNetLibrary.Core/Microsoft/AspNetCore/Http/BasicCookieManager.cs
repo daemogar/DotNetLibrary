@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿#if !NETSTANDARD2_0_OR_GREATER
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.JSInterop;
 
 using Serilog;
@@ -216,3 +217,4 @@ public abstract class BasicCookieManager
 				? null!
 				: throw new NullCookieValueException(key));
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿#if !NETSTANDARD2_0_OR_GREATER
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Microsoft.JSInterop;
@@ -86,3 +87,4 @@ public class SessionStorageFactoryService : DiscoverableService
 		IServiceCollection services, IConfiguration configuration)
 		=> services.AddScoped<SessionStorageFactoryService>();
 }
+#endif

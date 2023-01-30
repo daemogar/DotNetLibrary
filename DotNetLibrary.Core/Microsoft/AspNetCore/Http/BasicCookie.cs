@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿#if !NETSTANDARD2_0_OR_GREATER
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -66,3 +67,4 @@ public record class BasicCookie<T>
 		return (string.IsNullOrWhiteSpace(value) ? default : JsonSerializer.Deserialize<T>(value))!;
 	}
 }
+#endif

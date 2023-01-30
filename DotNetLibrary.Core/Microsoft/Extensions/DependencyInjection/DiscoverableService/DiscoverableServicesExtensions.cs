@@ -59,14 +59,14 @@ public static class DiscoverableServicesExtensions
 			.UnionIf(() => !excludeLibraryAssemblies, discoverableType.Assembly)
 			.SelectMany(p => p
 			.DefinedTypes
-			.Where(IsDiscoverableType)
+			.Where(p=>IsDiscoverableType(p))
 			.Select(Construct))
 			.OrderBy(p => p.Order)
 			.ForEach(p => Register(p, services, configuration));
 
 		return services;
 
-		bool IsDiscoverableType(Type type)
+		bool IsDiscoverableType(TypeInfo type)
 			=> type.IsAssignableTo(discoverableType)
 				&& !type.IsInterface
 				&& !type.IsAbstract;

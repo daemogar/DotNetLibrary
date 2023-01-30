@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿namespace Microsoft.Extensions.Diagnostics.HealthChecks;
 
 /// <summary>
 /// Base logic used for auto discovered health checks.
@@ -56,7 +54,7 @@ public abstract class BasicHealthCheck : IHealthCheck
 	/// Basic health check without <seealso cref="Name"/> and
 	/// <seealso cref="Tags"/>. The <seealso cref="Name"/> will be 
 	/// set automatically using the class type and formatted with 
-	/// <seealso cref="StringExtensions.ToTitleCase(string, bool)"/>.
+	/// <seealso cref="System.Text.StringExtensions.ToTitleCase(string, bool)"/>.
 	/// </summary>
 	protected BasicHealthCheck() { }
 
@@ -64,12 +62,12 @@ public abstract class BasicHealthCheck : IHealthCheck
 	/// Basic health check without <seealso cref="Name"/> and optional
 	/// <seealso cref="Tags"/>. The <seealso cref="Name"/> will be 
 	/// set automatically using the class type and formatted with 
-	/// <seealso cref="StringExtensions.ToTitleCase(string, bool)"/>.
+	/// <seealso cref="System.Text.StringExtensions.ToTitleCase(string, bool)"/>.
 	/// </summary>
 	/// <param name="tags">A list of tags that can be used to filter health checks.</param>
-	protected BasicHealthCheck(string[] tags)
+	protected BasicHealthCheck(string[]? tags)
 	{
-		Tags = tags.ToList();
+		Tags = tags?.ToList() ?? new();
 	}
 
 	/// <summary>

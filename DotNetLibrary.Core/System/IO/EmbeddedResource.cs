@@ -169,7 +169,7 @@ public static class EmbeddedResource
 			})
 			.Where(p => p is not null)
 			.Select(p => (p!,
-				callback(p, p?.GetManifestResourceNames()
+				callback(p!, p?.GetManifestResourceNames()
 					?? Array.Empty<string>())
 			));
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿#if !NETSTANDARD2_0_OR_GREATER
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Hosting;
 
 using System.Diagnostics;
 
@@ -18,8 +20,8 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 	/// <summary>
 	/// Response from the <seealso cref="RepeatTaskAsync(CancellationToken)"/>.
 	/// Use the static helper methods <seealso cref="Success(string)"/>,
-	/// <seealso cref="Failure(Exception)"/>, and <seealso cref="Critical(Exception)"/>
-	/// for ideal return values for this class record.<br />
+	/// <seealso cref="BasicHealthCheck.FailureState(Exception, IReadOnlyDictionary{string, object})"/>, 
+	/// and <seealso cref="Critical(Exception)"/> for ideal return values for this class record.<br />
 	/// <br/>
 	/// <seealso cref="Success(string)"/> -- Returns 
 	/// </summary>
@@ -307,3 +309,4 @@ public abstract class DiscoverableTask<TTask, TSchedule>
 		base.Dispose();
 	}
 }
+#endif

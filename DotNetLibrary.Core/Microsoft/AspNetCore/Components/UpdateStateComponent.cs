@@ -1,4 +1,5 @@
-﻿namespace Microsoft.AspNetCore.Components;
+﻿#if !NETSTANDARD2_0_OR_GREATER
+namespace Microsoft.AspNetCore.Components;
 
 /// <summary>
 /// Update component base. This can be used to replace the
@@ -148,3 +149,4 @@ public abstract class UpdateComponent<TComponent, TIn, TOut>
 		Component.OnUpdate -= OnStateChanged;
 	}
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿#if !NETSTANDARD2_0_OR_GREATER
+using System.Text.Json;
 
 namespace Microsoft.AspNetCore.Http;
 
@@ -27,3 +28,4 @@ public class CookieFactory
 	public BasicCookie<T> CreateCookie<T>(string cookieKey)
 		=> new(Manager, cookieKey);
 }
+#endif

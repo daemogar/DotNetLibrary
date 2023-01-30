@@ -14,7 +14,7 @@ public class JsonListStringConverter : JsonConverter<List<string>>
 	/// <param name="typeToConvert">typeof(List&lt;string&gt;)</param>
 	/// <param name="options">JsonSerializerOptions</param>
 	/// <returns>A list of strings from a comma seperated string array.</returns>
-	public override List<string>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override List<string> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		List<string> list = new();
 		var value = reader.GetString();

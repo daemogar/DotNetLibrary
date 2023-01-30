@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 
@@ -82,9 +81,6 @@ public static class HealthCheckExtensions
 		void CreateHealthCheck(Type type)
 		{
 			var healthCheck = provider.Create<BasicHealthCheck>(type);
-			healthCheck.Name
-				??= type.Name.Replace("HealthCheck", "").ToTitleCase();
-
 			AddHealthCheck(healthCheck);
 		}
 
@@ -160,6 +156,9 @@ public static class HealthCheckExtensions
 						: (services.GetService(p.ParameterType)
 								?? p.DefaultValue))
 					.ToArray();
+				
+				if(args.Length > 0 && args[0] is string)
+					args[0] = type.Name.Replace("HealthCheck", "").ToTitleCase();
 
 				if (Activator.CreateInstance(type, args) is T healthCheck)
 					return healthCheck;
@@ -174,7 +173,7 @@ public static class HealthCheckExtensions
 
 		return default!;
 	}
-
+#if !NETSTANDARD2_0_OR_GREATER
 	/// <summary>
 	/// Map health check endpoints. There are four endpoints:
 	/// <list type="number">
@@ -318,4 +317,5 @@ public static class HealthCheckExtensions
 			writer.WriteEndObject();
 		}
 	}
+#endif
 }

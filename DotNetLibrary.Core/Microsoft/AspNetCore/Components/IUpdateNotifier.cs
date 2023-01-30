@@ -31,3 +31,16 @@ public interface IUpdateNotifier<TIn, TOut>
 	/// <inheritdoc cref="IUpdateNotifier"/>
 	event Func<TIn, TOut> OnUpdate;
 }
+
+#if NETSTANDARD2_0_OR_GREATER
+/// <summary>
+/// Removed from netstandard2.0
+/// </summary>
+internal class ComponentBase
+{
+	/// <summary>
+	/// Removed from netstandard2.0
+	/// </summary>
+	public void StateHasChanged() { }
+}
+#endif

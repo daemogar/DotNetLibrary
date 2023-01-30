@@ -1,23 +1,23 @@
-﻿using System.Text.Json.Serialization;
-
-namespace System.Text.Json;
+﻿namespace System.Text.Json;
 
 /// <summary>
 /// Json serialization and deserialization helper extension methods.
 /// </summary>
 public static class JsonSerializerDotNetLibrary
 {
-	private static JsonSerializerOptions Options { get; } = new()
+	private static JsonSerializerOptions Options() => new()
 	{
+#if !NETSTANDARD2_0_OR_GREATER
 		IncludeFields = true,
+		DefaultIgnoreCondition = Serialization.JsonIgnoreCondition.WhenWritingNull,
+		ReferenceHandler = Serialization.ReferenceHandler.IgnoreCycles,
+#endif
 		WriteIndented = true,
 		AllowTrailingCommas = true,
 		PropertyNameCaseInsensitive = true,
-		DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 		DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-		ReadCommentHandling = JsonCommentHandling.Skip,
-		ReferenceHandler = ReferenceHandler.IgnoreCycles
+		ReadCommentHandling = JsonCommentHandling.Skip
 	};
 
 	/// <summary>
@@ -37,7 +37,7 @@ public static class JsonSerializerDotNetLibrary
 	public static JsonSerializerOptions DefaultOptions(
 		Action<JsonSerializerOptions> optionsCallback)
 	{
-		JsonSerializerOptions options = new(Options);
+		JsonSerializerOptions options = Options();
 		optionsCallback(options);
 		return options;
 	}
@@ -49,7 +49,7 @@ public static class JsonSerializerDotNetLibrary
 	/// <param name="data">Object that should be serialized to a json string.</param>
 	/// <returns>JSON string of the object.</returns>
 	public static string ToJsonString<T>(this T data)
-			=> data.ToJsonString(Options);
+			=> data.ToJsonString(Options());
 
 	/// <summary>
 	/// Convert target object into a JSON serialized string.
@@ -116,7 +116,7 @@ public static class JsonSerializerDotNetLibrary
 	{
 		try
 		{
-			return JsonSerializer.Deserialize(json, type, options ?? Options)!;
+			return JsonSerializer.Deserialize(json, type, options ?? Options())!;
 		}
 		catch (JsonException e)
 		{
@@ -171,7 +171,7 @@ public static class JsonSerializerDotNetLibrary
 		this Task<Stream> stream, bool allowNull, CancellationToken cancellationToken)
 	{
 		var data = await JsonSerializer.DeserializeAsync<T>(
-						 await stream, Options, cancellationToken);
+						 await stream, Options(), cancellationToken);
 
 		if (data != null || allowNull)
 			return data!;

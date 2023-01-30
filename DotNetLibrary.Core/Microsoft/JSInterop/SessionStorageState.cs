@@ -1,4 +1,5 @@
-﻿namespace Microsoft.JSInterop;
+﻿#if !NETSTANDARD2_0_OR_GREATER
+namespace Microsoft.JSInterop;
 
 /// <summary>
 /// Session storage stage object for managing gettin, adding, updating, and 
@@ -51,3 +52,4 @@ public class SessionStorageState<T>
 	public async Task DeleteAsync(CancellationToken cancellationToken)
 		=> await Service.DeleteAsync(Key, cancellationToken);
 }
+#endif
