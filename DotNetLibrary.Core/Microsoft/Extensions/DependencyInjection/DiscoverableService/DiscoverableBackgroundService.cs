@@ -11,7 +11,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 public abstract class DiscoverableBackgroundService<T> : DiscoverableService, IHostedService, IDisposable
 	where T : DiscoverableBackgroundService<T>
 {
-	private Task? Task;
+	private Task? PendingTask;
 
 	private readonly CancellationTokenSource Source = new();
 
@@ -41,7 +41,7 @@ public abstract class DiscoverableBackgroundService<T> : DiscoverableService, IH
 
 	/// <inheritdoc cref="BackgroundService.StartAsync(CancellationToken)"/>
 	public virtual Task StartAsync(CancellationToken cancellationToken)
-		=> InitializeAsync(cancellationToken)
+		=> PendingTask = InitializeAsync(cancellationToken)
 			.ContinueWith(async p =>
 			{
 				if(await p)
@@ -51,7 +51,7 @@ public abstract class DiscoverableBackgroundService<T> : DiscoverableService, IH
 	/// <inheritdoc cref="BackgroundService.StopAsync(CancellationToken)"/>
 	public virtual async Task StopAsync(CancellationToken cancellationToken)
 	{
-		if (Task is null)
+		if (PendingTask is null)
 			return;
 
 		try
@@ -60,14 +60,15 @@ public abstract class DiscoverableBackgroundService<T> : DiscoverableService, IH
 		}
 		finally
 		{
-			await Task.WhenAny(new[]
-			{
-				Task,
-				Task.Delay(-1, cancellationToken)
-			});
+			await PendingTask;
+			PendingTask = null;
 		}
 	}
 
 	/// <inheritdoc cref="BackgroundService.Dispose"/>
-	public virtual void Dispose() => Source.Cancel();
+	public virtual void Dispose()
+	{
+		Source.Cancel();
+		GC.SuppressFinalize(this);
+	}
 }
