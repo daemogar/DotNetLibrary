@@ -1,29 +1,31 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 
-namespace Microsoft.Extensions.DependencyInjection.Extensions;
-
-public static class ApiKeyExtensions
+namespace Microsoft.Extensions.DependencyInjection.Extensions
 {
-	private static string? LoadedApiKey { get; set; }
 
-	public static IServiceCollection AddApiKeyAuthentication(
-		this IServiceCollection services, ApiKeyValue apikey)
+	public static class ApiKeyExtensions
 	{
-		if (LoadedApiKey is not null)
-			throw new Exception(
-				$"ApiKey Authentication has already been added. [{LoadedApiKey}...]");
+		private static string? LoadedApiKey { get; set; }
 
-		LoadedApiKey = apikey.Value[0..5];
+		public static IServiceCollection AddApiKeyAuthentication(
+			this IServiceCollection services, ApiKeyValue apikey)
+		{
+			if (LoadedApiKey is not null)
+				throw new Exception(
+					$"ApiKey Authentication has already been added. [{LoadedApiKey}...]");
 
-		services.TryAddSingleton(apikey);
+			LoadedApiKey = apikey.Value[..5];
 
-		services
-			.AddAuthentication(ApiKeyDefaults.SchemaName)
-			.AddScheme<ApiKeyOptions, ApiKeyHandler>(ApiKeyDefaults.SchemaName, options =>
-			{
-				options.ApiKey = apikey;
-			});
+			services.TryAddSingleton(apikey);
 
-		return services;
+			services
+				.AddAuthentication(ApiKeyDefaults.SchemaName)
+				.AddScheme<ApiKeyOptions, ApiKeyHandler>(ApiKeyDefaults.SchemaName, options =>
+				{
+					options.ApiKey = apikey;
+				});
+
+			return services;
+		}
 	}
 }

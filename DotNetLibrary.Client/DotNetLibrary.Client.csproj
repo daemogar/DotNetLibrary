@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 	
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+		<TargetFrameworks>net6.0;net7.0;netstandard2.0</TargetFrameworks>
 		<OutputType>Library</OutputType>
 		<LangVersion>latest</LangVersion>
 		<RazorLangVersion>latest</RazorLangVersion>
@@ -39,8 +39,8 @@
 	    <Pack>True</Pack>
 	  </None>
 	</ItemGroup>
-	
-	<ItemGroup>
+
+	<ItemGroup Condition="'0$(TargetFrameworkVersion.Replace(&quot;v&quot;,&quot;&quot;))' &gt;= '6'">
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.10" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.10" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.10" />

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Formatters;
+﻿#if !NETSTANDARD2_0_OR_GREATER
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -11,3 +12,4 @@ public static class StringInputFormatterExtensions
         return collection;
     }
 }
+#endif

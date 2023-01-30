@@ -1,11 +1,12 @@
-﻿using System.Text;
+﻿#if !NETSTANDARD2_0_OR_GREATER
+using System.Text;
 using System.Net.Mime;
 
 namespace Microsoft.AspNetCore.Mvc.Formatters;
 
 public class StringInputFormatter : TextInputFormatter
 {
-	public StringInputFormatter() : base()
+	public StringInputFormatter()
 	{
 		SupportedEncodings.Add(UTF8EncodingWithoutBOM);
 		SupportedEncodings.Add(UTF16EncodingLittleEndian);
@@ -21,9 +22,10 @@ public class StringInputFormatter : TextInputFormatter
 
 		using var streamReader = new StreamReader(
 				context.HttpContext.Request.Body,
-				encoding);
+				encoding, true);
 
 		var body = await streamReader.ReadToEndAsync();
 		return await InputFormatterResult.SuccessAsync(body.Trim('"'));
 	}
 }
+#endif

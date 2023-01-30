@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+		<TargetFrameworks>net6.0;net7.0;netstandard2.0</TargetFrameworks>
 		<OutputType>Library</OutputType>
 		<LangVersion>latest</LangVersion>
 		<RazorLangVersion>latest</RazorLangVersion>
@@ -23,7 +23,7 @@
 		<RootNamespace>DotNetLibrary</RootNamespace>
 	</PropertyGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="'0$(TargetFrameworkVersion.Replace(&quot;v&quot;,&quot;&quot;))' &gt;= '6'">
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
@@ -38,10 +38,14 @@
 		</None>
 	</ItemGroup>
 
-	<ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.10" />
+	<ItemGroup Condition="'0$(TargetFrameworkVersion.Replace(&quot;v&quot;,&quot;&quot;))' &gt;= '6'">
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.10" />
   </ItemGroup>
-	
+<!--
+	<ItemGroup Condition="'$(TargetFrameworkVersion)' == 'netstandard2.0'">
+		<PackageReference Include="IndexRange" Version="1.0.2" />
+	</ItemGroup>
+	-->
   <ItemGroup>
     <ProjectReference Include="..\DotNetLibrary.Core\DotNetLibrary.Core.csproj" />
   </ItemGroup>
