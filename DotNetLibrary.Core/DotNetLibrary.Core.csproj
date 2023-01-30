@@ -51,10 +51,10 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.13" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.13" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.13" />
-		<PackageReference Include="Microsoft.JSInterop" Version="6.0.10" />
+		<PackageReference Include="Microsoft.JSInterop" Version="6.0.13" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'0$(TargetFrameworkVersion.Replace(&quot;v&quot;,&quot;&quot;))' &gt; '6'">
+	<ItemGroup Condition="'0$(TargetFrameworkVersion.Replace(&quot;v&quot;,&quot;&quot;))' &gt;= '7'">
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.2" />
@@ -64,11 +64,11 @@
 	<ItemGroup>
 		<PackageReference Include="Ben.Demystifier" Version="0.4.1" />
 		<PackageReference Include="CommandLineParser" Version="2.9.1" />
-		<PackageReference Include="Microsoft.AsNetCore.Authentication.Cookies" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="6.0.0-preview.4.21253.5" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.2" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="7.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
@@ -77,5 +77,5 @@
 		<PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
 		<PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.24" />
 	</ItemGroup>
-	
+		
 </Project>
