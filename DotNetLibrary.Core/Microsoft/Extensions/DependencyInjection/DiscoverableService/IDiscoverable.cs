@@ -14,7 +14,7 @@ public interface IDiscoverable
 	/// negative. Zero is the default order and order of registration is not
 	/// garenteed if the order matches another services order number.
 	/// </summary>
-	internal int Order { get; }
+	int Order { get; }
 
 	/// <summary>
 	/// Method called on the object to run the objects registration with
@@ -22,6 +22,6 @@ public interface IDiscoverable
 	/// </summary>
 	/// <param name="services">The service collection used for registering application dependencies.</param>
 	/// <param name="configuration">The application configuration.</param>
-	internal abstract void ConfigureAsService(
+	abstract void ConfigureAsService(
 		IServiceCollection services, IConfiguration configuration);
 }
