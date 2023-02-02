@@ -130,233 +130,153 @@
         <member name="M:Microsoft.AspNetCore.Components.UpdateComponent`3.Dispose">
             <seealso cref="M:System.IDisposable.Dispose"/>
         </member>
-        <member name="T:Microsoft.AspNetCore.Http.BasicCookie">
+        <member name="T:Microsoft.AspNetCore.Http.BasicCookie`1">
             <summary>
             Basic cookie accessor.
             </summary>
         </member>
-        <member name="P:Microsoft.AspNetCore.Http.BasicCookie.CookieKey">
+        <member name="P:Microsoft.AspNetCore.Http.BasicCookie`1.Manager">
+            <inheritdoc cref="T:Microsoft.AspNetCore.Http.BasicCookieManager" />
+        </member>
+        <member name="P:Microsoft.AspNetCore.Http.BasicCookie`1.CookieKey">
             <summary>
             Cookie key name.
             </summary>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.BasicCookie.#ctor(Microsoft.AspNetCore.Http.IBasicCookieManager,System.String)">
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookie`1.#ctor(Microsoft.AspNetCore.Http.BasicCookieManager,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
             <summary>
             Constructor that takes a manager and cookie key.
             </summary>
             <param name="manager">A cookie manager for accessing the underlying cookies.</param>
             <param name="cookieKey">The key of the cookie.</param>
+            <param name="options"><seealso cref="T:Microsoft.AspNetCore.Http.CookieOptions" /></param>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.BasicCookie.Get">
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookie`1.SetAsync(`0)">
+            <summary>
+            Set the cookie value using the manager and the constructor cookie key.
+            </summary>
+            <param name="value">Cookie value.</param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookie`1.DeleteAsync">
+            <summary>
+            Delete cookie using manager and using the constructor cookie key.
+            </summary>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookie`1.GetAsync(System.Boolean)">
             <summary>
             Get cookie from cookie manager using the constructor cookie key.
             </summary>
+            <param name="allowNull">If a null value is allowed or not.</param>
             <returns>The string value of the cookie.</returns>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.BasicCookie.Set(System.String)">
+        <member name="T:Microsoft.AspNetCore.Http.BasicCookieManager">
             <summary>
-            Set the cookie value using the manager and the constructor cookie key.
-            </summary>
-            <param name="value">Cookie value.</param>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.BasicCookie.Set(System.String,Microsoft.AspNetCore.Http.CookieOptions)">
-            <summary>
-            Set the cookie value using the manager and the constructor cookie key.
-            </summary>
-            <param name="value">Cookie value.</param>
-            <param name="options">CookieOptions</param>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.BasicCookie.Delete">
-            <summary>
-            Delete cookie using manager and using the constructor cookie key.
+            Manager for getting, setting, and deleting cookies.
             </summary>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.BasicCookie.Delete(Microsoft.AspNetCore.Http.CookieOptions)">
+        <member name="P:Microsoft.AspNetCore.Http.BasicCookieManager.Runtime">
+            <inheritdoc cref="T:Microsoft.JSInterop.IJSRuntime" />
+        </member>
+        <member name="P:Microsoft.AspNetCore.Http.BasicCookieManager.Context">
+            <inheritdoc cref="T:Microsoft.AspNetCore.Http.HttpContext" />
+        </member>
+        <member name="P:Microsoft.AspNetCore.Http.BasicCookieManager.Logger">
+            <inheritdoc cref="T:Serilog.ILogger"/>
+        </member>
+        <member name="P:Microsoft.AspNetCore.Http.BasicCookieManager.RuntimeContextType">
             <summary>
-            Delete cookie using manager and using the constructor cookie key.
+            Returns the type of the underlying cookie management.
+            Either <seealso cref="T:Microsoft.JSInterop.IJSRuntime" /> 
+            or <seealso cref="T:Microsoft.AspNetCore.Http.HttpContext" /> 
+            and <seealso cref="T:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager" />.
             </summary>
-            <param name="options">CookieOptions</param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookieManager.#ctor(Serilog.ILogger,System.String,Microsoft.JSInterop.IJSRuntime,Microsoft.AspNetCore.Http.HttpContext,Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager)">
+            <summary>
+            Create the underlying parent cookie manager.
+            </summary>
+            <param name="logger"><inheritdoc cref="T:Serilog.ILogger"/>.</param>
+            <param name="type">The name of either <seealso cref="T:Microsoft.JSInterop.IJSRuntime" /> or <seealso cref="T:Microsoft.AspNetCore.Http.HttpContext" /></param>
+            <param name="runtime"><inheritdoc cref="T:Microsoft.JSInterop.IJSRuntime"/></param>
+            <param name="context"><inheritdoc cref="T:Microsoft.AspNetCore.Http.HttpContext"/></param>
+            <param name="manager"><inheritdoc cref="T:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager"/></param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookieManager.AppendResponseCookieAsync(System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+            <summary>
+            Create a cookie.
+            </summary>
+            <param name="key">The key of the cookie.</param>
+            <param name="value">The value to set the cookie to or delete if null.</param>
+            <param name="options"><inheritdoc cref="T:Microsoft.AspNetCore.Http.CookieOptions"/></param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookieManager.AppendResponseCookieAsync(Microsoft.JSInterop.IJSRuntime,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.BasicCookieManager.AppendResponseCookieAsync(System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)" />
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookieManager.AppendResponseCookieAsync(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.BasicCookieManager.AppendResponseCookieAsync(System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)" />
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookieManager.DeleteCookieAsync(System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+            <summary>
+            Delete a cookie.
+            </summary>
+            <param name="key">The key of the cookie.</param>
+            <param name="options"><inheritdoc cref="T:Microsoft.AspNetCore.Http.CookieOptions"/></param>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookieManager.DeleteCookieAsync(Microsoft.JSInterop.IJSRuntime,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.BasicCookieManager.DeleteCookieAsync(System.String,Microsoft.AspNetCore.Http.CookieOptions)" />
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookieManager.DeleteCookieAsync(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.BasicCookieManager.DeleteCookieAsync(System.String,Microsoft.AspNetCore.Http.CookieOptions)" />
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookieManager.GetRequestCookieAsync(System.String,System.Boolean,Microsoft.AspNetCore.Http.CookieOptions)">
+            <summary>
+            Get a cookie.
+            </summary>
+            <param name="key">The key of the cookie.</param>
+            <param name="allowNull">If false then will throw an exception when the value is null. The default should be false.</param>
+            <param name="options"><inheritdoc cref="T:Microsoft.AspNetCore.Http.CookieOptions"/></param>
+            <returns>The value of a cookie specified by </returns>
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookieManager.GetRequestCookieAsync(Microsoft.JSInterop.IJSRuntime,System.String,System.Boolean,Microsoft.AspNetCore.Http.CookieOptions)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.BasicCookieManager.GetRequestCookieAsync(System.String,System.Boolean,Microsoft.AspNetCore.Http.CookieOptions)" />
+        </member>
+        <member name="M:Microsoft.AspNetCore.Http.BasicCookieManager.GetRequestCookieAsync(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Boolean,Microsoft.AspNetCore.Http.CookieOptions)">
+            <inheritdoc cref="M:Microsoft.AspNetCore.Http.BasicCookieManager.GetRequestCookieAsync(System.String,System.Boolean,Microsoft.AspNetCore.Http.CookieOptions)" />
         </member>
         <member name="T:Microsoft.AspNetCore.Http.CookieFactory">
             <summary>
             A factory for creating individual cookies.
             </summary>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieFactory.#ctor(Microsoft.AspNetCore.Http.IBasicCookieManager)">
+        <member name="M:Microsoft.AspNetCore.Http.CookieFactory.#ctor(Microsoft.AspNetCore.Http.BasicCookieManager)">
             <summary>
             Constructor for cookie factory
             </summary>
-            <param name="manager">CookieManager</param>
+            <param name="manager">BasicCookieManager</param>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieFactory.GetCookie(System.String)">
+        <member name="M:Microsoft.AspNetCore.Http.CookieFactory.CreateCookie``1(System.String)">
             <summary>
             Create the cookie.
             </summary>
+            <typeparam name="T">The <seealso cref="T:System.Type" /> the object is that is stored in the cookie. The <seealso cref="T:System.Text.Json.JsonSerializer" /> will be used to store and retrieve this value.</typeparam>
             <param name="cookieKey">The cookie key.</param>
             <returns>A basic cookie for getting, setting, and deleting cookie values.</returns>
         </member>
-        <member name="T:Microsoft.AspNetCore.Http.CookieManager">
-            <inheritdoc cref="T:Microsoft.AspNetCore.Http.IBasicCookieManager"/>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.#ctor(Serilog.ILogger,Microsoft.AspNetCore.Http.IHttpContextAccessor)">
+        <member name="T:Microsoft.AspNetCore.Http.NullCookieValueException">
             <summary>
-            Construct a cookie manager.
-            </summary>
-            <param name="logger">Serilog Logger.</param>
-            <param name="context">IHttpContextAccessor</param>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(System.String,System.String)">
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String)">
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(System.String)">
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(System.String,Microsoft.AspNetCore.Http.CookieOptions)">
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)">
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.GetRequestCookie(System.String)">
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Boolean)"/>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.GetRequestCookie(System.String,System.Boolean)">
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Boolean)"/>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)">
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Boolean)"/>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.CookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Boolean)">
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Boolean)"/>
-        </member>
-        <member name="T:Microsoft.AspNetCore.Http.IBasicCookieManager">
-            <summary>
-            Manager for getting, setting, and deleting cookies.
+            Exception throw when a cookie has a null value and it is not allowed.
             </summary>
         </member>
-        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(System.String,System.String)">
+        <member name="P:Microsoft.AspNetCore.Http.NullCookieValueException.CookieKey">
             <summary>
-            If the value is null:<br />
-            <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
-            <br />
-            <br />
-            If value is not null:<br />
-            <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
-            </summary>
-            <param name="key">The key of the cookie.</param>
-            <param name="value">The value to set the cookie to or delete if null.</param>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
-            <summary>
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(System.String,System.String)"/>
-            </summary>
-            <param name="key">The key of the cookie.</param>
-            <param name="value">The value to set the cookie to or delete if null.</param>
-            <param name="options">CookieOptions</param>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String)">
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(System.String,System.String)"/>
-            <summary>
-            </summary>
-            <param name="context">HttpContext</param>
-            <param name="key">The key of the cookie.</param>
-            <param name="value">The value to set the cookie to or delete if null.</param>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
-            <summary>
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.AppendResponseCookie(System.String,System.String)"/>
-            </summary>
-            <param name="context">HttpContext</param>
-            <param name="key">The key of the cookie.</param>
-            <param name="value">The value to set the cookie to or delete if null.</param>
-            <param name="options">CookieOptions</param>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(System.String)">
-            <summary>
-            <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)"/>
-            </summary>
-            <param name="key">The key of the cookie.</param>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(System.String,Microsoft.AspNetCore.Http.CookieOptions)">
-            <summary>
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(System.String)"/>
-            </summary>
-            <param name="key">The key of the cookie.</param>
-            <param name="options">CookieOptions</param>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)">
-            <summary>
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(System.String)"/>
-            </summary>
-            <param name="context">HttpContext</param>
-            <param name="key">The key of the cookie.</param>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,Microsoft.AspNetCore.Http.CookieOptions)">
-            <summary>
-            <inheritdoc cref="M:Microsoft.AspNetCore.Http.IBasicCookieManager.DeleteCookie(System.String)"/>
-            </summary>
-            <param name="context">HttpContext</param>
-            <param name="key">The key of the cookie.</param>
-            <param name="options">CookieOptions</param>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.GetRequestCookie(System.String)">
-            <summary>
-            <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)"/>
-            </summary>
-            <param name="key">The key of the cookie.</param>
-            <returns>String value of cookie or null.</returns>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.GetRequestCookie(System.String,System.Boolean)">
-            <summary>
-            <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)"/>
-            </summary>
-            <param name="key">The key of the cookie.</param>
-            <param name="allowNull">Return null if true or throw <seealso cref="T:Microsoft.AspNetCore.Http.NullCookieValueException"/> if false.</param>
-            <returns>String value of cookie or null</returns>
-            <exception cref="T:Microsoft.AspNetCore.Http.NullCookieValueException" />
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)">
-            <summary>
-            <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)"/>
-            </summary>
-            <param name="context">HttpContext</param>
-            <param name="key">The key of the cookie.</param>
-            <returns>String value of cookie or null</returns>
-        </member>
-        <member name="M:Microsoft.AspNetCore.Http.IBasicCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String,System.Boolean)">
-            <summary>
-            <inheritdoc cref="M:Microsoft.AspNetCore.Authentication.Cookies.ChunkingCookieManager.GetRequestCookie(Microsoft.AspNetCore.Http.HttpContext,System.String)"/>
-            </summary>
-            <param name="context">HttpContext</param>
-            <param name="key">The key of the cookie.</param>
-            <param name="allowNull">Return null if true or throw <seealso cref="T:Microsoft.AspNetCore.Http.NullCookieValueException"/> if false.</param>
-            <returns>String value of cookie or null</returns>
-            <exception cref="T:Microsoft.AspNetCore.Http.NullCookieValueException"></exception>
-        </member>
-        <member name="T:Microsoft.Extensions.DependencyInjection.CookieExtensions">
-            <summary>
-            Extensions for managing cookies.
+            The cookie key that has the null value.
             </summary>
         </member>
-        <member name="M:Microsoft.Extensions.DependencyInjection.CookieExtensions.AddCookies(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+        <member name="M:Microsoft.AspNetCore.Http.NullCookieValueException.#ctor(System.String)">
             <summary>
-            Extension method for adding <seealso cref="T:Microsoft.AspNetCore.Http.IBasicCookieManager"/> and <seealso cref="T:Microsoft.AspNetCore.Http.CookieFactory"/> to the services.
-            collection.
+            Create a null cookie exception for the given <paramref name="cookieKey"/>
             </summary>
-            <param name="services"><inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddTransient``1(Microsoft.Extensions.DependencyInjection.IServiceCollection)"/></param>
-            <returns><inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddTransient``1(Microsoft.Extensions.DependencyInjection.IServiceCollection)"/></returns>
+            <param name="cookieKey">The cookie key that has the null value.</param>
         </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.DiscoverableBackgroundService`1">
             <summary>
@@ -449,6 +369,35 @@
             <param name="configuration">The application configuration.</param>
             <returns>For chainging calls to the services collection, it is returned.</returns>
         </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.DiscoverableSingletonService`1">
+            <inheritdoc cref="T:Microsoft.Extensions.DependencyInjection.DiscoverableSingletonService`2" />
+        </member>
+        <member name="T:Microsoft.Extensions.DependencyInjection.DiscoverableSingletonService`2">
+            <summary>/// 
+            Abstract implimentation of the discoverable service. Overriding
+            this class should be provided as a application service. This implements
+            adding the parent class as a singleton in the DI before calling additional
+            logic.
+            </summary>
+            <typeparam name="TService">The type of the service to register.</typeparam>
+            <typeparam name="TImplementation">The type of the implementation to use.</typeparam>
+        </member>
+        <member name="P:Microsoft.Extensions.DependencyInjection.DiscoverableSingletonService`2.IsLoaded">
+            <summary>
+            Used to keep from loading the service more then once.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableSingletonService`2.ConfigureAsSingletonService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            <inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.IDiscoverable.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)" />
+            The parent class will be added as a singleton to the DI before calling this method.
+            </summary>
+            <param name="services"><inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.IDiscoverable.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)" /></param>
+            <param name="configuration"><inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.IDiscoverable.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)" /></param>
+        </member>
+        <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableSingletonService`2.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <inheritdoc cref="M:Microsoft.Extensions.DependencyInjection.IDiscoverable.ConfigureAsService(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)" />
+        </member>
         <member name="T:Microsoft.Extensions.DependencyInjection.IDiscoverable">
             <summary>
             Override this interface to implement the order and add a configure services
@@ -497,8 +446,8 @@
             <summary>
             Response from the <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.RepeatTaskAsync(System.Threading.CancellationToken)"/>.
             Use the static helper methods <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Success(System.String)"/>,
-            <seealso cref="!:Failure(Exception)"/>, and <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Critical(System.Exception)"/>
-            for ideal return values for this class record.<br />
+            <seealso cref="M:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.FailureState(System.Exception,System.Collections.Generic.IReadOnlyDictionary{System.String,System.Object})"/>, 
+            and <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Critical(System.Exception)"/> for ideal return values for this class record.<br />
             <br/>
             <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Success(System.String)"/> -- Returns 
             </summary>
@@ -511,8 +460,8 @@
             <summary>
             Response from the <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.RepeatTaskAsync(System.Threading.CancellationToken)"/>.
             Use the static helper methods <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Success(System.String)"/>,
-            <seealso cref="!:Failure(Exception)"/>, and <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Critical(System.Exception)"/>
-            for ideal return values for this class record.<br />
+            <seealso cref="M:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.FailureState(System.Exception,System.Collections.Generic.IReadOnlyDictionary{System.String,System.Object})"/>, 
+            and <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Critical(System.Exception)"/> for ideal return values for this class record.<br />
             <br/>
             <seealso cref="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Response.Success(System.String)"/> -- Returns 
             </summary>
@@ -657,6 +606,83 @@
         </member>
         <member name="M:Microsoft.Extensions.DependencyInjection.DiscoverableTask`2.Dispose">
             <inheritdoc/>
+        </member>
+        <member name="T:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck">
+            <summary>
+            Base logic used for auto discovered health checks.
+            <inheritdoc cref="T:Microsoft.Extensions.Diagnostics.HealthChecks.IHealthCheck"/>
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.FailureStatus">
+            <summary>
+            The status used for the failure state. The default is
+            <seealso cref="F:Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.FailureState(System.String,System.Collections.Generic.IReadOnlyDictionary{System.String,System.Object})">
+            <summary>
+            Returns a failure state using the <paramref name="description"/> 
+            of the failure and optional <paramref name="data"/>.
+            </summary>
+            <param name="description">A discription of the failure and how to resolve the failure.</param>
+            <param name="data">Additional details used in diagnosing the failure.</param>
+            <returns>Returns a failure state <seealso cref="T:Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult"/>.</returns>
+        </member>
+        <member name="M:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.FailureState(System.Exception,System.Collections.Generic.IReadOnlyDictionary{System.String,System.Object})">
+            <summary>
+            Returns a failure state using the <paramref name="exception"/> 
+            of the failure and optional <paramref name="data"/>.
+            </summary>
+            <param name="exception">The exception that was thrown during the health check.</param>
+            <param name="data">Additional details used in diagnosing the failure.</param>
+            <returns>Returns a failure state <seealso cref="T:Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult"/>.</returns>
+        </member>
+        <member name="P:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.Name">
+            <summary>
+            The name of the health check.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.Tags">
+            <summary>
+            A list of tags that can be used to filter health checks.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.Timeout">
+            <summary>
+            A <seealso cref="T:System.TimeSpan"/> representing the timeout 
+            of the check. The default is 2 minutes.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.#ctor">
+            <summary>
+            Basic health check without <seealso cref="P:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.Name"/> and
+            <seealso cref="P:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.Tags"/>. The <seealso cref="P:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.Name"/> will be 
+            set automatically using the class type and formatted with 
+            <seealso cref="M:System.Text.StringExtensions.ToTitleCase(System.String,System.Boolean)"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.#ctor(System.String[])">
+            <summary>
+            Basic health check without <seealso cref="P:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.Name"/> and optional
+            <seealso cref="P:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.Tags"/>. The <seealso cref="P:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.Name"/> will be 
+            set automatically using the class type and formatted with 
+            <seealso cref="M:System.Text.StringExtensions.ToTitleCase(System.String,System.Boolean)"/>.
+            </summary>
+            <param name="tags">A list of tags that can be used to filter health checks.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.#ctor(System.String,System.String[])">
+            <summary>
+            Basic health check with <seealso cref="P:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.Name"/> and optional
+            <seealso cref="P:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.Tags"/>.
+            </summary>
+            <param name="name">The name of the health check.</param>
+            <param name="tags">A list of tags that can be used to filter health checks.</param>
+        </member>
+        <member name="M:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.CheckHealthAsync(Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckContext,System.Object,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Microsoft.Extensions.Diagnostics.HealthChecks.IHealthCheck.CheckHealthAsync(Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckContext,System.Threading.CancellationToken)"/>
+        </member>
+        <member name="M:Microsoft.Extensions.Diagnostics.HealthChecks.BasicHealthCheck.CheckHealthAsync(Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckContext,System.Threading.CancellationToken)">
+            <inheritdoc cref="M:Microsoft.Extensions.Diagnostics.HealthChecks.IHealthCheck.CheckHealthAsync(Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckContext,System.Threading.CancellationToken)"/>
         </member>
         <member name="T:Microsoft.Extensions.Hosting.DiscoverableTaskSchedule">
             <summary>
@@ -1315,6 +1341,18 @@
             Convert simple claim into a <seealso cref="T:System.Security.Claims.Claim"/>.
             </summary>
             <returns><seealso cref="T:System.Security.Claims.Claim"/> of simple type.</returns>
+        </member>
+        <member name="M:System.Security.Claims.SerializableClaim.Equals(System.Object)">
+            <summary>
+            Checks to see if one <seealso cref="T:System.Security.Claims.SerializableClaim" /> has
+            the same <see cref="P:System.Security.Claims.SerializableClaim.Type" /> and <see cref="P:System.Security.Claims.SerializableClaim.Value" /> as another 
+            <seealso cref="T:System.Security.Claims.SerializableClaim" />.
+            </summary>
+            <param name="obj">The other <seealso cref="T:System.Security.Claims.SerializableClaim" /> to compare with.</param>
+            <returns>Returns true if the <see cref="P:System.Security.Claims.SerializableClaim.Type" /> and <see cref="P:System.Security.Claims.SerializableClaim.Value" /> from both <seealso cref="T:System.Security.Claims.SerializableClaim" /> objects are the the same.</returns>
+        </member>
+        <member name="M:System.Security.Claims.SerializableClaim.GetHashCode">
+            <inheritdoc cref="M:System.Type.GetHashCode" />
         </member>
         <member name="T:System.Text.ByteEncodingExtensions">
             <summary>
