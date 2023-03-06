@@ -34,7 +34,7 @@ public static class StringExtensions
 	/// <param name="length">The maximum number of characters to return from the start <paramref name="text"/>.</param>
 	/// <returns>Returns up to <paramref name="length"/> of characters from start of <paramref name="text"/>.</returns>
 	public static string SubstringClip(this string text, int length)
-		=> text.SubstringClip(length, 0);
+		=> text.SubstringClip(0, length);
 
 	/// <summary>
 	/// Safely returns up to <paramref name="length"/> number of characters starting at the
