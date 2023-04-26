@@ -66,7 +66,7 @@ public static class HealthCheckExtensions
 		Builder = services.AddHealthChecks();
 		AddHealthCheck(healthCheck);
 
-		var types = GetTypes();
+		var types = GetTypes(options, assemblies);
 
 		if (options.HealthCheckCount() == 0 && !types.Any())
 			NoHealthChecksConfigured();
@@ -74,29 +74,29 @@ public static class HealthCheckExtensions
 		options.InvokeHealthChecks(Builder);
 
 		foreach (var type in types)
-			CreateHealthCheck(type);
+			CreateHealthCheck(provider, type);
 
 		return Builder;
 
-		void CreateHealthCheck(Type type)
+		static void CreateHealthCheck(ServiceProvider provider, Type type)
 		{
 			var healthCheck = provider.Create<BasicHealthCheck>(type);
 			AddHealthCheck(healthCheck);
 		}
 
-		void AddHealthCheck(BasicHealthCheck check)
+		static void AddHealthCheck(BasicHealthCheck check)
 		{
 			Builder!.AddCheck(
-				healthCheck.Name, healthCheck,
-				healthCheck.FailureStatus,
-				healthCheck.Tags, healthCheck.Timeout);
+				check.Name, check,
+				check.FailureStatus,
+				check.Tags, check.Timeout);
 
 			Log.Logger.Information(
 				"Added Health Check {HealthCheckName} {HealthCheck}",
-				healthCheck.Name, healthCheck);
+				check.Name, check);
 		}
 
-		void NoHealthChecksConfigured()
+		static void NoHealthChecksConfigured()
 		{
 			Builder!.AddCheck("Health Check Setup",
 				() => HealthCheckResult.Degraded(
@@ -107,7 +107,8 @@ public static class HealthCheckExtensions
 			Log.Logger.Warning("No Health Checks Setup");
 		}
 
-		List<Type> GetTypes()
+		static List<Type> GetTypes(
+			HealthCheckOptions options, Assembly[] assemblies)
 		{
 			var types = options
 				.HealthCheckAssemblyReferenceTypes
