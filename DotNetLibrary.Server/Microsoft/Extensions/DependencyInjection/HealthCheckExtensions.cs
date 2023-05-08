@@ -24,6 +24,21 @@ public static class HealthCheckExtensions
 	/// <summary>
 	/// <inheritdoc cref="AddHealthChecks(IServiceCollection, HealthCheckOptions, Assembly[])"/>
 	/// </summary>
+	/// <param name="services"><inheritdoc cref="HealthCheckServiceCollectionExtensions.AddHealthChecks(IServiceCollection)"/></param>
+	/// <param name="options">The options used for configuring the auto discovery of health checks.</param>
+	/// <param name="assemblies">Assemblies to search for auto discoverable health checks.</param>
+	/// <returns>The <inheritdoc cref="IHealthChecksBuilder"/> created when adding health checks.</returns>
+	public static IHealthChecksBuilder AddDiscoverableHealthChecks(
+		this IServiceCollection services,
+		HealthCheckOptions options = default!,
+		Assembly[] assemblies = default!)
+		=> services.AddHealthChecks(
+			options ?? new(),
+			assemblies ?? Array.Empty<Assembly>());
+
+	/// <summary>
+	/// <inheritdoc cref="AddHealthChecks(IServiceCollection, HealthCheckOptions, Assembly[])"/>
+	/// </summary>
 	/// <param name="services"><inheritdoc cref="AddHealthChecks(IServiceCollection, HealthCheckOptions, Assembly[])"/></param>
 	/// <param name="options"><inheritdoc cref="AddHealthChecks(IServiceCollection, HealthCheckOptions, Assembly[])"/></param>
 	/// <param name="assembly1">Optional assembly to search for auto discoverable health checks.</param>
@@ -65,6 +80,7 @@ public static class HealthCheckExtensions
 
 		Builder = services.AddHealthChecks();
 		AddHealthCheck(healthCheck);
+		AddHealthCheck(new DotNetVersionHealthCheck());
 
 		var types = GetTypes(options, assemblies);
 
@@ -109,27 +125,30 @@ public static class HealthCheckExtensions
 
 		static List<Type> GetTypes(
 			HealthCheckOptions options, Assembly[] assemblies)
-		{
-			var types = options
+			=> options
 				.HealthCheckAssemblyReferenceTypes
-				.Union(assemblies.Where(p => p is not null))
+				.Union(assemblies)
 				.Union(Assembly.GetCallingAssembly())
 				.Union(Assembly.GetExecutingAssembly())
-				.SelectMany(p => p.GetTypes())
+				.Union(Assembly.GetEntryAssembly())
+				.Where(p => p is not null)
+				.SelectMany(p => p!.GetTypes())
 				.Union(options.GetType())
-				.ToList();
+				.Where(p => {
+					if (!p.IsClass || p.IsAbstract)
+						return false;
 
-			var entryAssembly = Assembly.GetEntryAssembly();
-			if (entryAssembly is not null)
-				types.AddRange(entryAssembly.GetTypes());
+					if (!p.IsSubclassOf(typeof(BasicHealthCheck)))
+						return false;
 
-			return types
-				.Where(p => p.IsClass && !p.IsAbstract
-					&& p.IsSubclassOf(typeof(BasicHealthCheck))
-					&& p.GetCustomAttribute<IgnoreHealthCheckAttribute>() is null)
-				.Distinct()
+					var attribute = p.GetCustomAttribute<IgnoreHealthCheckAttribute>();
+					if (attribute is null)
+						return true;
+
+					return !attribute.Conditional();
+				})
+				.DistinctBy(p => p.Name)
 				.ToList();
-		}
 	}
 
 	internal static T Create<T>(this IServiceProvider services, Type type)
@@ -157,8 +176,8 @@ public static class HealthCheckExtensions
 						: (services.GetService(p.ParameterType)
 								?? p.DefaultValue))
 					.ToArray();
-				
-				if(args.Length > 0 && args[0] is string)
+
+				if (args.Length > 0 && args[0] is string)
 					args[0] = type.Name.Replace("HealthCheck", "").ToTitleCase();
 
 				if (Activator.CreateInstance(type, args) is T healthCheck)

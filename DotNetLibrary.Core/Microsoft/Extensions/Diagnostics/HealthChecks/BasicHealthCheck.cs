@@ -1,4 +1,6 @@
-﻿namespace Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using System.Text;
+
+namespace Microsoft.Extensions.Diagnostics.HealthChecks;
 
 /// <summary>
 /// Base logic used for auto discovered health checks.
@@ -56,7 +58,7 @@ public abstract class BasicHealthCheck : IHealthCheck
 	/// set automatically using the class type and formatted with 
 	/// <seealso cref="System.Text.StringExtensions.ToTitleCase(string, bool)"/>.
 	/// </summary>
-	protected BasicHealthCheck() { }
+	protected BasicHealthCheck() : this(default!, default!) { }
 
 	/// <summary>
 	/// Basic health check without <seealso cref="Name"/> and optional
@@ -65,9 +67,8 @@ public abstract class BasicHealthCheck : IHealthCheck
 	/// <seealso cref="System.Text.StringExtensions.ToTitleCase(string, bool)"/>.
 	/// </summary>
 	/// <param name="tags">A list of tags that can be used to filter health checks.</param>
-	protected BasicHealthCheck(string[]? tags)
+	protected BasicHealthCheck(string[] tags) : this(default!, tags)
 	{
-		Tags = tags?.ToList() ?? new();
 	}
 
 	/// <summary>
@@ -76,10 +77,10 @@ public abstract class BasicHealthCheck : IHealthCheck
 	/// </summary>
 	/// <param name="name">The name of the health check.</param>
 	/// <param name="tags">A list of tags that can be used to filter health checks.</param>
-	protected BasicHealthCheck(string name, params string[] tags)
-		: this(tags)
+	protected BasicHealthCheck(string name, string[] tags)
 	{
-		Name = name;
+		Name = name ?? GetType().Name.ToTitleCase();
+		Tags = tags?.ToList() ?? new();
 	}
 
 	/// <inheritdoc cref="IHealthCheck.CheckHealthAsync(HealthCheckContext, CancellationToken)"/>

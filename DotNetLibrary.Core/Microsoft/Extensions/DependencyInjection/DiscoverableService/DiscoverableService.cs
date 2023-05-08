@@ -17,6 +17,7 @@ public abstract class DiscoverableService : IDiscoverable
 	protected internal abstract void ConfigureAsService(
 		IServiceCollection services, IConfiguration configuration);
 
-	void IDiscoverable.ConfigureAsService(IServiceCollection services, IConfiguration configuration)
+	void IDiscoverable.ConfigureAsService(
+		IServiceCollection services, IConfiguration configuration)
 		=> ConfigureAsService(services, configuration);
 }

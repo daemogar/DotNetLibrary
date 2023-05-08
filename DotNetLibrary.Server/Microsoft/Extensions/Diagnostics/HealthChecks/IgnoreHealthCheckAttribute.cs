@@ -6,4 +6,12 @@
 /// <seealso cref="ApplicationStartedHealthCheck"/>.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public class IgnoreHealthCheckAttribute : Attribute { }
+public class IgnoreHealthCheckAttribute : Attribute
+{
+	/// <summary>
+	/// When overridden this method can dynamically control if a
+	/// health check is added to the health check pool.
+	/// </summary>
+	/// <returns>True to include and false to exclude.</returns>
+	public virtual bool Conditional() => true;
+}

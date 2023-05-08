@@ -43,7 +43,11 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'0$(TargetFrameworkVersion.Replace(&quot;v&quot;,&quot;&quot;))' &gt; '6'">
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="OneOf" Version="3.0.243" />
 	</ItemGroup>
 
 	<ItemGroup>

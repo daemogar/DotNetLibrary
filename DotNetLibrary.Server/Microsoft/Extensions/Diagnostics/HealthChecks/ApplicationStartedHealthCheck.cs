@@ -1,5 +1,10 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using System.Reflection;
+
+using System.Runtime.Versioning;
 
 namespace Microsoft.Extensions.Diagnostics.HealthChecks;
 
