@@ -293,10 +293,11 @@ public static class HealthCheckExtensions
 		{
 			writer.WriteString("name", name);
 			writer.WriteString("status", entry.Status.ToString());
-			writer.WriteString("description", entry.Description);
+			writer.WriteString("description", Filter(entry.Description));
 			writer.WriteString("duration", entry.Duration.ToString("G"));
 
-			WriteTags(entry.Tags);
+
+			if (entry.Tags.Any()) WriteArray("tags", entry.Tags);
 			WriteException(entry.Exception);
 
 			var list = entry.Data
@@ -312,20 +313,9 @@ public static class HealthCheckExtensions
 				writer.WritePropertyName(item.Key);
 
 				JsonSerializer.Serialize(writer, item.Value,
-						item.Value?.GetType() ?? typeof(object));
+					item.Value?.GetType() ?? typeof(object));
 			}
 			writer.WriteEndObject();
-
-			void WriteTags(IEnumerable<string> tags)
-			{
-				if (!tags.Any())
-					return;
-
-				writer.WriteStartArray("tags");
-				foreach (var tag in tags)
-					writer.WriteStringValue(tag);
-				writer.WriteEndArray();
-			}
 
 			void WriteException(Exception? e)
 			{
@@ -357,14 +347,29 @@ public static class HealthCheckExtensions
 				}
 
 				writer.WriteStartObject("exception");
-				writer.WriteString("message", message);
-				
-				if(stackTrace is not null)
-					writer.WriteString("trace", stackTrace);
+
+				if (message.Contains(Environment.NewLine))
+					writer.WriteString("message", Filter(message));
+				else
+					WriteArray("messages", message.Split(Environment.NewLine));
+
+				if (stackTrace is not null)
+					WriteArray("trace", stackTrace.Split(Environment.NewLine));
 
 				writer.WriteEndObject();
 			}
+
+			void WriteArray(string propertyName, IEnumerable<string> lines)
+			{
+				writer.WriteStartArray(propertyName);
+				foreach (var line in lines)
+					writer.WriteStringValue(Filter(line));
+				writer.WriteEndArray();
+			}
 		}
+
+		string? Filter(string? text)
+			=> text?.Replace("'", "`").Replace('\'', '`');
 	}
 #endif
 }
