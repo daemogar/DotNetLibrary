@@ -23,7 +23,7 @@ public abstract class BasicHealthCheck : IHealthCheck
 	/// <returns>Returns a failure state <seealso cref="HealthCheckResult"/>.</returns>
 	protected HealthCheckResult FailureState(string description,
 		IReadOnlyDictionary<string, object> data = null!)
-		=> new(FailureStatus, description, null, data);
+		=> FailureState(description, default!, data);
 
 	/// <summary>
 	/// Returns a failure state using the <paramref name="exception"/> 
@@ -34,7 +34,34 @@ public abstract class BasicHealthCheck : IHealthCheck
 	/// <returns>Returns a failure state <seealso cref="HealthCheckResult"/>.</returns>
 	protected HealthCheckResult FailureState(Exception exception,
 		IReadOnlyDictionary<string, object> data = null!)
-		=> new(FailureStatus, null, exception, data);
+		=> FailureState(default!, exception, data);
+
+	/// <summary>
+	/// Returns a failure state using the <paramref name="exception"/> 
+	/// of the failure and optional <paramref name="data"/>.
+	/// </summary>
+	/// <param name="description">A discription of the failure and how to resolve the failure.</param>
+	/// <param name="exception">The exception that was thrown during the health check.</param>
+	/// <param name="data">Additional details used in diagnosing the failure.</param>
+	/// <returns>Returns a failure state <seealso cref="HealthCheckResult"/>.</returns>
+	protected HealthCheckResult FailureState(
+		string description,
+		Exception exception,
+		IReadOnlyDictionary<string, object> data = null!)
+	{
+		if (data is not null)
+		{
+			var dictionary = data.ToDictionary(p => p.Key, p => p.Value);
+
+			dictionary.Add($"{nameof(Exception)}.{nameof(Exception.Message)}", exception.Message);
+			if (exception.StackTrace is not null)
+				dictionary.Add($"{nameof(Exception)}.{nameof(Exception.StackTrace)}", exception.StackTrace);
+
+			data = dictionary;
+		}
+
+		return new(FailureStatus, description, exception, data);
+	}
 
 	/// <summary>
 	/// The name of the health check.

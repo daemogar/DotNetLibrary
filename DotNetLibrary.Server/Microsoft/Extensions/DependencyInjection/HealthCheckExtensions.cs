@@ -134,7 +134,8 @@ public static class HealthCheckExtensions
 				.Where(p => p is not null)
 				.SelectMany(p => p!.GetTypes())
 				.Union(options.GetType())
-				.Where(p => {
+				.Where(p =>
+				{
 					if (!p.IsClass || p.IsAbstract)
 						return false;
 
@@ -298,7 +299,11 @@ public static class HealthCheckExtensions
 			WriteTags(entry.Tags);
 			WriteException(entry.Exception);
 
-			if (!entry.Data.Any())
+			var list = entry.Data
+				.Where(p => !p.Key.StartsWith($"{nameof(Exception)}."))
+				.ToDictionary(p => p.Key, p => p.Value);
+
+			if (!list.Any())
 				return;
 
 			writer.WriteStartObject("data");
@@ -310,31 +315,55 @@ public static class HealthCheckExtensions
 						item.Value?.GetType() ?? typeof(object));
 			}
 			writer.WriteEndObject();
-		}
 
-		void WriteTags(IEnumerable<string> tags)
-		{
-			if (!tags.Any())
-				return;
+			void WriteTags(IEnumerable<string> tags)
+			{
+				if (!tags.Any())
+					return;
 
-			writer.WriteStartArray("tags");
-			foreach (var tag in tags)
-				writer.WriteStringValue(tag);
-			writer.WriteEndArray();
-		}
+				writer.WriteStartArray("tags");
+				foreach (var tag in tags)
+					writer.WriteStringValue(tag);
+				writer.WriteEndArray();
+			}
 
-		void WriteException(Exception? e)
-		{
-			if (e is null)
-				return;
+			void WriteException(Exception? e)
+			{
+				string message;
+				string? stackTrace;
 
-			while (e.InnerException is not null)
-				e = e.InnerException;
+				if (e is null)
+				{
+					if (entry.Data is null)
+						return;
 
-			writer.WriteStartObject("exception");
-			writer.WriteString("message", e.Message);
-			writer.WriteString("trace", e.StackTrace);
-			writer.WriteEndObject();
+					if (!entry.Data.TryGetValue($"{nameof(Exception)}.{nameof(Exception.Message)}", out var value) || value is null)
+						return;
+
+					message = value.ToString()!;
+					if (message is null)
+						return;
+
+					entry.Data.TryGetValue($"{nameof(Exception)}.{nameof(Exception.StackTrace)}", out value);
+					stackTrace = value?.ToString();
+				}
+				else
+				{
+					while (e.InnerException is not null)
+						e = e.InnerException;
+
+					message = e.Message;
+					stackTrace = e.StackTrace;
+				}
+
+				writer.WriteStartObject("exception");
+				writer.WriteString("message", message);
+				
+				if(stackTrace is not null)
+					writer.WriteString("trace", stackTrace);
+
+				writer.WriteEndObject();
+			}
 		}
 	}
 #endif
