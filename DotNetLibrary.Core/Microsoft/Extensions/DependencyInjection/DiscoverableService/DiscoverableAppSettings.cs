@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 
+using System.Data.SqlClient;
+
 namespace Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -96,4 +98,17 @@ public abstract class DiscoverableAppSettings<T> : DiscoverableService
 		=> Configuration.GetSection(
 			$"{AppSettingSection}:{key}".TrimStart(':'))
 			?? throw new ArgumentNullException(key);
+
+	/// <summary>
+	/// Get a connection string builder.
+	/// </summary>
+	/// <param name="key">The connection string builder to get.</param>
+	/// <param name="replaceZero">What to replace the {0} within the connection string.</param>
+	/// <returns>A connection string builder from the connection string in the appsettings.</returns>
+	/// <exception cref="ArgumentNullException">If the connection string returned is null.</exception>
+	protected SqlConnectionStringBuilder GetConnectionString(
+		string key, string replaceZero = "{0}")
+		=> new(Configuration.GetConnectionString(key)
+			?.Replace("{0}", replaceZero)
+			?? throw new ArgumentNullException(key));
 }
