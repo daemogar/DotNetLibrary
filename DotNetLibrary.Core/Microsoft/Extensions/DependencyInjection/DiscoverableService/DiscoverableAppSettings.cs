@@ -85,4 +85,15 @@ public abstract class DiscoverableAppSettings<T> : DiscoverableService
 		=> Configuration.GetValue<string>(
 			$"{AppSettingSection}:{key}".TrimStart(':'))
 			?? throw new ArgumentNullException(key);
+
+	/// <summary>
+	/// Get configuration section.
+	/// </summary>
+	/// <param name="key">Appsetting section will be prepended to the key.</param>
+	/// <returns>The configuration section from the appsettings.</returns>
+	/// <exception cref="ArgumentNullException">If the section returns null.</exception>
+	protected IConfiguration GetSection(string key)
+		=> Configuration.GetSection(
+			$"{AppSettingSection}:{key}".TrimStart(':'))
+			?? throw new ArgumentNullException(key);
 }
