@@ -84,6 +84,9 @@ public abstract record BasicHealthCheck : IHealthCheck
 	/// </summary>
 	public IReadOnlyList<string> Tags { get; protected set; } = default!;
 
+	/// <inheritdoc cref="IHealthCheck.CheckHealthAsync(HealthCheckContext, CancellationToken)"/>
+	internal protected Func<HealthCheckContext, object?, CancellationToken, Task<HealthCheckResult>> FuncHealthCheckAsync { get; init; }
+
 	/// <summary>
 	/// A <seealso cref="TimeSpan"/> representing the timeout 
 	/// of the check. The default is 2 minutes.
