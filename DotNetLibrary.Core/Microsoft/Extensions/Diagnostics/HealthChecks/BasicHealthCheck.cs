@@ -150,7 +150,7 @@ public abstract record BasicHealthCheck : IHealthCheck
 		IServiceCollection services, IConfiguration configuration);
 
 	/// <summary>
-	/// 
+	/// Add additional post creation logic.
 	/// </summary>
 	public virtual void PostCreateHealthCheckProcessing() { }
 }
