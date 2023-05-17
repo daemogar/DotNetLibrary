@@ -77,12 +77,12 @@ public abstract record BasicHealthCheck : IHealthCheck
 	/// <summary>
 	/// The name of the health check.
 	/// </summary>
-	public string Name { get; internal set; } = default!;
+	public string Name { get; protected set; } = default!;
 
 	/// <summary>
 	/// A list of tags that can be used to filter health checks.
 	/// </summary>
-	public IReadOnlyList<string> Tags { get; internal set; } = default!;
+	public IReadOnlyList<string> Tags { get; protected set; } = default!;
 
 	/// <summary>
 	/// A <seealso cref="TimeSpan"/> representing the timeout 
