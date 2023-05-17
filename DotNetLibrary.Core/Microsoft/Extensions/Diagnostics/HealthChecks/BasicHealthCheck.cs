@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+using System.Text;
 
 namespace Microsoft.Extensions.Diagnostics.HealthChecks;
 
@@ -6,8 +9,16 @@ namespace Microsoft.Extensions.Diagnostics.HealthChecks;
 /// Base logic used for auto discovered health checks.
 /// <inheritdoc cref="IHealthCheck"/>
 /// </summary>
-public abstract class BasicHealthCheck : IHealthCheck
+public abstract record BasicHealthCheck : IHealthCheck
 {
+	/// <summary>
+	/// A time span that if the health check takes longer then this
+	/// amount of time, it will move an otherwise healthy result to 
+	/// degraded. The default is one second, so anything that takes
+	/// more than one second to run, will be at best a degraded result.
+	/// </summary>
+	public virtual TimeSpan DegradedTimeSpan { get; } = TimeSpan.FromSeconds(1);
+
 	/// <summary>
 	/// The status used for the failure state. The default is
 	/// <seealso cref="HealthStatus.Unhealthy"/>.
@@ -108,6 +119,18 @@ public abstract class BasicHealthCheck : IHealthCheck
 	{
 		Name = name ?? GetType().Name.ToTitleCase();
 		Tags = tags?.ToList() ?? new();
+
+		FuncHealthCheckAsync ??= async (context, data, cancellationToken) =>
+		{
+			try
+			{
+				return await CheckHealthAsync(context, data, cancellationToken);
+			}
+			catch (Exception e)
+			{
+				return FailureState(e);
+			}
+		};
 	}
 
 	/// <inheritdoc cref="IHealthCheck.CheckHealthAsync(HealthCheckContext, CancellationToken)"/>
@@ -117,17 +140,41 @@ public abstract class BasicHealthCheck : IHealthCheck
 		CancellationToken cancellationToken);
 
 	/// <inheritdoc cref="IHealthCheck.CheckHealthAsync(HealthCheckContext, CancellationToken)"/>
-	public async Task<HealthCheckResult> CheckHealthAsync(
-		HealthCheckContext context,
-		CancellationToken cancellationToken = default)
+	public Task<HealthCheckResult> CheckHealthAsync(
+		HealthCheckContext context, CancellationToken cancellationToken)
+		=> HealthCheckAsync.Invoke(context, default, cancellationToken);
+
+	/// <summary>
+	/// A check to see if the health check function is the default 
+	/// functionality or been changed by the developer.
+	/// </summary>
+	protected internal bool IsDefaultFuncHealthCheckAsync { get; private set; } = true;
+
+	private Func<HealthCheckContext, object?, CancellationToken, Task<HealthCheckResult>>? FuncHealthCheckAsync { get; set; }
+
+	/// <inheritdoc cref="IHealthCheck.CheckHealthAsync(HealthCheckContext, CancellationToken)"/>
+	protected virtual Func<HealthCheckContext, object?, CancellationToken, Task<HealthCheckResult>> HealthCheckAsync
 	{
-		try
+		get => FuncHealthCheckAsync!;
+		init
 		{
-			return await CheckHealthAsync(context, default, cancellationToken);
-		}
-		catch (Exception e)
-		{
-			return FailureState(e);
+			FuncHealthCheckAsync = value
+				?? throw new NullReferenceException(
+					$"Cannot set the {nameof(HealthCheckAsync)} method to null.");
+
+			IsDefaultFuncHealthCheckAsync = false;
 		}
 	}
+
+	/// <inheritdoc cref="IDiscoverable.Order"/>
+	public virtual int Order { get; } = 0;
+
+	/// <inheritdoc cref="IDiscoverable.ConfigureAsService(IServiceCollection, IConfiguration)"/>
+	public abstract void RegisterHealthCheckServices(
+		IServiceCollection services, IConfiguration configuration);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	public virtual void PostCreateHealthCheckProcessing() { }
 }

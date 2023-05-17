@@ -1,12 +1,17 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 
+using OneOf;
+
 using Serilog;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
 
@@ -25,15 +30,16 @@ public static class HealthCheckExtensions
 	/// <inheritdoc cref="AddHealthChecks(IServiceCollection, HealthCheckOptions, Assembly[])"/>
 	/// </summary>
 	/// <param name="services"><inheritdoc cref="HealthCheckServiceCollectionExtensions.AddHealthChecks(IServiceCollection)"/></param>
-	/// <param name="options">The options used for configuring the auto discovery of health checks.</param>
-	/// <param name="assemblies">Assemblies to search for auto discoverable health checks.</param>
-	/// <returns>The <inheritdoc cref="IHealthChecksBuilder"/> created when adding health checks.</returns>
+	/// <param name="options">The options used for configuring the auto discovery of health p.</param>
+	/// <param name="assemblies">Assemblies to search for auto discoverable health p.</param>
+	/// <returns>The <inheritdoc cref="IHealthChecksBuilder"/> created when adding health p.</returns>
 	public static IHealthChecksBuilder AddDiscoverableHealthChecks(
 		this IServiceCollection services,
+		IConfiguration configuration,
 		HealthCheckOptions options = default!,
 		Assembly[] assemblies = default!)
 		=> services.AddHealthChecks(
-			options ?? new(),
+			configuration, options ?? new(),
 			assemblies ?? Array.Empty<Assembly>());
 
 	/// <summary>
@@ -41,17 +47,18 @@ public static class HealthCheckExtensions
 	/// </summary>
 	/// <param name="services"><inheritdoc cref="AddHealthChecks(IServiceCollection, HealthCheckOptions, Assembly[])"/></param>
 	/// <param name="options"><inheritdoc cref="AddHealthChecks(IServiceCollection, HealthCheckOptions, Assembly[])"/></param>
-	/// <param name="assembly1">Optional assembly to search for auto discoverable health checks.</param>
-	/// <param name="assembly2">Optional assembly to search for auto discoverable health checks.</param>
-	/// <param name="assembly3">Optional assembly to search for auto discoverable health checks.</param>
+	/// <param name="assembly1">Optional assembly to search for auto discoverable health p.</param>
+	/// <param name="assembly2">Optional assembly to search for auto discoverable health p.</param>
+	/// <param name="assembly3">Optional assembly to search for auto discoverable health p.</param>
 	/// <returns><inheritdoc cref="AddHealthChecks(IServiceCollection, HealthCheckOptions, Assembly[])"/></returns>
 	public static IHealthChecksBuilder AddHealthChecks(
 		this IServiceCollection services,
-		HealthCheckOptions options,
+		IConfiguration configuration,
+		HealthCheckOptions options = default!,
 		Assembly assembly1 = default!,
 		Assembly assembly2 = default!,
 		Assembly assembly3 = default!)
-		=> AddHealthChecks(services, options, new[]
+		=> services.AddHealthChecks(configuration, options, new[]
 		{
 			assembly1, assembly2, assembly3
 		});
@@ -60,44 +67,98 @@ public static class HealthCheckExtensions
 	/// <inheritdoc cref="HealthCheckServiceCollectionExtensions.AddHealthChecks(IServiceCollection)"/>
 	/// </summary>
 	/// <param name="services"><inheritdoc cref="HealthCheckServiceCollectionExtensions.AddHealthChecks(IServiceCollection)"/></param>
-	/// <param name="options">The options used for configuring the auto discovery of health checks.</param>
-	/// <param name="assemblies">Assemblies to search for auto discoverable health checks.</param>
-	/// <returns>The <inheritdoc cref="IHealthChecksBuilder"/> created when adding health checks.</returns>
+	/// <param name="options">The options used for configuring the auto discovery of health p.</param>
+	/// <param name="assemblies">Assemblies to search for auto discoverable health p.</param>
+	/// <returns>The <inheritdoc cref="IHealthChecksBuilder"/> created when adding health p.</returns>
 	public static IHealthChecksBuilder AddHealthChecks(
 		this IServiceCollection services,
-		HealthCheckOptions options,
+		IConfiguration configuration,
+		HealthCheckOptions options = default!,
 		params Assembly[] assemblies)
 	{
 		if (Builder is not null)
 			return Builder;
 
-		var provider = services.BuildServiceProvider();
-		ApplicationStartedHealthCheck healthCheck = new(
-			provider.GetRequiredService<IWebHostEnvironment>());
+		var checks = GetBasicHealthChecks(options, assemblies, new[]
+		{
+			typeof(ApplicationStartedHealthCheck),
+			typeof(DotNetVersionHealthCheck)
+		});
 
-		services.AddHostedService<ApplicationStartedBackgroundService>();
-		services.AddSingleton(healthCheck);
-
-		Builder = services.AddHealthChecks();
-		AddHealthCheck(healthCheck);
-		AddHealthCheck(new DotNetVersionHealthCheck());
-
-		var types = GetTypes(options, assemblies);
-
-		if (options.HealthCheckCount() == 0 && !types.Any())
+		if (options.HealthCheckCount() == 0 && checks.Count <= 2)
 			NoHealthChecksConfigured();
 
+		var provider = services.BuildServiceProvider();
+
+		Builder = services.AddHealthChecks();
 		options.InvokeHealthChecks(Builder);
 
-		foreach (var type in types)
-			CreateHealthCheck(provider, type);
+		foreach (var check in checks)
+			Create(check.GetType())
+				.Switch(
+					AddHealthCheck,
+					p => p.CreateHealthChecksAndValidate().ForEach(AddHealthCheck),
+					p =>
+					{
+						if (p is not null)
+							throw p;
+					});
 
 		return Builder;
 
-		static void CreateHealthCheck(ServiceProvider provider, Type type)
+		OneOf<BasicHealthCheck, BasicHealthChecks, Exception?> Create(Type type)
 		{
-			var healthCheck = provider.Create<BasicHealthCheck>(type);
-			AddHealthCheck(healthCheck);
+			if (provider.GetService(type) is BasicHealthCheck check)
+				return check;
+
+			var constructors = type
+				.GetConstructors()
+				.Select(p =>
+				{
+					var parameters = p.GetParameters();
+					return (
+						parameters.Length,
+						Constructor: p,
+						parameters
+					);
+				})
+				.OrderByDescending(p => p.Length);
+
+			Exception? exception = null;
+
+			foreach (var (_, constructor, parameters) in constructors)
+			{
+				try
+				{
+					var args = parameters
+						.Select(p => !p.IsOptional
+							? provider.GetRequiredService(p.ParameterType)
+							: (provider.GetService(p.ParameterType)
+									?? p.DefaultValue))
+						.ToArray();
+
+					if (args.Length > 0 && args[0] is string)
+						args[0] = type.Name.Replace("HealthCheck", "").ToTitleCase();
+
+					var instance = Activator.CreateInstance(type, args);
+
+					if (instance is BasicHealthChecks healthChecks)
+						return healthChecks;
+
+					if (instance is BasicHealthCheck healthCheck)
+						return healthCheck;
+				}
+				catch (Exception e)
+				{
+					exception ??= e;
+
+					Log.Logger.Error(e,
+						"Failed Instantiating Health Check {Type} {Parameter Count}",
+						type, parameters.Length);
+				}
+			}
+
+			return exception;
 		}
 
 		static void AddHealthCheck(BasicHealthCheck check)
@@ -123,8 +184,8 @@ public static class HealthCheckExtensions
 			Log.Logger.Warning("No Health Checks Setup");
 		}
 
-		static List<Type> GetTypes(
-			HealthCheckOptions options, Assembly[] assemblies)
+		List<BasicHealthCheck> GetBasicHealthChecks(
+			HealthCheckOptions options, Assembly[] assemblies, Type[] types)
 			=> options
 				.HealthCheckAssemblyReferenceTypes
 				.Union(assemblies)
@@ -134,6 +195,7 @@ public static class HealthCheckExtensions
 				.Where(p => p is not null)
 				.SelectMany(p => p!.GetTypes())
 				.Union(options.GetType())
+				.Union(types)
 				.Where(p =>
 				{
 					if (!p.IsClass || p.IsAbstract)
@@ -143,76 +205,37 @@ public static class HealthCheckExtensions
 						return false;
 
 					var attribute = p.GetCustomAttribute<IgnoreHealthCheckAttribute>();
-					if (attribute is null)
-						return true;
-
-					return !attribute.Conditional();
+					return attribute is null || attribute.Conditional();
 				})
 				.DistinctBy(p => p.Name)
+				.Select(p =>
+				{
+					var check = (BasicHealthCheck)FormatterServices.GetUninitializedObject(p);
+					check.RegisterHealthCheckServices(services, configuration);
+					return check;
+				})
 				.ToList();
 	}
 
-	internal static T Create<T>(this IServiceProvider services, Type type)
-	{
-		var constructors = type
-			.GetConstructors()
-			.Select(p =>
-			{
-				var parameters = p.GetParameters();
-				return (
-					parameters.Length,
-					Constructor: p,
-					parameters
-				);
-			})
-			.OrderByDescending(p => p.Length);
-
-		foreach (var (_, constructor, parameters) in constructors)
-		{
-			try
-			{
-				var args = parameters
-					.Select(p => !p.IsOptional
-						? services.GetRequiredService(p.ParameterType)
-						: (services.GetService(p.ParameterType)
-								?? p.DefaultValue))
-					.ToArray();
-
-				if (args.Length > 0 && args[0] is string)
-					args[0] = type.Name.Replace("HealthCheck", "").ToTitleCase();
-
-				if (Activator.CreateInstance(type, args) is T healthCheck)
-					return healthCheck;
-			}
-			catch (Exception e)
-			{
-				Log.Logger.Error(e,
-					"Failed Instantiating Health Check {Type} {Parameter Count}",
-					type, parameters.Length);
-			}
-		}
-
-		return default!;
-	}
 #if !NETSTANDARD2_0_OR_GREATER
 	/// <summary>
 	/// Map health check endpoints. There are four endpoints:
-	/// <list type="number">
+	/// <list check="number">
 	/// <item>
 	///		<path>/heartbeat/</path>
-	///		<description>Runs all health checks and ruturns the basic information of <seealso cref="HealthStatus.Healthy"/>, <seealso cref="HealthStatus.Degraded"/>, or <seealso cref="HealthStatus.Unhealthy"/></description>
+	///		<description>Runs all health p and ruturns the basic information of <seealso cref="HealthStatus.Healthy"/>, <seealso cref="HealthStatus.Degraded"/>, or <seealso cref="HealthStatus.Unhealthy"/></description>
 	/// </item>
 	/// <item>
 	///		<path>/heartbeat/live/</path>
-	///		<description>Ignores all health checks and returns <seealso cref="HealthStatus.Healthy"/> if the application is running.</description>
+	///		<description>Ignores all health p and returns <seealso cref="HealthStatus.Healthy"/> if the application is running.</description>
 	/// </item>
 	/// <item>
 	///		<path>/heatbeat/ready/</path>
-	///		<description>Checks only the health checks that are tagged as "ready".</description>
+	///		<description>Checks only the health p that are tagged as "ready".</description>
 	/// </item>
 	/// <item>
 	///		<path>/heatbeat/details/</path>
-	///		<description>Runs all health checks and returns a detailed response with each check including status and messages.</description>
+	///		<description>Runs all health p and returns a detailed response with each check including status and messages.</description>
 	/// </item>
 	/// </list>
 	/// </summary>
@@ -229,7 +252,7 @@ public static class HealthCheckExtensions
 
 		basePath = $"/{basePath}/".Replace("//", "/");
 
-		// https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-6.0
+		// https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/health-p?view=aspnetcore-6.0
 
 		application.MapHealthChecks(basePath);
 		application.MapHealthChecks($"{basePath}live", new()

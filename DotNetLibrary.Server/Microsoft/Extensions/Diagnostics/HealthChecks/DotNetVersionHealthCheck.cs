@@ -1,4 +1,7 @@
-﻿using OneOf;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+using OneOf;
 
 using System.Reflection;
 
@@ -6,12 +9,12 @@ using System.Runtime.Versioning;
 
 namespace Microsoft.Extensions.Diagnostics.HealthChecks;
 
-[IgnoreHealthCheck]
-internal class DotNetVersionHealthCheck : BasicHealthCheck
+internal record DotNetVersionHealthCheck : BasicHealthCheck
 {
 	private HealthCheckResult? Result { get; set; }
 
 	public DotNetVersionHealthCheck() : base(default!, new[] { "version" }) { }
+
 	protected override async Task<HealthCheckResult> CheckHealthAsync(
 		HealthCheckContext context,
 		object? data,
@@ -81,4 +84,8 @@ internal class DotNetVersionHealthCheck : BasicHealthCheck
 			}
 		}
 	}
+
+	public override void RegisterHealthCheckServices(
+		IServiceCollection services, IConfiguration configuration)
+	{ }
 }

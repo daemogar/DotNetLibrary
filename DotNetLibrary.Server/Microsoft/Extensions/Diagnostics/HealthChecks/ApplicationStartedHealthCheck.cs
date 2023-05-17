@@ -1,15 +1,12 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-
-using System.Reflection;
-
-using System.Runtime.Versioning;
 
 namespace Microsoft.Extensions.Diagnostics.HealthChecks;
 
-[IgnoreHealthCheck]
-internal class ApplicationStartedHealthCheck : BasicHealthCheck
+internal record ApplicationStartedHealthCheck : BasicHealthCheck
 {
 	private volatile bool IsReady;
 
@@ -35,4 +32,11 @@ internal class ApplicationStartedHealthCheck : BasicHealthCheck
 				$"Check that {nameof(ApplicationStartedBackgroundService)}" +
 				"has been added and started. Enable logging level " +
 				"to at least Information."));
+
+	public override void RegisterHealthCheckServices(
+		IServiceCollection services, IConfiguration configuration)
+	{
+		services.TryAddSingleton<ApplicationStartedHealthCheck>();
+		services.AddHostedService<ApplicationStartedBackgroundService>();
+	}
 }
