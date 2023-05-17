@@ -84,6 +84,9 @@ public abstract record BasicHealthCheck : IHealthCheck
 	/// </summary>
 	public IReadOnlyList<string> Tags { get; protected set; } = default!;
 
+	/// <inheritdoc cref="IHealthCheck.CheckHealthAsync(HealthCheckContext, CancellationToken)"/>
+	internal protected Func<HealthCheckContext, object?, CancellationToken, Task<HealthCheckResult>> FuncHealthCheckAsync { get; init; }
+
 	/// <summary>
 	/// A <seealso cref="TimeSpan"/> representing the timeout 
 	/// of the check. The default is 2 minutes.
@@ -117,18 +120,6 @@ public abstract record BasicHealthCheck : IHealthCheck
 	{
 		Name = name ?? GetType().Name.ToTitleCase();
 		Tags = tags?.ToList() ?? new();
-
-		FuncHealthCheckAsync ??= async (context, data, cancellationToken) =>
-		{
-			try
-			{
-				return await CheckHealthAsync(context, data, cancellationToken);
-			}
-			catch (Exception e)
-			{
-				return FailureState(e);
-			}
-		};
 	}
 
 	/// <inheritdoc cref="IHealthCheck.CheckHealthAsync(HealthCheckContext, CancellationToken)"/>
@@ -138,29 +129,16 @@ public abstract record BasicHealthCheck : IHealthCheck
 		CancellationToken cancellationToken);
 
 	/// <inheritdoc cref="IHealthCheck.CheckHealthAsync(HealthCheckContext, CancellationToken)"/>
-	public Task<HealthCheckResult> CheckHealthAsync(
+	public async Task<HealthCheckResult> CheckHealthAsync(
 		HealthCheckContext context, CancellationToken cancellationToken)
-		=> HealthCheckAsync.Invoke(context, default, cancellationToken);
-
-	/// <summary>
-	/// A check to see if the health check function is the default 
-	/// functionality or been changed by the developer.
-	/// </summary>
-	protected internal bool IsDefaultFuncHealthCheckAsync { get; private set; } = true;
-
-	private Func<HealthCheckContext, object?, CancellationToken, Task<HealthCheckResult>>? FuncHealthCheckAsync { get; set; }
-
-	/// <inheritdoc cref="IHealthCheck.CheckHealthAsync(HealthCheckContext, CancellationToken)"/>
-	protected virtual Func<HealthCheckContext, object?, CancellationToken, Task<HealthCheckResult>> HealthCheckAsync
 	{
-		get => FuncHealthCheckAsync!;
-		init
+		try
 		{
-			FuncHealthCheckAsync = value
-				?? throw new NullReferenceException(
-					$"Cannot set the {nameof(HealthCheckAsync)} method to null.");
-
-			IsDefaultFuncHealthCheckAsync = false;
+			return await CheckHealthAsync(context, default, cancellationToken);
+		}
+		catch (Exception e)
+		{
+			return FailureState(e);
 		}
 	}
 
