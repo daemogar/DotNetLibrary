@@ -105,9 +105,7 @@ public abstract record BasicHealthCheck : IHealthCheck
 	/// <seealso cref="System.Text.StringExtensions.ToTitleCase(string, bool)"/>.
 	/// </summary>
 	/// <param name="tags">A list of tags that can be used to filter health checks.</param>
-	protected BasicHealthCheck(string[] tags) : this(default!, tags)
-	{
-	}
+	protected BasicHealthCheck(string[] tags) : this(default!, tags) { }
 
 	/// <summary>
 	/// Basic health check with <seealso cref="Name"/> and optional

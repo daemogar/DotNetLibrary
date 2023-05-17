@@ -6,6 +6,15 @@
 /// </summary>
 public abstract record BasicHealthChecks : BasicHealthCheck
 {
+	/// <inheritdoc cref="BasicHealthCheck()"/>
+	protected BasicHealthChecks() { }
+
+	/// <inheritdoc cref="BasicHealthCheck(string[])"/>
+	protected BasicHealthChecks(string[] tags) : base(tags) { }
+
+	/// <inheritdoc cref="BasicHealthCheck(string, string[])"/>
+	protected BasicHealthChecks(string name, string[] tags) : base(name, tags) { }
+
 	/// <summary>
 	/// Create multiple health checks based on the base object.
 	/// </summary>
