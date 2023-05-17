@@ -21,6 +21,11 @@ public abstract record BasicHealthChecks : BasicHealthCheck
 	/// <returns>A list of health checks based on the base object.</returns>
 	protected abstract IEnumerable<BasicHealthCheck> CreateHealthChecks();
 
+	/// <inheritdoc cref="CheckHealthAsync(HealthCheckContext, object?, CancellationToken)"/>
+	protected override async Task<HealthCheckResult> CheckHealthAsync(
+		HealthCheckContext context, object? data, CancellationToken cancellationToken)
+		=> await FuncHealthCheckAsync!.Invoke(context, data, cancellationToken);
+
 	/// <summary>
 	/// Returns a list of health checks configured for the overriding type.
 	/// By default this just returns the target object as a single instance
@@ -36,11 +41,11 @@ public abstract record BasicHealthChecks : BasicHealthCheck
 		{
 			check.PostCreateHealthCheckProcessing();
 
-			if (check.IsDefaultFuncHealthCheckAsync)
+			if (check.FuncHealthCheckAsync is null)
 				throw new Exception(
 					$"Health checks created in during the call to " +
 					$"{nameof(CreateHealthChecks)} must set the " +
-					$"{nameof(HealthCheckAsync)} method.");
+					$"{nameof(FuncHealthCheckAsync)} method.");
 
 			yield return check;
 		}
