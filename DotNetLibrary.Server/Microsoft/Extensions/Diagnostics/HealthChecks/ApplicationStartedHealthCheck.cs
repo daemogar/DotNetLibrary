@@ -29,7 +29,7 @@ internal record ApplicationStartedHealthCheck : BasicHealthCheck
 			? HealthCheckResult.Healthy(Environment.ContentRootPath)
 			: FailureState(
 				"Program does not appear to have started completely. " +
-				$"Check that {nameof(ApplicationStartedBackgroundService)}" +
+				$"Check that {nameof(ApplicationStartedBackgroundService)} " +
 				"has been added and started. Enable logging level " +
 				"to at least Information."));
 
