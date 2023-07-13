@@ -39,15 +39,15 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFrameworkVersion)' == 'v6.0'">
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.13" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.20" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'0$(TargetFrameworkVersion.Replace(&quot;v&quot;,&quot;&quot;))' &gt; '6'">
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.9" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="OneOf" Version="3.0.243" />
+	  <PackageReference Include="OneOf" Version="3.0.255" />
 	</ItemGroup>
 
 	<ItemGroup>
