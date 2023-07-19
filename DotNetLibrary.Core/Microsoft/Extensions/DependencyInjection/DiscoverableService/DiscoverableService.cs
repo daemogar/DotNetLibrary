@@ -8,6 +8,8 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// </summary>
 public abstract class DiscoverableService : IDiscoverable
 {
+	private bool IsDiscovered { get; set; }
+
 	/// <inheritdoc cref="IDiscoverable.Order" />
 	protected internal virtual int Order { get; } = 0;
 
@@ -19,5 +21,12 @@ public abstract class DiscoverableService : IDiscoverable
 
 	void IDiscoverable.ConfigureAsService(
 		IServiceCollection services, IConfiguration configuration)
-		=> ConfigureAsService(services, configuration);
+	{
+		if (IsDiscovered)
+			return;
+
+		IsDiscovered = true;
+
+		ConfigureAsService(services, configuration);
+	}
 }
