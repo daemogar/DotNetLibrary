@@ -9,7 +9,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// </summary>
 /// <typeparam name="T">The options object that should be used when called from dependent code.</typeparam>
 public abstract class DiscoverableAppSettings<T> : DiscoverableService
-		where T : class
+		where T : DiscoverableAppSettings<T>
 {
 	internal IConfiguration Configuration { get; private set; } = default!;
 
@@ -47,7 +47,11 @@ public abstract class DiscoverableAppSettings<T> : DiscoverableService
 		IServiceCollection services, IConfiguration configuration)
 	{
 		Configuration = configuration;
-		services.Configure<T>(ConfigureAppSettings);
+		services.Configure<T>(p =>
+		{
+			p.Configuration = Configuration;
+			ConfigureAppSettings(p);
+		});
 	}
 
 	/// <summary>
