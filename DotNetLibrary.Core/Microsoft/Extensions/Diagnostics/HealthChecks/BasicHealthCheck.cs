@@ -126,7 +126,7 @@ public abstract record BasicHealthCheck : IHealthCheck
 		CancellationToken cancellationToken);
 
 	/// <inheritdoc cref="IHealthCheck.CheckHealthAsync(HealthCheckContext, CancellationToken)"/>
-	internal protected Func<HealthCheckContext, object?, CancellationToken, Task<HealthCheckResult>> FuncHealthCheckAsync { get; init; }
+	internal protected Func<HealthCheckContext, object?, CancellationToken, Task<HealthCheckResult>> FuncHealthCheckAsync { get; init; } = default!;
 
 	/// <inheritdoc cref="IHealthCheck.CheckHealthAsync(HealthCheckContext, CancellationToken)"/>
 	public async Task<HealthCheckResult> CheckHealthAsync(
