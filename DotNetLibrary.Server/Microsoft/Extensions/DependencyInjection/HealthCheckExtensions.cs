@@ -1,17 +1,14 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Hosting;
 
 using OneOf;
 
 using Serilog;
 
-using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 
@@ -210,7 +207,7 @@ public static class HealthCheckExtensions
 				.DistinctBy(p => p.Name)
 				.Select(p =>
 				{
-					var check = (BasicHealthCheck)FormatterServices.GetUninitializedObject(p);
+					var check = (BasicHealthCheck)RuntimeHelpers.GetUninitializedObject(p);
 					check.RegisterHealthCheckServices(services, configuration);
 					return check;
 				})

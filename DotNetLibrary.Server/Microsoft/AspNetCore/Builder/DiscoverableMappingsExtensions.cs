@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using System.Runtime.Serialization;
+using System.Runtime.CompilerServices;
 
 namespace Microsoft.AspNetCore.Builder;
 
@@ -67,6 +67,6 @@ public static class DiscoverableMappingsExtensions
 	}
 
 	private static IDiscoverableMapping Construct(Type type)
-		=> (IDiscoverableMapping)FormatterServices
+		=> (IDiscoverableMapping)RuntimeHelpers
 			.GetUninitializedObject(type);
 }

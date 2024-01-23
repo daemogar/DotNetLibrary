@@ -3,7 +3,6 @@
 using Serilog;
 
 using System.Reflection;
-using System.Runtime.Serialization;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -59,7 +58,7 @@ public static class DiscoverableServicesExtensions
 			.UnionIf(() => !excludeLibraryAssemblies, discoverableType.Assembly)
 			.SelectMany(p => p
 			.DefinedTypes
-			.Where(p=>IsDiscoverableType(p))
+			.Where(p => IsDiscoverableType(p))
 			.Select(Construct))
 			.OrderBy(p => p.Order)
 			.ForEach(p => Register(p, services, configuration));
@@ -110,8 +109,12 @@ public static class DiscoverableServicesExtensions
 		Register(service, services, configuration);
 		return services;
 	}
-
+	
 	private static IDiscoverable Construct(Type type)
-		=> (IDiscoverable)FormatterServices
+#if NETSTANDARD2_0
+		=> (IDiscoverable)System.Runtime.Serialization.FormatterServices
+#else
+		=> (IDiscoverable)System.Runtime.CompilerServices.RuntimeHelpers
+#endif
 			.GetUninitializedObject(type);
 }
