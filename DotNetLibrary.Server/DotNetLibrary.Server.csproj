@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-	
+
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>net9.0</TargetFrameworks>
 		<OutputType>Library</OutputType>
 		<LangVersion>latest</LangVersion>
 		<RazorLangVersion>latest</RazorLangVersion>
@@ -23,10 +23,6 @@
 		<RootNamespace>DotNetLibrary</RootNamespace>
 	</PropertyGroup>
 
-	<ItemGroup Condition="'0$(TargetFrameworkVersion.Replace(&quot;v&quot;,&quot;&quot;))' &gt;= '6'">
-		<FrameworkReference Include="Microsoft.AspNetCore.App" />
-	</ItemGroup>
-
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|AnyCPU'">
 		<DocumentationFile>C:\Users\irwinj\Source\Repos\daemogar\DotNetLibrary\DotNetLibrary.Server\DotNetLibrary.Server.xml</DocumentationFile>
 	</PropertyGroup>
@@ -38,24 +34,18 @@
 		</None>
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFrameworkVersion)' == 'v6.0'">
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.26" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFrameworkVersion)' == 'v7.0'">
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.15" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFrameworkVersion)' == 'v8.0'">
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1" />
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="OneOf" Version="3.0.263" />
+		<PackageReference Include="OneOf" Version="3.0.271" />
 	</ItemGroup>
 
 	<ItemGroup>
-    <ProjectReference Include="..\DotNetLibrary.Core\DotNetLibrary.Core.csproj" />
-  </ItemGroup>
-	
+		<ProjectReference Include="..\DotNetLibrary.Core\DotNetLibrary.Core.csproj" />
+	</ItemGroup>
+
 </Project>
