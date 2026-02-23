@@ -3,7 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 using System.Text;
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace Microsoft.Extensions.Diagnostics.HealthChecks;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
 /// <summary>
 /// Base logic used for auto discovered health checks.
@@ -116,7 +118,7 @@ public abstract record BasicHealthCheck : IHealthCheck
 	protected BasicHealthCheck(string name, string[] tags)
 	{
 		Name = name ?? GetType().Name.ToTitleCase();
-		Tags = tags?.ToList() ?? new();
+		Tags = tags?.ToList() ?? [];
 	}
 
 	/// <inheritdoc cref="IHealthCheck.CheckHealthAsync(HealthCheckContext, CancellationToken)"/>

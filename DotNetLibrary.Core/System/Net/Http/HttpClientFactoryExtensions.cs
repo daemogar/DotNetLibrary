@@ -1,6 +1,8 @@
 ﻿using Serilog;
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace System.Net.Http;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
 /// <summary>
 /// <seealso cref="IHttpClientFactory"/> extension method helpers.

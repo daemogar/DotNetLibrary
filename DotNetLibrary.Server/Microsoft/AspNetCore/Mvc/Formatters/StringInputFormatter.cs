@@ -2,7 +2,9 @@
 using System.Text;
 using System.Net.Mime;
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace Microsoft.AspNetCore.Mvc.Formatters;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
 public class StringInputFormatter : TextInputFormatter
 {
@@ -17,8 +19,7 @@ public class StringInputFormatter : TextInputFormatter
 	public override async Task<InputFormatterResult> ReadRequestBodyAsync(
 		InputFormatterContext context, Encoding encoding)
 	{
-		if (context == null)
-			throw new ArgumentNullException(nameof(context));
+		ArgumentException.ThrowIfNullOrWhiteSpace(nameof(context));
 
 		using var streamReader = new StreamReader(
 				context.HttpContext.Request.Body,

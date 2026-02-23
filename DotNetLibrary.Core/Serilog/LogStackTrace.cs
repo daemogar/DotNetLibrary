@@ -1,4 +1,6 @@
-﻿namespace Serilog;
+﻿#pragma warning disable IDE0130 // Namespace does not match folder structure
+namespace Serilog;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
 /// <summary>
 /// Extension methods for logging stack traces not 

@@ -7,20 +7,13 @@ namespace Microsoft.AspNetCore.Builder;
 /// <summary>
 /// Limited <seealso cref="IEndpointRouteBuilder"/> mapping interface.
 /// </summary>
-public class ApplicationMapper
+/// <remarks>
+/// Constructor to create a limited 
+/// <seealso cref="IEndpointRouteBuilder"/> mapping interface.
+/// </remarks>
+/// <param name="builder"><seealso cref="IEndpointRouteBuilder"/></param>
+public class ApplicationMapper(IEndpointRouteBuilder Builder)
 {
-	private IEndpointRouteBuilder Builder { get; }
-
-	/// <summary>
-	/// Constructor to create a limited 
-	/// <seealso cref="IEndpointRouteBuilder"/> mapping interface.
-	/// </summary>
-	/// <param name="builder"><seealso cref="IEndpointRouteBuilder"/></param>
-	public ApplicationMapper(IEndpointRouteBuilder builder)
-	{
-		Builder = builder;
-	}
-
 	/// <summary>
 	/// <inheritdoc cref="EndpointRouteBuilderExtensions.MapGet(IEndpointRouteBuilder, string, RequestDelegate)"/>	/// </summary>
 	/// <param name="pattern">The route pattern.</param>

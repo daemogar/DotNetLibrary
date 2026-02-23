@@ -5,19 +5,17 @@ using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace Microsoft.AspNetCore.Authentication;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public class ApiKeyHandler : AuthenticationHandler<ApiKeyOptions>
+public class ApiKeyHandler(
+	IOptionsMonitor<ApiKeyOptions> options,
+	ILoggerFactory logger,
+	UrlEncoder encoder,
+	ISystemClock clock)
+	: AuthenticationHandler<ApiKeyOptions>(options, logger, encoder, clock)
 {
-	public ApiKeyHandler(
-					IOptionsMonitor<ApiKeyOptions> options,
-					ILoggerFactory logger,
-					UrlEncoder encoder,
-					ISystemClock clock)
-					: base(options, logger, encoder, clock)
-	{
-	}
-
 	protected override Task<AuthenticateResult> HandleAuthenticateAsync()
 	{
 		var apiKey = ParseApiKey();

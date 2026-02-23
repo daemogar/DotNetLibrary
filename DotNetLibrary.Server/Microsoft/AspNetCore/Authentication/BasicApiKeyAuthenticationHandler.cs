@@ -6,28 +6,26 @@ using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace Microsoft.AspNetCore.Authentication;
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 
-public class BasicApiKeyAuthenticationHandler : AuthenticationHandler<BasicApiKeyAuthenticationOptions>
+public class BasicApiKeyAuthenticationHandler(
+	IOptionsMonitor<BasicApiKeyAuthenticationOptions> options,
+	ILoggerFactory logger,
+	UrlEncoder encoder,
+	ISystemClock clock,
+	IBasicApiKeyValidator<IBasicApiKey> validator)
+	: AuthenticationHandler<BasicApiKeyAuthenticationOptions>(
+		options, logger, encoder, clock)
 {
-	public IBasicApiKeyValidator<IBasicApiKey> Validator { get; }
-
-	public BasicApiKeyAuthenticationHandler(
-		IOptionsMonitor<BasicApiKeyAuthenticationOptions> options,
-		ILoggerFactory logger,
-		UrlEncoder encoder,
-		ISystemClock clock,
-		IBasicApiKeyValidator<IBasicApiKey> validator)
-		: base(options, logger, encoder, clock)
-	{
-		Validator = validator;
-	}
+	public IBasicApiKeyValidator<IBasicApiKey> Validator { get; } = validator;
 
 	protected virtual async Task<List<Claim>> GetClaimsAsync(IBasicApiKey apikey)
 	{
 		var claims = new List<Claim>
 		{
-			new Claim(ClaimTypes.Name, apikey.ApplicationName, default, apikey.ApplicationName)
+			new(ClaimTypes.Name, apikey.ApplicationName, default, apikey.ApplicationName)
 		};
 
 		if (apikey.Roles is not null)
